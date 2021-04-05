@@ -3,4 +3,5 @@
     <string name="app_name">Food Diary</string>
     <string name="diary">Diario</string>
     <string name="account">Account</string>
+    <string name="search">Cerca</string>
 </resources>
