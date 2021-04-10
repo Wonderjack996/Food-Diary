@@ -4,4 +4,6 @@
     <string name="diary">Diario</string>
     <string name="account">Account</string>
     <string name="search">Cerca</string>
+    <string name="calendar">Calendario</string>
+    <string name="ok">OK</string>
 </resources>

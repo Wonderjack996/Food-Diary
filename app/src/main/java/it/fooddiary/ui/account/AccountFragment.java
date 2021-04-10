@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import it.fooddiary.MainActivity;
 import it.fooddiary.R;
 
 public class AccountFragment extends Fragment {
@@ -19,6 +20,8 @@ public class AccountFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_account, container, false);
+        MainActivity main = (MainActivity) getActivity();
+        main.setAccountToolbar();
         return root;
     }
 }

@@ -3,4 +3,6 @@
     <string name="diary">Diary</string>
     <string name="account">Account</string>
     <string name="search">Search</string>
+    <string name="calendar">Calendar</string>
+    <string name="ok">OK</string>
 </resources>
