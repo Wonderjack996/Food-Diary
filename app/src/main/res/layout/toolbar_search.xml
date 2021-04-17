@@ -16,6 +16,8 @@
             style="@style/Theme.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:title="@string/search" />
+            app:title="@string/search"
+            app:menu="@menu/toolbar_menu_search"/>
+
     </com.google.android.material.appbar.AppBarLayout>
 </androidx.appcompat.widget.Toolbar>

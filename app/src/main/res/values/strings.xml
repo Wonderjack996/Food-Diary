@@ -12,4 +12,5 @@
     <string name="searchTab1">Recent</string>
     <string name="searchTab2">Favorites</string>
     <string name="add">add</string>
+    <string name="cancel">Cancel</string>
 </resources>
