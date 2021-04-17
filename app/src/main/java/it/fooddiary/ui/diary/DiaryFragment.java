@@ -26,4 +26,6 @@ public class DiaryFragment extends Fragment {
         main.setDiaryToolbar();
         return root;
     }
+
+
 }

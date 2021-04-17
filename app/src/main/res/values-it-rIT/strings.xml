@@ -6,4 +6,7 @@
     <string name="search">Cerca</string>
     <string name="calendar">Calendario</string>
     <string name="ok">OK</string>
+    <string name="searchTab1">Recenti</string>
+    <string name="searchTab2">Preferiti</string>
+    <string name="add">aggiungi</string>
 </resources>
