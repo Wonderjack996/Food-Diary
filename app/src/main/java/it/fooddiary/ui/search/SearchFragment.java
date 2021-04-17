@@ -25,6 +25,7 @@ import it.fooddiary.R;
 public class SearchFragment extends Fragment {
 
     private TabLayout TabItem;
+
     private MaterialAlertDialogBuilder addCaloriesDialog;
 
     @Nullable
@@ -35,35 +36,36 @@ public class SearchFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
         MainActivity main = (MainActivity) getActivity();
         main.setSearchToolbar();
+
         addCaloriesDialog = new MaterialAlertDialogBuilder(main);
-        NumberPicker numberPicker;
-        numberPicker = new NumberPicker(main);
+        NumberPicker numberPicker = new NumberPicker(main);
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(10000);
+        numberPicker.setValue(200);
+        addCaloriesDialog.setTitle(R.string.addCalories);
         addCaloriesDialog.setView(numberPicker);
         addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
-                    }
-                });
-
+            }
+        });
         addCaloriesDialog.setNegativeButton(R.string.cancel,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        return;
-                    }
-                });
+        new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                return;
+            }
+        });
 
+        root.findViewById(R.id.addCalories_floatingButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCaloriesDialog.show();
+            }
+        });
 
         return root;
     }
-    public void onAddCaloriesClick(View root){
-
-    }
-
-
-
 }
 

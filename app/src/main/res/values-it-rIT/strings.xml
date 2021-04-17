@@ -12,5 +12,6 @@
     <string name="searchTab2">Preferiti</string>
     <string name="add">aggiungi</string>
     <string name="breakfast">Colazione</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Cancella</string>
+    <string name="addCalories">Aggiungi Calorie</string>
 </resources>

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.search.SearchFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -41,7 +42,7 @@
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
+            android:id="@+id/addCalories_floatingButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -54,7 +55,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tabLayout"
             app:layout_constraintVertical_bias="0.888"
             app:srcCompat="@drawable/ic_baseline_add_24"
-            />
+            android:focusable="true" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
