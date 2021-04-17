@@ -9,6 +9,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -21,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setupUI();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     public void setDiaryToolbar() {
@@ -60,13 +67,4 @@ public class MainActivity extends AppCompatActivity {
                 appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
     }
-
-    public void openSearch(View view) {
-        Log.d(TAG, "search opened");
-    }
-
-    public void openAdd(View view) {
-        Log.d(TAG, "add opened");
-    }
-
 }
