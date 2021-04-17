@@ -4,5 +4,9 @@
     <string name="account">Account</string>
     <string name="search">Search</string>
     <string name="calendar">Calendar</string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="carbs">Carbs</string>
+    <string name="proteins">Proteins</string>
+    <string name="fats">Fats</string>
+    <string name="breakfast">Breakfast</string>
 </resources>

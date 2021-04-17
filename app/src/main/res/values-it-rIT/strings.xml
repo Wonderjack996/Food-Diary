@@ -5,5 +5,7 @@
     <string name="account">Account</string>
     <string name="search">Cerca</string>
     <string name="calendar">Calendario</string>
-    <string name="ok">OK</string>
+    <string name="carbs">Carboidrati</string>
+    <string name="proteins">Proteine</string>
+    <string name="fats">Grassi</string>
 </resources>
