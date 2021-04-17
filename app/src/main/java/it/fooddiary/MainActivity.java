@@ -60,4 +60,13 @@ public class MainActivity extends AppCompatActivity {
                 appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
     }
+
+    public void openSearch(View view) {
+        Log.d(TAG, "search opened");
+    }
+
+    public void openAdd(View view) {
+        Log.d(TAG, "add opened");
+    }
+
 }
