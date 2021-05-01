@@ -22,4 +22,5 @@
     <string name="yesterday">Ieri</string>
     <string name="prev"><![CDATA[< prec]]></string>
     <string name="next"><![CDATA[succ >]]></string>
+    <string name="Change_Image">Cambia Immagine</string>
 </resources>
