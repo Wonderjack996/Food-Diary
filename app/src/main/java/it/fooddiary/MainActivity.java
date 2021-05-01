@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,9 +25,10 @@ public class MainActivity extends AppCompatActivity {
         setupUI();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    public void changeToolbarTitle(String title) {
+        MaterialToolbar matTool = getSupportActionBar().
+                getCustomView().findViewById(R.id.materialToolbar);
+        matTool.setTitle(title);
     }
 
     public void setDiaryToolbar() {
@@ -54,17 +55,24 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         setDiaryToolbar();
 
+        setUpBottomNavView();
+    }
+
+    public void setUpBottomNavView() {
         // set up bottom navigation view
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_diary,
                 R.id.navigation_search,
                 R.id.navigation_account).build();
-        NavController navController = Navigation.findNavController(this,
-                R.id.nav_host_fragment);
+        NavHostFragment navHostFragment = (NavHostFragment)
+                getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        NavController navController = navHostFragment.getNavController();
         NavigationUI.setupActionBarWithNavController(this,
                 navController,
                 appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
     }
+
+
 }

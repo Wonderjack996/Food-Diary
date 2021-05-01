@@ -14,4 +14,12 @@
     <string name="breakfast">Colazione</string>
     <string name="cancel">Cancella</string>
     <string name="addCalories">Aggiungi Calorie</string>
+    <string name="lunch">Pranzo</string>
+    <string name="dinner">Cena</string>
+    <string name="snacks">Spuntini</string>
+    <string name="today">Oggi</string>
+    <string name="tomorrow">Domani</string>
+    <string name="yesterday">Ieri</string>
+    <string name="prev"><![CDATA[< prec]]></string>
+    <string name="next"><![CDATA[succ >]]></string>
 </resources>
