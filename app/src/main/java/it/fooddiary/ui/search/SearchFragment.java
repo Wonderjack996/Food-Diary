@@ -1,7 +1,5 @@
 package it.fooddiary.ui.search;
 
-
-
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,10 +22,6 @@ import it.fooddiary.R;
 
 public class SearchFragment extends Fragment {
 
-    private TabLayout TabItem;
-
-    private MaterialAlertDialogBuilder addCaloriesDialog;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -37,30 +31,28 @@ public class SearchFragment extends Fragment {
         MainActivity main = (MainActivity) getActivity();
         main.setSearchToolbar();
 
-        addCaloriesDialog = new MaterialAlertDialogBuilder(main);
-        NumberPicker numberPicker = new NumberPicker(main);
-        numberPicker.setMinValue(1);
-        numberPicker.setMaxValue(10000);
-        numberPicker.setValue(200);
-        addCaloriesDialog.setTitle(R.string.addCalories);
-        addCaloriesDialog.setView(numberPicker);
-        addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        addCaloriesDialog.setNegativeButton(R.string.cancel,
-        new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                return;
-            }
-        });
-
         root.findViewById(R.id.addCalories_floatingButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MaterialAlertDialogBuilder addCaloriesDialog = new MaterialAlertDialogBuilder(getActivity());
+                NumberPicker numberPicker = new NumberPicker(getActivity());
+                numberPicker.setMinValue(1);
+                numberPicker.setMaxValue(10000);
+                numberPicker.setValue(200);
+                addCaloriesDialog.setTitle(R.string.addCalories);
+                addCaloriesDialog.setView(numberPicker);
+                addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+                addCaloriesDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        return;
+                    }
+                });
                 addCaloriesDialog.show();
             }
         });
@@ -68,4 +60,3 @@ public class SearchFragment extends Fragment {
         return root;
     }
 }
-
