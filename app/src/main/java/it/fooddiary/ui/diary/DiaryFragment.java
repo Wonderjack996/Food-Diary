@@ -48,6 +48,10 @@ public class DiaryFragment extends Fragment {
 
     private final Date currentDate;
 
+    public DiaryFragment() {
+        this.currentDate = Calendar.getInstance().getTime();
+    }
+
     public DiaryFragment(Date date) {
         this.currentDate = date;
     }

@@ -12,12 +12,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import it.fooddiary.R;
 
 public class SearchFragment extends Fragment {
+
+    private ViewPager2 searchViewPager;
+    private TabLayout searchTabLayout;
+    private TabsStateAdapter tabsAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,15 +54,31 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_search, container, false);
+    }
 
-        View root = inflater.inflate(R.layout.fragment_search,
-                container, false);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        ViewPager viewPager = root.findViewById(R.id.searchViewPager);
-        TabLayout tabs = root.findViewById(R.id.searchTabs);
-        tabs.setupWithViewPager(viewPager);
+        searchViewPager = view.findViewById(R.id.searchViewPager2);
+        searchTabLayout = view.findViewById(R.id.searcTabLayout);
+        tabsAdapter = new TabsStateAdapter(getChildFragmentManager(), getLifecycle());
 
-        // Inflate the layout for this fragment
-        return root;
+        searchViewPager.setAdapter(tabsAdapter);
+
+        new TabLayoutMediator(searchTabLayout, searchViewPager,
+                (tab, position) -> {
+                    switch(position) {
+                        case 0:
+                            tab.setText(R.string.searchTab1);
+                            break;
+                        case 1:
+                            tab.setText(R.string.searchTab2);
+                            break;
+                        default:
+                            tab.setText("error");
+                    }
+                }).attach();
     }
 }
