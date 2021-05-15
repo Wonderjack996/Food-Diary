@@ -20,8 +20,6 @@ public class AccountFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_account, container, false);
-        MainActivity main = (MainActivity) getActivity();
-        main.setAccountToolbar();
         return root;
     }
 }

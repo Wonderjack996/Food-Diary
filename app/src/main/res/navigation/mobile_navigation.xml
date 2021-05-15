@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/navigation_diary"
-        android:name="it.fooddiary.ui.diary.DiaryFragment"
-        android:label="Diary"
-        tools:layout="@layout/fragment_diary" />
+        android:name="it.fooddiary.ui.diary.DiaryViewpagerFragment"
+        android:label="DiaryViewpagerFragment"
+        tools:layout="@layout/fragment_viewpager_diary"/>
 
     <fragment
         android:id="@+id/navigation_account"

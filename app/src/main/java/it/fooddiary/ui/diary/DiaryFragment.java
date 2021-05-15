@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,23 +40,16 @@ import it.fooddiary.MealsActivity;
 import it.fooddiary.R;
 import it.fooddiary.ui.search.SearchFragment;
 import it.fooddiary.util.Constants;
+import it.fooddiary.util.DateUtils;
 
 public class DiaryFragment extends Fragment {
 
     private static final String TAG = "DiaryFragment";
 
-    private MaterialDatePicker<Long> datePicker;
-    private MainActivity mainActivity;
+    private final Date currentDate;
 
-    private Date currentDate;
-    private final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mainActivity = (MainActivity) getActivity();
-        assert mainActivity != null;
+    public DiaryFragment(Date date) {
+        this.currentDate = date;
     }
 
     @Nullable
@@ -65,44 +60,41 @@ public class DiaryFragment extends Fragment {
         // set up fragment diary view
         View root = inflater.inflate(R.layout.fragment_diary, container, false);
 
-        // set up date picker
-        datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
-        datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-            @Override
-            public void onPositiveButtonClick(Object selection) {
-                onDateChanged(new Date((long)selection));
-            }
-        });
-
-        // set up toolbar and onclick on menu item
-        mainActivity.setDiaryToolbar();
-        mainActivity.getCurrentToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch( item.getItemId() ) {
-                    case R.id.item_calendar:
-                        onItemCalendarClicked();
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        });
-
         setupOpenMealImageButton(root);
-
-        loadCurrentDate();
 
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+        calendar.setTime(today);
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        Date yesterday = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_YEAR, 2);
+        Date tomorrow = calendar.getTime();
+
+        if(DateUtils.dateEquals(currentDate, today))
+            ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.today));
+        else if(DateUtils.dateEquals(currentDate, yesterday))
+            ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.yesterday));
+        else if(DateUtils.dateEquals(currentDate, tomorrow))
+            ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.tomorrow));
+        else
+            ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(currentDate));
+    }
+
     private void setupOpenMealImageButton(View root) {
+        Intent intent = new Intent(getActivity(), MealsActivity.class);
+        intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(currentDate));
+
         ImageButton breakfastAddButton = root.findViewById(R.id.breakfast_imageButton);
         breakfastAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MealsActivity.class);
                 intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.breakfast));
                 startActivity(intent);
             }
@@ -112,7 +104,6 @@ public class DiaryFragment extends Fragment {
         lunchAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MealsActivity.class);
                 intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.lunch));
                 startActivity(intent);
             }
@@ -122,7 +113,6 @@ public class DiaryFragment extends Fragment {
         dinnerAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MealsActivity.class);
                 intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.dinner));
                 startActivity(intent);
             }
@@ -132,76 +122,13 @@ public class DiaryFragment extends Fragment {
         snacksAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MealsActivity.class);
                 intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.snacks));
                 startActivity(intent);
             }
         });
     }
 
-    private void onDateChanged(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        Date today = calendar.getTime();
-        calendar.setTime(today);
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        Date yesterday = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 2);
-        Date tomorrow = calendar.getTime();
-
-        currentDate = date;
-        if(dateEquals(currentDate, today))
-            ((MainActivity)getActivity())
-                    .changeToolbarTitle(getResources().getString(R.string.today));
-        else if(dateEquals(currentDate, yesterday))
-            ((MainActivity)getActivity())
-                    .changeToolbarTitle(getResources().getString(R.string.yesterday));
-        else if(dateEquals(currentDate, tomorrow))
-            ((MainActivity)getActivity()).
-                    changeToolbarTitle(getResources().getString(R.string.tomorrow));
-        else
-            ((MainActivity)getActivity()).changeToolbarTitle(dateFormat.format(currentDate));
-
-        saveCurrentDate();
-    }
-
-    private void saveCurrentDate() {
-        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putString(Constants.CURRENT_DATE, dateFormat.format(currentDate));
-
-        editor.apply();
-    }
-
-    private void loadCurrentDate() {
-        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-
-        String date = preferences.getString(Constants.CURRENT_DATE, null);
-        if( date == null )
-            currentDate = Calendar.getInstance().getTime();
-        else {
-            try {
-                currentDate = dateFormat.parse(date);
-            } catch (ParseException e) {
-                currentDate = Calendar.getInstance().getTime();
-            }
-        }
-
-        onDateChanged(currentDate);
-    }
-
-    private boolean dateEquals(Date d1, Date d2) {
-        Calendar cal1 = Calendar.getInstance();
-        Calendar cal2 = Calendar.getInstance();
-        cal1.setTime(d1);
-        cal2.setTime(d2);
-        return cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH) &&
-                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
-                cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-    }
-
-    private void onItemCalendarClicked() {
-        Log.d(TAG, "calendar opened");
-        datePicker.show(getParentFragmentManager(), TAG);
+    public Date getCurrentDate() {
+        return currentDate;
     }
 }

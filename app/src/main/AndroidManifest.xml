@@ -9,14 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodDiary">
-        <activity android:name=".MealsActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".LaunchScreenActivity"
+            android:theme="@style/LaunchTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MealsActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

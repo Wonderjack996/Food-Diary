@@ -14,48 +14,25 @@ import android.os.Bundle;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import it.fooddiary.databinding.ActivityMainBinding;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
+    private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        setupUI();
+        setUpBottomNavView();
     }
 
     public void changeToolbarTitle(String title) {
-        MaterialToolbar matTool = getSupportActionBar().
-                getCustomView().findViewById(R.id.materialToolbar);
-        matTool.setTitle(title);
-    }
-
-    public void setDiaryToolbar() {
-        getSupportActionBar().setCustomView(R.layout.toolbar_diary);
-    }
-
-    public void setSearchToolbar() {
-        getSupportActionBar().setCustomView(R.layout.toolbar_search);
-    }
-
-    public void setAccountToolbar() {
-        getSupportActionBar().setCustomView(R.layout.toolbar_account);
-    }
-
-    public Toolbar getCurrentToolbar() {
-        return (Toolbar) findViewById(R.id.materialToolbar);
-    }
-
-    private void setupUI() {
-        // set associated layout
-        setContentView(R.layout.activity_main);
-
-        // change default toolbar with my toolbar
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        setDiaryToolbar();
-
-        setUpBottomNavView();
+        getSupportActionBar().setTitle(title);
     }
 
     public void setUpBottomNavView() {
