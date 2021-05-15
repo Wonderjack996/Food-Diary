@@ -20,7 +20,7 @@ import it.fooddiary.R;
 
 
 
-public class SearchFragment extends Fragment {
+public class SearchFragment extends Fragment  {
 
     @Nullable
     @Override
@@ -59,4 +59,6 @@ public class SearchFragment extends Fragment {
 
         return root;
     }
+
+
 }
