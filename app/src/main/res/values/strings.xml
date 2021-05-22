@@ -39,4 +39,5 @@
     <string name="surname_error">Insert a valid surname!</string>
     <string name="birth_error">Insert a date of birth!</string>
     <string name="activity_error">Select your activity level!</string>
+    <string name="addCalories">Add Calories</string>
 </resources>

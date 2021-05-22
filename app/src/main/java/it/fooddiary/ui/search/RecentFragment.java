@@ -17,10 +17,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.fooddiary.FoodRecyclerAdapter;
 import it.fooddiary.R;
-import it.fooddiary.databinding.ActivityMealsBinding;
-import it.fooddiary.models.Food;
 
 /**
  * A simple {@link Fragment} subclass.

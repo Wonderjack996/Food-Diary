@@ -17,10 +17,12 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import it.fooddiary.R;
+import it.fooddiary.util.Constants;
 
 public class SearchFragment extends Fragment {
 
@@ -61,26 +63,38 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState){
-            addCaloriesDialog = new MaterialAlertDialogBuilder(getActivity());
-            NumberPicker numberPicker = new NumberPicker(getActivity());
-         numberPicker.setMinValue(1);
-         numberPicker.setMaxValue(10000);
-         numberPicker.setValue(200);
-         addCaloriesDialog.setTitle(R.string.addCalories);
-         addCaloriesDialog.setView(numberPicker);
-         addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
 
-        }
-    });
-        addCaloriesDialog.setNegativeButton(R.string.cancel,
-        new DialogInterface.OnClickListener() {
-public void onClick(DialogInterface dialog, int which) {
-        // TODO Auto-generated method stub
-        return;
-        }
-        });}
+        addCaloriesDialog = new MaterialAlertDialogBuilder(getActivity());
+
+        FloatingActionButton fab = root.findViewById(R.id.addCalories_floatingButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NumberPicker numberPicker = new NumberPicker(getActivity());
+                numberPicker.setMinValue(Constants.MIN_CALORIES_KCAL);
+                numberPicker.setMaxValue(Constants.MAX_CALORIES_KCAL);
+                numberPicker.setValue(Constants.MID_CALORIES_KCAL);
+                addCaloriesDialog.setTitle(R.string.addCalories);
+                addCaloriesDialog.setView(numberPicker);
+                addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                addCaloriesDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        return;
+                    }
+                });
+                addCaloriesDialog.show();
+            }
+        });
+
+        return root;
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

@@ -14,6 +14,10 @@ public class Constants {
 
     public static final int MIN_AGE = 10;
 
+    public static final int MAX_CALORIES_KCAL = 10000;
+    public static final int MIN_CALORIES_KCAL = 1;
+    public static final int MID_CALORIES_KCAL = 200;
+
     public static final String MEALS_NAME = "MealsName";
 
     public static final String CURRENT_DATE = "CurrentDate";
