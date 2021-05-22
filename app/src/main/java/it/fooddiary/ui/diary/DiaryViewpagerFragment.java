@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import it.fooddiary.MainActivity;
+import it.fooddiary.ui.MainActivity;
 import it.fooddiary.R;
 import it.fooddiary.util.Constants;
 import it.fooddiary.util.DateUtils;
@@ -34,7 +34,7 @@ public class DiaryViewpagerFragment extends Fragment {
 
     private static final String TAG = "DiaryViewpagerFragment";
 
-    private static final int NUM_PRELOADED_FRAGMENT = 21;
+    private static final int NUM_PRELOADED_FRAGMENT = 31;
 
     private MaterialDatePicker<Long> datePicker;
 
@@ -55,7 +55,7 @@ public class DiaryViewpagerFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.item_calendar:
                 onItemCalendarClicked();
                 break;
@@ -74,7 +74,7 @@ public class DiaryViewpagerFragment extends Fragment {
         datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(Object selection) {
-                onDateChanged(new Date((long)selection));
+                onDateChanged(new Date((long) selection));
             }
         });
 
@@ -90,31 +90,7 @@ public class DiaryViewpagerFragment extends Fragment {
 
         diaryViewPager = view.findViewById(R.id.diary_viewPager);
         diaryViewPager.setAdapter(diaryPagerAdapter);
-        diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
-
-        diaryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset,
-                                       int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                int last = diaryPagerAdapter.getCount()-1;
-                if(position == 0) {
-                    diaryPagerAdapter.reorderFragment(position, NUM_PRELOADED_FRAGMENT);
-                    diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
-                } else if(position == last) {
-                    diaryPagerAdapter.addLast();
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT / 2);
     }
 
     private void onDateChanged(Date date) {
@@ -122,7 +98,7 @@ public class DiaryViewpagerFragment extends Fragment {
         diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
                 date, NUM_PRELOADED_FRAGMENT);
         diaryViewPager.setAdapter(diaryPagerAdapter);
-        diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
+        diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT / 2);
     }
 
     private void onItemCalendarClicked() {
@@ -134,7 +110,7 @@ public class DiaryViewpagerFragment extends Fragment {
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         String date = preferences.getString(Constants.CURRENT_DATE, null);
 
-        if( date == null )
+        if (date == null)
             ret = Calendar.getInstance().getTime();
         else {
             try {

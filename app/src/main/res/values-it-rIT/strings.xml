@@ -13,7 +13,7 @@
     <string name="add">aggiungi</string>
     <string name="breakfast">Colazione</string>
     <string name="cancel">Cancella</string>
-    <string name="addCalories">Aggiungi Calorie</string>
+    <string name="modifyQuantity">Modifica Quantità (grammi)</string>
     <string name="lunch">Pranzo</string>
     <string name="dinner">Cena</string>
     <string name="snacks">Spuntini</string>
@@ -23,4 +23,20 @@
     <string name="prev"><![CDATA[< prec]]></string>
     <string name="next"><![CDATA[succ >]]></string>
     <string name="Change_Image">Cambia Immagine</string>
+    <string name="welcome">Benvenuto!</string>
+    <string name="name">Nome</string>
+    <string name="insert_personal_data">Inserisci i tuoi dati personali</string>
+    <string name="surname">Cognome</string>
+    <string name="date_birth">Data di Nascita</string>
+    <string name="weight_kg">Peso (Kg)</string>
+    <string name="height_cm">Altezza (cm)</string>
+    <string name="activity_level">Livello Attività Giornaliera</string>
+    <string name="high">Alto</string>
+    <string name="mid">Medio</string>
+    <string name="low">Basso</string>
+    <string name="error">Errore</string>
+    <string name="name_error">Inserisci un nome valido!</string>
+    <string name="surname_error">Inserisci un cognome valido!</string>
+    <string name="birth_error">Inserisci la data di nascita!</string>
+    <string name="activity_error">Seleziona il tuo livello di attività!</string>
 </resources>

@@ -1,4 +1,4 @@
-package it.fooddiary;
+package it.fooddiary.ui.meal;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,13 +7,15 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.NumberPicker;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
@@ -21,14 +23,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import it.fooddiary.databinding.ActivityMainBinding;
+import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityMealsBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.util.Constants;
 import it.fooddiary.util.DateUtils;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
-public class MealsActivity extends AppCompatActivity {
+public class MealActivity extends AppCompatActivity {
 
     private ActivityMealsBinding binding;
 
@@ -59,28 +61,13 @@ public class MealsActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(mealType + " - " +
                     DateUtils.dateFormat.format(currentDate));
 
-        if(mealType != null) {
-            if(mealType.equals(getResources().getString(R.string.breakfast)))
-                binding.mealTypeImageView.
-                        setImageDrawable(getResources().getDrawable(R.drawable.breakfast_24));
-            else if(mealType.equals(getResources().getString(R.string.lunch)))
-                binding.mealTypeImageView.
-                        setImageDrawable(getResources().getDrawable(R.drawable.lunch_24));
-            else if(mealType.equals(getResources().getString(R.string.dinner)))
-                binding.mealTypeImageView.
-                        setImageDrawable(getResources().getDrawable(R.drawable.dinner_24));
-            else
-                binding.mealTypeImageView.
-                        setImageDrawable(getResources().getDrawable(R.drawable.snacks_24));
-        }
-
         // carico il dataset
         for(int i = 0; i < 12; ++i)
             foodDataset.add(new Food("Food " + i, 100,
-                    50,20, 30));
+                    0.5,0.2, 0.3));
 
         //creo l'adapter
-        recyclerAdapter = new FoodRecyclerAdapter(foodDataset);
+        recyclerAdapter = new FoodRecyclerAdapter(foodDataset, this);
 
         binding.foodRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.foodRecyclerView.setAdapter(recyclerAdapter);
@@ -125,7 +112,7 @@ public class MealsActivity extends AppCompatActivity {
                                     int actionState, boolean isCurrentlyActive) {
                 new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder,
                         dX, dY, actionState, isCurrentlyActive)
-                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(MealsActivity.this, R.color.primaryColor))
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(MealActivity.this, R.color.primaryColor))
                         .addSwipeLeftActionIcon(R.drawable.ic_baseline_delete_24)
                         .create()
                         .decorate();

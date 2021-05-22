@@ -1,44 +1,22 @@
 package it.fooddiary.ui.diary;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.DragEvent;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GestureDetectorCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
-import it.fooddiary.MainActivity;
-import it.fooddiary.MealsActivity;
+import it.fooddiary.ui.MainActivity;
+import it.fooddiary.ui.meal.MealActivity;
 import it.fooddiary.R;
-import it.fooddiary.ui.search.SearchFragment;
 import it.fooddiary.util.Constants;
 import it.fooddiary.util.DateUtils;
 
@@ -92,7 +70,7 @@ public class DiaryFragment extends Fragment {
     }
 
     private void setupOpenMealImageButton(View root) {
-        Intent intent = new Intent(getActivity(), MealsActivity.class);
+        Intent intent = new Intent(getActivity(), MealActivity.class);
         intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(currentDate));
 
         ImageButton breakfastAddButton = root.findViewById(R.id.breakfast_imageButton);

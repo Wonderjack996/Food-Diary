@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MealsActivity">
+    tools:context=".ui.meal.MealActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -21,141 +21,109 @@
             android:background="@color/primaryLightColor"
             android:padding="16dp">
 
-            <ImageView
-                android:id="@+id/mealType_imageView"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-                app:layout_constraintEnd_toStartOf="@+id/mealCalorie_textView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/mealCalorie_textView"
-                style="@style/TextAppearance.MdcTypographyStyles.Headline4"
+            <LinearLayout
+                android:id="@+id/carbs_linearLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="300 KCal"
-                app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/mealType_imageView"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/proteins_linearLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout2"
-                android:layout_width="match_parent"
+                <TextView
+                    style="@style/TextAppearance.MdcTypographyStyles.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/carbs" />
+
+                <ProgressBar
+                    android:id="@+id/carbs_progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <TextView
+                    android:id="@+id/carbsCounter_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0 / 450 g" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/proteins_linearLayout"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/primaryLightColor"
-                android:padding="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/fats_linearLayout"
+                app:layout_constraintStart_toEndOf="@+id/carbs_linearLayout"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    style="@style/TextAppearance.MdcTypographyStyles.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/proteins" />
+
+                <ProgressBar
+                    android:id="@+id/proteins_progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/proteinsCounter_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0 / 200 g" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/fats_linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toEndOf="@+id/proteins_linearLayout"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/carbs_linearLayout"
-                    android:layout_width="wrap_content"
+                <TextView
+                    style="@style/TextAppearance.MdcTypographyStyles.Body1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/proteins_linearLayout"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:gravity="center"
+                    android:text="@string/fats" />
 
-                    <TextView
-                        style="@style/TextAppearance.MdcTypographyStyles.Body1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/carbs" />
-
-                    <ProgressBar
-                        android:id="@+id/carbs_progressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
-
-                    <TextView
-                        android:id="@+id/carbsCounter_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0 / 450 g" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/proteins_linearLayout"
-                    android:layout_width="wrap_content"
+                <ProgressBar
+                    android:id="@+id/fats_progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/fats_linearLayout"
-                    app:layout_constraintStart_toEndOf="@+id/carbs_linearLayout"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:max="100"
+                    android:progress="60" />
 
-                    <TextView
-                        style="@style/TextAppearance.MdcTypographyStyles.Body1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/proteins" />
-
-                    <ProgressBar
-                        android:id="@+id/proteins_progressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/proteinsCounter_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0 / 200 g" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/fats_linearLayout"
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/fatsCounter_textView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/proteins_linearLayout"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        style="@style/TextAppearance.MdcTypographyStyles.Body1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/fats" />
-
-                    <ProgressBar
-                        android:id="@+id/fats_progressBar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:max="100"
-                        android:progress="60" />
-
-                    <TextView
-                        android:id="@+id/fatsCounter_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0 / 100 g" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:gravity="center"
+                    android:text="0 / 100 g" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -167,4 +135,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        android:focusable="true"
+        android:contentDescription="@string/add" />
 </androidx.constraintlayout.widget.ConstraintLayout>

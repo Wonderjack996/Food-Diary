@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/searcTabLayout"
+        android:id="@+id/searchTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabMode="fixed" />
@@ -24,5 +24,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@android:drawable/ic_dialog_email"
-        android:contentDescription="@string/addCalories" />
+        android:contentDescription="@string/modifyQuantity" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

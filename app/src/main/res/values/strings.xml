@@ -9,11 +9,11 @@
     <string name="proteins">Proteins</string>
     <string name="fats">Fats</string>
     <string name="breakfast">Breakfast</string>
-    <string name="searchTab1">Recent</string>
+    <string name="searchTab1">Recents</string>
     <string name="searchTab2">Favorites</string>
     <string name="add">add</string>
     <string name="cancel">Cancel</string>
-    <string name="addCalories">Add Calories</string>
+    <string name="modifyQuantity">Modify Quantity (grams)</string>
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
     <string name="snacks">Snacks</string>
@@ -23,9 +23,20 @@
     <string name="prev"><![CDATA[< prev]]></string>
     <string name="next"><![CDATA[next >]]></string>
     <string name="Change_Image">Change Image</string>
-    <string name="title_activity_tabbed">TabbedActivity</string>
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="name">Name</string>
+    <string name="insert_personal_data">Insert your personal data</string>
+    <string name="surname">Surname</string>
+    <string name="date_birth">Date of Birth</string>
+    <string name="height_cm">Height (cm)</string>
+    <string name="weight_kg">Weight (Kg)</string>
+    <string name="activity_level">Daily Activity Level</string>
+    <string name="high">High</string>
+    <string name="mid">Mid</string>
+    <string name="low">Low</string>
+    <string name="error">Error</string>
+    <string name="name_error">Insert a valid name!</string>
+    <string name="surname_error">Insert a valid surname!</string>
+    <string name="birth_error">Insert a date of birth!</string>
+    <string name="activity_error">Select your activity level!</string>
 </resources>

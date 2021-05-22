@@ -8,18 +8,18 @@
     <fragment
         android:id="@+id/navigation_diary"
         android:name="it.fooddiary.ui.diary.DiaryViewpagerFragment"
-        android:label="DiaryViewpagerFragment"
+        android:label="@string/diary"
         tools:layout="@layout/fragment_viewpager_diary"/>
 
     <fragment
         android:id="@+id/navigation_account"
         android:name="it.fooddiary.ui.account.AccountFragment"
-        android:label="Account"
+        android:label="@string/account"
         tools:layout="@layout/fragment_account" />
 
     <fragment
         android:id="@+id/navigation_search"
         android:name="it.fooddiary.ui.search.SearchFragment"
-        android:label="Search"
+        android:label="@string/search"
         tools:layout="@layout/fragment_search" />
 </navigation>

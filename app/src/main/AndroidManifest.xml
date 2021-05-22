@@ -9,8 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodDiary">
+
+        <activity android:name=".ui.login.LoginActivity" />
+
         <activity
-            android:name=".LaunchScreenActivity"
+            android:name=".ui.LaunchScreenActivity"
             android:theme="@style/LaunchTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,8 +21,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MealsActivity" />
-        <activity android:name=".MainActivity" />
+
+        <activity android:name=".ui.meal.MealActivity" />
+
+        <activity android:name=".ui.MainActivity" />
     </application>
 
 </manifest>

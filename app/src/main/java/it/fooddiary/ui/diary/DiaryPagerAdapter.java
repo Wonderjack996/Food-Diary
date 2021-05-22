@@ -17,7 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class DiaryPagerAdapter extends FragmentPagerAdapter {
+public class DiaryPagerAdapter extends FragmentStatePagerAdapter {
 
     private final FragmentManager fragmentManager;
 
@@ -48,40 +48,8 @@ public class DiaryPagerAdapter extends FragmentPagerAdapter {
     }
 
     @Override
-    public long getItemId(int position) {
-        /*
-         * map to a position independent ID, because this
-         * adapter reorders fragments
-         */
-        return System.identityHashCode(dataSet.get(position));
-    }
-
-    @Override
     public int getCount() {
         return dataSet.size();
-    }
-
-    public void addPrevious() {
-        calendar.setTime(dataSet.get(0).getCurrentDate());
-        calendar.add(Calendar.DATE, -1);
-
-        dataSet.add(0, new DiaryFragment(calendar.getTime()));
-
-        notifyDataSetChanged();
-    }
-
-    public void reorderFragment(int position, int numFragmentToLoad) {
-        loadFragment(dataSet.get(position).getCurrentDate(), numFragmentToLoad);
-        notifyDataSetChanged();
-    }
-
-    public void addLast() {
-        calendar.setTime(dataSet.get(dataSet.size()-1).getCurrentDate());
-        calendar.add(Calendar.DATE, 1);
-
-        dataSet.add(new DiaryFragment(calendar.getTime()));
-
-        notifyDataSetChanged();
     }
 
     private void loadFragment(Date centralDate, int numFragment) {
