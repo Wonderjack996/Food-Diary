@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="52dp"
-    tools:context=".ui.search.RecentFragment">
+    tools:context=".ui.search.FavouriteFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recent_list"
+        android:id="@+id/favourite_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteY="52dp" />
