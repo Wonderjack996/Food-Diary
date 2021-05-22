@@ -9,12 +9,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class TabsStateAdapter extends FragmentStateAdapter {
 
     private final RecentFragment recent;
-    private final FavoriteFragment favorite;
+    private final FavouriteFragment favorite;
 
     public TabsStateAdapter(FragmentManager fm, Lifecycle lc) {
         super(fm, lc);
         recent = new RecentFragment();
-        favorite = new FavoriteFragment();
+        favorite = new FavouriteFragment();
     }
 
     @NonNull

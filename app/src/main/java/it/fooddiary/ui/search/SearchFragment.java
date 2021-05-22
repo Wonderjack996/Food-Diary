@@ -1,5 +1,6 @@
 package it.fooddiary.ui.search;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -7,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -24,6 +27,10 @@ public class SearchFragment extends Fragment {
     private ViewPager2 searchViewPager;
     private TabLayout searchTabLayout;
     private TabsStateAdapter tabsAdapter;
+
+    private MaterialAlertDialogBuilder addCaloriesDialog;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,9 +60,27 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_search, container, false);
-    }
+                             @Nullable Bundle savedInstanceState){
+            addCaloriesDialog = new MaterialAlertDialogBuilder(getActivity());
+            NumberPicker numberPicker = new NumberPicker(getActivity());
+         numberPicker.setMinValue(1);
+         numberPicker.setMaxValue(10000);
+         numberPicker.setValue(200);
+         addCaloriesDialog.setTitle(R.string.addCalories);
+         addCaloriesDialog.setView(numberPicker);
+         addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+        }
+    });
+        addCaloriesDialog.setNegativeButton(R.string.cancel,
+        new DialogInterface.OnClickListener() {
+public void onClick(DialogInterface dialog, int which) {
+        // TODO Auto-generated method stub
+        return;
+        }
+        });}
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
