@@ -52,17 +52,12 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
 
         Calendar instance = Calendar.getInstance();
-        instance.setTime(instance.getTime());
         instance.add(Calendar.YEAR, -Constants.MIN_AGE);
-
         CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
                 .setEnd(instance.getTimeInMillis())
                 .setOpenAt(instance.getTimeInMillis());
-
-        try {
-            instance.setTime(Objects.requireNonNull(DateUtils.dateFormat.parse("1/1/1900")));
-            calendarConstraints = calendarConstraints.setStart(instance.getTimeInMillis());
-        } catch (ParseException e) { }
+        instance.add(Calendar.YEAR, -(Constants.MAX_AGE-Constants.MIN_AGE));
+        calendarConstraints = calendarConstraints.setStart(instance.getTimeInMillis());
 
         dateBirthPicker = MaterialDatePicker.Builder
                 .datePicker()

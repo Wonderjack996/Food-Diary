@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityMainBinding;
+import it.fooddiary.repositories.FoodRepository;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setUpBottomNavView();
+
+        // esperimento uso API
+        FoodRepository foodRepository = new FoodRepository();
+        foodRepository.fetchFood("oats flour");
     }
 
     public void changeToolbarTitle(String title) {

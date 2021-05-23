@@ -20,6 +20,7 @@ import java.util.List;
 import it.fooddiary.R;
 import it.fooddiary.databinding.HolderFoodItemBinding;
 import it.fooddiary.models.Food;
+import it.fooddiary.util.Constants;
 
 public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapter.FoodViewHolder>{
 
@@ -76,8 +77,8 @@ public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapte
                     MaterialAlertDialogBuilder modifyQuantityAlert =
                             new MaterialAlertDialogBuilder(ownerActivity);
                     NumberPicker numberPicker = new NumberPicker(ownerActivity);
-                    numberPicker.setMinValue(Food.MIN_FOOD_GRAMS_QUANTITY);
-                    numberPicker.setMaxValue(Food.MAX_FOOD_GRAMS_QUANTITY);
+                    numberPicker.setMinValue(Constants.MIN_FOOD_GRAMS);
+                    numberPicker.setMaxValue(Constants.MAX_FOOD_GRAMS);
                     modifyQuantityAlert.setTitle(R.string.modifyQuantity);
                     modifyQuantityAlert.setView(numberPicker);
                     modifyQuantityAlert.setPositiveButton(R.string.ok,

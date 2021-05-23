@@ -32,8 +32,6 @@ public class SearchFragment extends Fragment {
 
     private MaterialAlertDialogBuilder addCaloriesDialog;
 
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

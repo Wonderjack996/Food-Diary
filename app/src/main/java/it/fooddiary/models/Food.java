@@ -1,9 +1,11 @@
 package it.fooddiary.models;
 
-public class Food {
+import android.os.Parcel;
+import android.os.Parcelable;
 
-    public static final int MAX_FOOD_GRAMS_QUANTITY = 1000;
-    public static final int MIN_FOOD_GRAMS_QUANTITY = 1;
+import it.fooddiary.util.Constants;
+
+public class Food {
 
     private final String name;
     private int quantity = 0;
@@ -18,7 +20,7 @@ public class Food {
         else
             this.name = "";
 
-        if (quantity >= MIN_FOOD_GRAMS_QUANTITY && quantity <= MAX_FOOD_GRAMS_QUANTITY)
+        if (quantity >= Constants.MIN_FOOD_GRAMS && quantity <= Constants.MAX_FOOD_GRAMS)
             this.quantity = quantity;
         else
             this.quantity = 0;
