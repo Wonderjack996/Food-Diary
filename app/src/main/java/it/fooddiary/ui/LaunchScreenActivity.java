@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import it.fooddiary.ui.login.LoginActivity;
-import it.fooddiary.util.Constants;
+import it.fooddiary.utils.Constants;
 
 public class LaunchScreenActivity extends AppCompatActivity {
 

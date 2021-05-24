@@ -1,24 +1,29 @@
 package it.fooddiary.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.Objects;
 
-import it.fooddiary.util.Constants;
+import it.fooddiary.utils.Constants;
 
-public class Food {
+public class Food implements IFoodProperties {
 
+    private final String id;
     private final String name;
-    private int quantity = 0;
     private final double carbsPercent;
     private final double proteinsPercent;
     private final double fatsPercent;
+    private int quantity = 0;
 
-    public Food(String name, int quantity,
+    public Food(String name, String id, int quantity,
                 double carbsPercent, double proteinsPercent, double fatsPercent) {
         if (name != null)
             this.name = name;
         else
             this.name = "";
+
+        if (id != null)
+            this.id = id;
+        else
+            this.id = "";
 
         if (quantity >= Constants.MIN_FOOD_GRAMS && quantity <= Constants.MAX_FOOD_GRAMS)
             this.quantity = quantity;
@@ -47,24 +52,43 @@ public class Food {
         return quantity;
     }
 
-    public int getCarbGrams() {
+    @Override
+    public int getTotalCarbsGrams() {
         return (int)(quantity*carbsPercent);
     }
 
-    public int getProteinGrams() {
+    @Override
+    public int getTotalProteinsGrams() {
         return (int)(quantity*proteinsPercent);
     }
 
-    public int getFatGrams() {
+    @Override
+    public int getTotalFatsGrams() {
         return (int)(quantity*fatsPercent);
     }
 
+    @Override
     public int getTotalCalories() {
-        return getCarbGrams()*4 + getProteinGrams()*4 + getFatGrams()*9;
+        return getTotalCarbsGrams()*Constants.CALORIES_PER_CARB_GRAM +
+                getTotalProteinsGrams()*Constants.CALORIES_PER_PROTEIN_GRAM +
+                getTotalFatsGrams()*Constants.CALORIES_PER_FAT_GRAM;
     }
 
     public void setQuantity(int newQuantity) {
         if (newQuantity > 0)
             this.quantity = newQuantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Food food = (Food) o;
+        return id.equals(food.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

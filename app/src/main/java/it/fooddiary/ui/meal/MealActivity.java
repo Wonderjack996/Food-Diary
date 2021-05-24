@@ -7,15 +7,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.NumberPicker;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
@@ -26,8 +23,8 @@ import java.util.List;
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityMealsBinding;
 import it.fooddiary.models.Food;
-import it.fooddiary.util.Constants;
-import it.fooddiary.util.DateUtils;
+import it.fooddiary.utils.Constants;
+import it.fooddiary.utils.DateUtils;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MealActivity extends AppCompatActivity {
@@ -63,7 +60,7 @@ public class MealActivity extends AppCompatActivity {
 
         // carico il dataset
         for(int i = 0; i < 12; ++i)
-            foodDataset.add(new Food("Food " + i, 100,
+            foodDataset.add(new Food("Food " + i, "prova",100,
                     0.5,0.2, 0.3));
 
         //creo l'adapter

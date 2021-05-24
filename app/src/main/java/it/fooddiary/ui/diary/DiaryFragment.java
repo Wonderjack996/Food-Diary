@@ -17,21 +17,21 @@ import java.util.Date;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.ui.meal.MealActivity;
 import it.fooddiary.R;
-import it.fooddiary.util.Constants;
-import it.fooddiary.util.DateUtils;
+import it.fooddiary.utils.Constants;
+import it.fooddiary.utils.DateUtils;
 
 public class DiaryFragment extends Fragment {
 
     private static final String TAG = "DiaryFragment";
 
-    private final Date currentDate;
+    private final Date date;
 
     public DiaryFragment() {
-        this.currentDate = Calendar.getInstance().getTime();
+        this.date = Calendar.getInstance().getTime();
     }
 
     public DiaryFragment(Date date) {
-        this.currentDate = date;
+        this.date = date;
     }
 
     @Nullable
@@ -59,19 +59,19 @@ public class DiaryFragment extends Fragment {
         calendar.add(Calendar.DAY_OF_YEAR, 2);
         Date tomorrow = calendar.getTime();
 
-        if(DateUtils.dateEquals(currentDate, today))
+        if(DateUtils.dateEquals(date, today))
             ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.today));
-        else if(DateUtils.dateEquals(currentDate, yesterday))
+        else if(DateUtils.dateEquals(date, yesterday))
             ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.yesterday));
-        else if(DateUtils.dateEquals(currentDate, tomorrow))
+        else if(DateUtils.dateEquals(date, tomorrow))
             ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.tomorrow));
         else
-            ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(currentDate));
+            ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(date));
     }
 
     private void setupOpenMealImageButton(View root) {
         Intent intent = new Intent(getActivity(), MealActivity.class);
-        intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(currentDate));
+        intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(date));
 
         ImageButton breakfastAddButton = root.findViewById(R.id.breakfast_imageButton);
         breakfastAddButton.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +110,7 @@ public class DiaryFragment extends Fragment {
         });
     }
 
-    public Date getCurrentDate() {
-        return currentDate;
+    public Date getDate() {
+        return date;
     }
 }

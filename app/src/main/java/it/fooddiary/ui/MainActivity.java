@@ -1,22 +1,17 @@
 package it.fooddiary.ui;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityMainBinding;
-import it.fooddiary.repositories.FoodRepository;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,10 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setUpBottomNavView();
-
-        // esperimento uso API
-        FoodRepository foodRepository = new FoodRepository();
-        foodRepository.fetchFood("oats flour");
     }
 
     public void changeToolbarTitle(String title) {

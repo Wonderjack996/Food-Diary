@@ -9,8 +9,6 @@ import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -20,7 +18,7 @@ import java.util.List;
 import it.fooddiary.R;
 import it.fooddiary.databinding.HolderFoodItemBinding;
 import it.fooddiary.models.Food;
-import it.fooddiary.util.Constants;
+import it.fooddiary.utils.Constants;
 
 public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapter.FoodViewHolder>{
 

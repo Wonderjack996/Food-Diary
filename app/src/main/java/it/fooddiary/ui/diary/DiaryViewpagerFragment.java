@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,15 +19,14 @@ import android.view.ViewGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
-import it.fooddiary.ui.MainActivity;
 import it.fooddiary.R;
-import it.fooddiary.util.Constants;
-import it.fooddiary.util.DateUtils;
+import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.utils.Constants;
+import it.fooddiary.utils.DateUtils;
 
 public class DiaryViewpagerFragment extends Fragment {
 
@@ -37,9 +35,12 @@ public class DiaryViewpagerFragment extends Fragment {
     private static final int NUM_PRELOADED_FRAGMENT = 31;
 
     private MaterialDatePicker<Long> datePicker;
+    private Date displayedDate;
 
     private ViewPager diaryViewPager;
     private DiaryPagerAdapter diaryPagerAdapter;
+
+    private AppRepository appRepository;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,8 +79,11 @@ public class DiaryViewpagerFragment extends Fragment {
             }
         });
 
+        displayedDate = loadCurrentDate();
         diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
-                loadCurrentDate(), NUM_PRELOADED_FRAGMENT);
+                displayedDate, NUM_PRELOADED_FRAGMENT);
+
+        appRepository = new AppRepository(requireActivity().getApplication());
 
         return inflater.inflate(R.layout.fragment_viewpager_diary, container, false);
     }
@@ -91,10 +95,30 @@ public class DiaryViewpagerFragment extends Fragment {
         diaryViewPager = view.findViewById(R.id.diary_viewPager);
         diaryViewPager.setAdapter(diaryPagerAdapter);
         diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT / 2);
+
+        diaryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                DiaryFragment x = (DiaryFragment) diaryPagerAdapter.getItem(position);
+                displayedDate = x.getDate();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void onDateChanged(Date date) {
         saveCurrentDate(date);
+        displayedDate = date;
+
         diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
                 date, NUM_PRELOADED_FRAGMENT);
         diaryViewPager.setAdapter(diaryPagerAdapter);

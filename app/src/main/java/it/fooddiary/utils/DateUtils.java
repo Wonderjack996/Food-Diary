@@ -1,4 +1,4 @@
-package it.fooddiary.util;
+package it.fooddiary.utils;
 
 import java.text.DateFormat;
 import java.util.Calendar;

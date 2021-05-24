@@ -1,8 +1,15 @@
-package it.fooddiary.util;
+package it.fooddiary.utils;
 
-import it.fooddiary.R;
+import it.fooddiary.BuildConfig;
 
 public class Constants {
+
+    /**
+     * Calories values
+     */
+    public static final int CALORIES_PER_CARB_GRAM = 4;
+    public static final int CALORIES_PER_PROTEIN_GRAM = 4;
+    public static final int CALORIES_PER_FAT_GRAM = 9;
 
     /**
      * Login Fields
@@ -36,11 +43,17 @@ public class Constants {
      * Edamam API Fields
      */
     public static final String API_BASE_URL = "https://api.edamam.com/";
-    public static final String API_APP_ID = "41f8bc34";
-    public static final String API_APP_KEY = "56c1815d351d662dd081f1d853710bc2";
+    public static final String API_APP_ID = BuildConfig.EDAMAM_APP_ID;
+    public static final String API_APP_KEY = BuildConfig.EDAMAM_APP_KEY;
     public static final String API_NUTRITION_TYPE_LOGGING = "logging";
     public static final String API_CATEGORY_LABEL_FOOD = "food";
     public static final String API_CATEGORY_GENERIC_FOOD = "generic-foods";
+
+    /**
+     * Database Fields
+     */
+    public static final String DATABASE_NAME = "app_database";
+    public static final int DATABASE_VERSION = 1;
 
     public static final String MEALS_NAME = "MealsName";
 

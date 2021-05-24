@@ -1,21 +1,21 @@
-package it.fooddiary.models;
+package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class EdamamResponseFood implements Parcelable {
+public class EdamamFood implements Parcelable {
 
     private String foodId;
     private String label;
-    private EdamamResponseNutrients nutrients;
+    private EdamamNutrients nutrients;
 
-    public EdamamResponseFood(String foodId, String label, EdamamResponseNutrients nutrients) {
+    public EdamamFood(String foodId, String label, EdamamNutrients nutrients) {
         this.foodId = foodId;
         this.label = label;
         this.nutrients = nutrients;
     }
 
-    public EdamamResponseFood() { }
+    public EdamamFood() { }
 
     public String getFoodId() {
         return foodId;
@@ -33,11 +33,11 @@ public class EdamamResponseFood implements Parcelable {
         this.label = label;
     }
 
-    public EdamamResponseNutrients getNutrients() {
+    public EdamamNutrients getNutrients() {
         return nutrients;
     }
 
-    public void setNutrients(EdamamResponseNutrients nutrients) {
+    public void setNutrients(EdamamNutrients nutrients) {
         this.nutrients = nutrients;
     }
 
@@ -53,21 +53,21 @@ public class EdamamResponseFood implements Parcelable {
         dest.writeParcelable(this.nutrients, flags);
     }
 
-    protected EdamamResponseFood(Parcel in) {
+    protected EdamamFood(Parcel in) {
         this.foodId = in.readString();
         this.label = in.readString();
-        this.nutrients = in.readParcelable(EdamamResponseNutrients.class.getClassLoader());
+        this.nutrients = in.readParcelable(EdamamNutrients.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<EdamamResponseFood> CREATOR = new Parcelable.Creator<EdamamResponseFood>() {
+    public static final Parcelable.Creator<EdamamFood> CREATOR = new Parcelable.Creator<EdamamFood>() {
         @Override
-        public EdamamResponseFood createFromParcel(Parcel source) {
-            return new EdamamResponseFood(source);
+        public EdamamFood createFromParcel(Parcel source) {
+            return new EdamamFood(source);
         }
 
         @Override
-        public EdamamResponseFood[] newArray(int size) {
-            return new EdamamResponseFood[size];
+        public EdamamFood[] newArray(int size) {
+            return new EdamamFood[size];
         }
     };
 }

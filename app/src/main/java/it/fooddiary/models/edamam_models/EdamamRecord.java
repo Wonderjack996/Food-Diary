@@ -1,25 +1,25 @@
-package it.fooddiary.models;
+package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class EdamamRecord implements Parcelable {
 
-    private EdamamResponseFood food;
+    private EdamamFood food;
     private double quantity;
 
-    public EdamamRecord(EdamamResponseFood food, double quantity) {
+    public EdamamRecord(EdamamFood food, double quantity) {
         this.food = food;
         this.quantity = quantity;
     }
 
     public EdamamRecord() { }
 
-    public EdamamResponseFood getFood() {
+    public EdamamFood getFood() {
         return food;
     }
 
-    public void setFood(EdamamResponseFood food) {
+    public void setFood(EdamamFood food) {
         this.food = food;
     }
 
@@ -43,7 +43,7 @@ public class EdamamRecord implements Parcelable {
     }
 
     protected EdamamRecord(Parcel in) {
-        this.food = in.readParcelable(EdamamResponseFood.class.getClassLoader());
+        this.food = in.readParcelable(EdamamFood.class.getClassLoader());
         this.quantity = in.readDouble();
     }
 

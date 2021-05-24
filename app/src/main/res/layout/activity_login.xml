@@ -197,30 +197,32 @@
                         android:layout_gravity="center"
                         android:text="@string/activity_level" />
 
-                    <RadioGroup
-                        android:id="@+id/activityRadioGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <RadioButton
-                            android:id="@+id/highRadioButton"
-                            android:layout_width="match_parent"
+                        <RadioGroup
+                            android:id="@+id/activityRadioGroup"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/high" />
+                            android:orientation="horizontal">
 
-                        <RadioButton
-                            android:id="@+id/midRadioButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/mid" />
+                            <RadioButton
+                                android:id="@+id/highRadioButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="16dp"
+                                android:text="@string/high" />
 
-                        <RadioButton
-                            android:id="@+id/lowRadioButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/low" />
-                    </RadioGroup>
+                            <RadioButton
+                                android:id="@+id/midRadioButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="16dp"
+                                android:text="@string/mid" />
 
+                            <RadioButton
+                                android:id="@+id/lowRadioButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/low" />
+                        </RadioGroup>
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>

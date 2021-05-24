@@ -1,23 +1,23 @@
-package it.fooddiary.models;
+package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class EdamamResponseNutrients implements Parcelable {
+public class EdamamNutrients implements Parcelable {
 
     private double ENERC_KCAL;
     private double PROCNT;
     private double FAT;
     private double CHOCDF;
 
-    public EdamamResponseNutrients(double ENERC_KCAL, double PROCNT, double FAT, double CHOCDF) {
+    public EdamamNutrients(double ENERC_KCAL, double PROCNT, double FAT, double CHOCDF) {
         this.ENERC_KCAL = ENERC_KCAL;
         this.PROCNT = PROCNT;
         this.FAT = FAT;
         this.CHOCDF = CHOCDF;
     }
 
-    public EdamamResponseNutrients() { }
+    public EdamamNutrients() { }
 
     public double getENERC_KCAL() {
         return ENERC_KCAL;
@@ -64,22 +64,22 @@ public class EdamamResponseNutrients implements Parcelable {
         dest.writeDouble(this.CHOCDF);
     }
 
-    protected EdamamResponseNutrients(Parcel in) {
+    protected EdamamNutrients(Parcel in) {
         this.ENERC_KCAL = in.readDouble();
         this.PROCNT = in.readDouble();
         this.FAT = in.readDouble();
         this.CHOCDF = in.readDouble();
     }
 
-    public static final Creator<EdamamResponseNutrients> CREATOR = new Creator<EdamamResponseNutrients>() {
+    public static final Creator<EdamamNutrients> CREATOR = new Creator<EdamamNutrients>() {
         @Override
-        public EdamamResponseNutrients createFromParcel(Parcel source) {
-            return new EdamamResponseNutrients(source);
+        public EdamamNutrients createFromParcel(Parcel source) {
+            return new EdamamNutrients(source);
         }
 
         @Override
-        public EdamamResponseNutrients[] newArray(int size) {
-            return new EdamamResponseNutrients[size];
+        public EdamamNutrients[] newArray(int size) {
+            return new EdamamNutrients[size];
         }
     };
 }

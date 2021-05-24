@@ -1,6 +1,6 @@
 package it.fooddiary.services;
 
-import it.fooddiary.models.EdamamResponse;
+import it.fooddiary.models.edamam_models.EdamamResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

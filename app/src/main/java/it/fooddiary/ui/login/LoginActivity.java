@@ -2,35 +2,26 @@ package it.fooddiary.ui.login;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Objects;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityLoginBinding;
-import it.fooddiary.databinding.ActivityMainBinding;
 import it.fooddiary.ui.MainActivity;
-import it.fooddiary.util.Constants;
-import it.fooddiary.util.DateUtils;
+import it.fooddiary.utils.Constants;
+import it.fooddiary.utils.DateUtils;
 
 public class LoginActivity extends AppCompatActivity {
 

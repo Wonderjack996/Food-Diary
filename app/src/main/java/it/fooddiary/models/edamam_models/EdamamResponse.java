@@ -1,4 +1,4 @@
-package it.fooddiary.models;
+package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,17 +7,38 @@ import java.util.List;
 
 public class EdamamResponse implements Parcelable {
 
+    private String status;
+    private String message;
     private String text;
     private List<EdamamRecord> hints;
     private List<EdamamRecord> parsed;
 
-    public EdamamResponse(String text, List<EdamamRecord> hints, List<EdamamRecord> parsed) {
+    public EdamamResponse(String status, String message, String text,
+                          List<EdamamRecord> hints, List<EdamamRecord> parsed) {
+        this.status = status;
+        this.message = message;
         this.text = text;
         this.hints = hints;
         this.parsed = parsed;
     }
 
     public EdamamResponse() { }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getText() {
         return text;
@@ -50,12 +71,16 @@ public class EdamamResponse implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.status);
+        dest.writeString(this.message);
         dest.writeString(this.text);
         dest.writeTypedList(this.hints);
         dest.writeTypedList(this.parsed);
     }
 
     protected EdamamResponse(Parcel in) {
+        this.status = in.readString();
+        this.message = in.readString();
         this.text = in.readString();
         this.hints = in.createTypedArrayList(EdamamRecord.CREATOR);
         this.parsed = in.createTypedArrayList(EdamamRecord.CREATOR);
