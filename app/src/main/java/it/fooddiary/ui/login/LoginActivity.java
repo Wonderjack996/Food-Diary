@@ -14,8 +14,11 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityLoginBinding;
@@ -29,10 +32,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
 
-    private MaterialDatePicker<Long> dateBirthPicker;
-
-    private Date selectedDate = null;
-
     @Override
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,29 +39,8 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
-        Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.YEAR, -Constants.MIN_AGE);
-        CalendarConstraints.Builder calendarConstraints = new CalendarConstraints.Builder()
-                .setEnd(instance.getTimeInMillis())
-                .setOpenAt(instance.getTimeInMillis());
-        instance.add(Calendar.YEAR, -(Constants.MAX_AGE-Constants.MIN_AGE));
-        calendarConstraints = calendarConstraints.setStart(instance.getTimeInMillis());
-
-        dateBirthPicker = MaterialDatePicker.Builder
-                .datePicker()
-                .setTitleText(R.string.date_birth)
-                .setCalendarConstraints(calendarConstraints.build())
-                .build();
-        dateBirthPicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
-            @Override
-            public void onPositiveButtonClick(Object selection) {
-                Long date = (Long) selection;
-                selectedDate = new Date(date);
-                binding.editTextDateBirth.setText(DateUtils.dateFormat.format(selectedDate));
-            }
-        });
 
         binding.numberPickerHeight.setMaxValue(Constants.MAX_HEIGHT_CM);
         binding.numberPickerHeight.setMinValue(Constants.MIN_HEIGHT_CM);
@@ -72,33 +50,24 @@ public class LoginActivity extends AppCompatActivity {
         binding.numberPickerWeight.setMinValue(Constants.MIN_WEIGHT_KG);
         binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
 
-        binding.editTextDateBirth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dateBirthPicker.show(getSupportFragmentManager(), TAG);
-            }
-        });
+        binding.numberPickerAge.setMaxValue(Constants.MAX_AGE);
+        binding.numberPickerAge.setMinValue(Constants.MIN_AGE);
 
         binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String error = "";
-                String name, surname;
-                int checkedButtonId, height, weight;
+                int genderButtonId, activityButtonId, height, weight, age;
 
-                name = binding.editTextName.getText().toString();
-                surname = binding.editTextSurname.getText().toString();
-                checkedButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
+                genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
+                activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
                 height = binding.numberPickerHeight.getValue();
                 weight = binding.numberPickerWeight.getValue();
+                age = binding.numberPickerAge.getValue();
 
-                if (name.equals(""))
-                    error += "- " + getResources().getString(R.string.name_error) + "\n";
-                if (surname.equals(""))
-                    error += "- " + getResources().getString(R.string.surname_error) + "\n";
-                if (selectedDate == null)
-                    error += "- " + getResources().getString(R.string.birth_error) + "\n";
-                if (checkedButtonId < 0)
+                if (genderButtonId < 0)
+                    error += "- " + getResources().getString(R.string.gender_error) + "\n";
+                if (activityButtonId < 0)
                     error += "- " + getResources().getString(R.string.activity_error);
 
                 if (!error.equals("")) {
@@ -108,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                             .setPositiveButton(R.string.ok, null)
                             .show();
                 } else {
-                    savePersonalData(name, surname, selectedDate, checkedButtonId, height, weight);
+                    savePersonalData(age, genderButtonId, activityButtonId, height, weight);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     LoginActivity.this.finish();
@@ -117,31 +86,61 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void savePersonalData(String name, String surname, Date birthDate,
-                                  int checkedId, int height, int weight) {
-        SharedPreferences preferences = getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE, Context.MODE_PRIVATE);
+    private void savePersonalData(int age, int genderId, int activityId,
+                                  int height, int weight) {
+        int bmr;
+        SharedPreferences preferences =
+                getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
+                        Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putString(Constants.USER_NAME, name);
-        editor.putString(Constants.USER_SURNAME, surname);
-        editor.putString(Constants.USER_DATE_BIRTH, DateUtils.dateFormat.format(birthDate));
+        editor.putInt(Constants.USER_AGE, age);
         editor.putInt(Constants.USER_HEIGHT_CM, height);
         editor.putInt(Constants.USER_WEIGHT_KG, weight);
-        switch(checkedId) {
+        switch(genderId) {
+            case R.id.maleRadioButton:
+                bmr = calculateBMR_Male(weight, height, age);
+                editor.putString(Constants.USER_GENDER, getResources()
+                        .getString(R.string.male));
+                break;
+            default:
+                bmr = calculateBMR_Female(weight, height, age);
+                editor.putString(Constants.USER_GENDER, getResources()
+                        .getString(R.string.female));
+                break;
+        }
+        switch(activityId) {
             case R.id.highRadioButton:
                 editor.putString(Constants.USER_ACTIVITY_LEVEL, getResources()
                         .getString(R.string.high));
+                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.725));
                 break;
             case R.id.lowRadioButton:
                 editor.putString(Constants.USER_ACTIVITY_LEVEL, getResources()
                         .getString(R.string.low));
+                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.2));
                 break;
             default:
                 editor.putString(Constants.USER_ACTIVITY_LEVEL, getResources()
                         .getString(R.string.mid));
+                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.55));
                 break;
         }
+        editor.putFloat(Constants.USER_DAILY_CARBS_PERCENT,
+                Constants.DEFAULT_CARBS_PERCENT_DAILY);
+        editor.putFloat(Constants.USER_DAILY_PROTEINS_PERCENT,
+                Constants.DEFAULT_PROTEINS_PERCENT_DAILY);
+        editor.putFloat(Constants.USER_DAILY_FATS_PERCENT,
+                Constants.DEFAULT_FATS_PERCENT_DAILY);
 
         editor.apply();
+    }
+
+    private int calculateBMR_Male(int weight, int height, int age) {
+        return 10*weight + 6*height - 5*age + 5;
+    }
+
+    private int calculateBMR_Female(int weight, int height, int age) {
+        return 10*weight + 6*height - 5*age - 161;
     }
 }

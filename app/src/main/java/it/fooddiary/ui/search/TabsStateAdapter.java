@@ -6,31 +6,29 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import java.util.List;
+
+import it.fooddiary.ui.search.favourites.FavouriteFragment;
+import it.fooddiary.ui.search.recents.RecentFragment;
+import it.fooddiary.ui.search.searched.FoodSearchedFragment;
+
 public class TabsStateAdapter extends FragmentStateAdapter {
 
-    private final RecentFragment recent;
-    private final FavouriteFragment favorite;
+    private final List<Fragment> fragmentList;
 
-    public TabsStateAdapter(FragmentManager fm, Lifecycle lc) {
+    public TabsStateAdapter(FragmentManager fm, Lifecycle lc, List<Fragment> fragments) {
         super(fm, lc);
-        recent = new RecentFragment();
-        favorite = new FavouriteFragment();
+        this.fragmentList = fragments;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch(position) {
-            case 0:
-                return recent;
-            case 1:
-                return favorite;
-        }
-        return null;
+        return fragmentList.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return fragmentList.size();
     }
 }

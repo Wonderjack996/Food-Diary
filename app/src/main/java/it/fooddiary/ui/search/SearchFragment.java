@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +21,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.fooddiary.R;
+import it.fooddiary.ui.search.favourites.FavouriteFragment;
+import it.fooddiary.ui.search.recents.RecentFragment;
+import it.fooddiary.ui.search.searched.FoodSearchedFragment;
 import it.fooddiary.utils.Constants;
 
 public class SearchFragment extends Fragment {
@@ -28,6 +35,9 @@ public class SearchFragment extends Fragment {
     private ViewPager2 searchViewPager;
     private TabLayout searchTabLayout;
     private TabsStateAdapter tabsAdapter;
+
+    private FoodSearchedFragment foodSearchedFragment = new FoodSearchedFragment();
+    private RecentFragment recentFragment = new RecentFragment();
 
     private MaterialAlertDialogBuilder addCaloriesDialog;
 
@@ -41,18 +51,25 @@ public class SearchFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.toolbar_menu_search, menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.item_search:
-                // action
-                break;
-            default:
+        MenuItem searchItem = menu.findItem(R.id.item_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query != null && query.length() > 1) {
+                    query = query.trim();
+                    foodSearchedFragment.onFoodSearched(query);
+                    searchView.clearFocus();
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
                 return false;
-        }
-        return true;
+            }
+        });
     }
 
     @Nullable
@@ -97,9 +114,14 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        List<Fragment> fragmentToShow = new ArrayList<>();
+        fragmentToShow.add(foodSearchedFragment);
+        fragmentToShow.add(recentFragment);
+
         searchViewPager = view.findViewById(R.id.searchViewPager2);
         searchTabLayout = view.findViewById(R.id.searchTabLayout);
-        tabsAdapter = new TabsStateAdapter(getChildFragmentManager(), getLifecycle());
+        tabsAdapter = new TabsStateAdapter(getChildFragmentManager(), getLifecycle(),
+                fragmentToShow);
 
         searchViewPager.setAdapter(tabsAdapter);
 
@@ -107,10 +129,10 @@ public class SearchFragment extends Fragment {
                 (tab, position) -> {
                     switch(position) {
                         case 0:
-                            tab.setText(R.string.searchTab1);
+                            tab.setText(R.string.searched);
                             break;
                         case 1:
-                            tab.setText(R.string.searchTab2);
+                            tab.setText(R.string.recents);
                             break;
                         default:
                             tab.setText("error");

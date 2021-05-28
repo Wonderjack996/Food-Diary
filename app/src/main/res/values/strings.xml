@@ -9,8 +9,8 @@
     <string name="proteins">Proteins</string>
     <string name="fats">Fats</string>
     <string name="breakfast">Breakfast</string>
-    <string name="searchTab1">Recents</string>
-    <string name="searchTab2">Favorites</string>
+    <string name="recents">Recents</string>
+    <string name="favourite">Favourites</string>
     <string name="add">add</string>
     <string name="cancel">Cancel</string>
     <string name="modifyQuantity">Modify Quantity (grams)</string>
@@ -25,19 +25,30 @@
     <string name="Change_Image">Change Image</string>
     <string name="welcome">"Welcome!"</string>
     <string name="name">Name</string>
-    <string name="insert_personal_data">Insert your personal data</string>
+    <string name="insert_personal_data">Insert following data to estimate your daily calories intake</string>
     <string name="surname">Surname</string>
-    <string name="date_birth">Date of Birth</string>
+    <string name="date_birth">Date of Birth (for the age)</string>
     <string name="height_cm">Height (cm)</string>
     <string name="weight_kg">Weight (Kg)</string>
-    <string name="activity_level">Daily Activity Level</string>
+    <string name="activity_level">Daily activity level</string>
     <string name="high">High</string>
     <string name="mid">Mid</string>
     <string name="low">Low</string>
     <string name="error">Error</string>
-    <string name="name_error">Insert a valid name!</string>
-    <string name="surname_error">Insert a valid surname!</string>
+    <string name="gender_error">Select your gender!</string>
     <string name="birth_error">Insert a date of birth!</string>
     <string name="activity_error">Select your activity level!</string>
     <string name="addCalories">Add Calories</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="age">Age (years)</string>
+    <string name="gender">Gender</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="nothing_to_show">Nothing to show...</string>
+    <string name="not_found">not found</string>
+    <string name="searched">searched</string>
+    <string name="adding">Adding...</string>
+    <string name="added">Added</string>
+    <string name="removed">Removed</string>
+    <string name="removing">Removing...</string>
 </resources>

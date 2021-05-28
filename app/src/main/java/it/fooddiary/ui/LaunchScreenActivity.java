@@ -28,17 +28,21 @@ public class LaunchScreenActivity extends AppCompatActivity {
                 getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
                         Context.MODE_PRIVATE);
 
-        if (preferences.getString(Constants.USER_NAME, null) == null)
+        if (preferences.getString(Constants.USER_GENDER, null) == null)
             ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getString(Constants.USER_SURNAME, null) == null)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getString(Constants.USER_DATE_BIRTH, null) == null)
+        else if (preferences.getInt(Constants.USER_AGE, 0) == 0)
             ret = new Intent(this, LoginActivity.class);
         else if (preferences.getInt(Constants.USER_HEIGHT_CM, 0) == 0)
             ret = new Intent(this, LoginActivity.class);
         else if (preferences.getInt(Constants.USER_WEIGHT_KG, 0) == 0)
             ret = new Intent(this, LoginActivity.class);
         else if (preferences.getString(Constants.USER_ACTIVITY_LEVEL, null) == null)
+            ret = new Intent(this, LoginActivity.class);
+        else if (preferences.getFloat(Constants.USER_DAILY_CARBS_PERCENT, 0f) == 0f)
+            ret = new Intent(this, LoginActivity.class);
+        else if (preferences.getFloat(Constants.USER_DAILY_PROTEINS_PERCENT, 0f) == 0f)
+            ret = new Intent(this, LoginActivity.class);
+        else if (preferences.getFloat(Constants.USER_DAILY_FATS_PERCENT, 0f) == 0f)
             ret = new Intent(this, LoginActivity.class);
         else
             ret = new Intent(this, MainActivity.class);

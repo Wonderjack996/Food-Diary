@@ -62,44 +62,75 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleCardView">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/primaryLightColor"
-                    android:padding="8dp"
-                    android:orientation="vertical">
+                    android:padding="8dp">
 
-                    <EditText
-                        android:id="@+id/editTextName"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/textView7"
+                        style="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="@string/name"
-                        android:inputType="textPersonName"
-                        android:autofillHints="@string/name" />
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="32dp"
+                        android:layout_marginRight="32dp"
+                        android:text="@string/age"
+                        app:layout_constraintEnd_toStartOf="@+id/textView8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <EditText
-                        android:id="@+id/editTextSurname"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/textView8"
+                        style="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="@string/surname"
-                        android:inputType="textPersonName"
-                        android:autofillHints="@string/surname" />
+                        android:layout_gravity="center"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginLeft="32dp"
+                        android:text="@string/gender"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/textView7"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <EditText
-                        android:id="@+id/editTextDateBirth"
-                        android:layout_width="match_parent"
+                    <NumberPicker
+                        android:id="@+id/numberPickerAge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="128dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="32dp"
+                        android:layout_marginRight="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/genderRadioGroup"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+                    <RadioGroup
+                        android:id="@+id/genderRadioGroup"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="@string/date_birth"
-                        android:inputType="date"
-                        android:autofillHints="@string/date_birth"
-                        android:clickable="false"
-                        android:cursorVisible="false"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false" />
-                </LinearLayout>
+                        android:layout_marginStart="32dp"
+                        android:layout_marginLeft="32dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/numberPickerAge"
+                        app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+                        <RadioButton
+                            android:id="@+id/maleRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/male" />
+
+                        <RadioButton
+                            android:id="@+id/femaleRadioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/female" />
+                    </RadioGroup>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -201,27 +232,39 @@
                             android:id="@+id/activityRadioGroup"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
                             android:orientation="horizontal">
 
                             <RadioButton
                                 android:id="@+id/highRadioButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="16dp"
-                                android:text="@string/high" />
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="16dp"
+                                android:layout_marginRight="32dp"
+                                android:text="@string/high"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="32dp" />
 
                             <RadioButton
                                 android:id="@+id/midRadioButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="16dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="32dp"
+                                android:layout_marginRight="32dp"
                                 android:text="@string/mid" />
 
                             <RadioButton
                                 android:id="@+id/lowRadioButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="@string/low" />
+                                android:text="@string/low"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="32dp"
+                                android:layout_marginRight="16dp"
+                                android:layout_marginStart="32dp"
+                                android:layout_marginEnd="16dp" />
                         </RadioGroup>
                 </LinearLayout>
 

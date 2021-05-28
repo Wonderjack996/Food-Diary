@@ -25,8 +25,5 @@ public interface MealDao {
     void update(Meal meal);
 
     @Query("SELECT * FROM meals WHERE meal_type = :mealType AND meal_date = :date")
-    List<Meal> getMealsByDateAndType(MealType mealType, Date date);
-
-    @Query("SELECT * FROM meals WHERE meal_type = :mealType")
-    List<Meal> getMealsByType(MealType mealType);
+    List<Meal> getMeals(MealType mealType, Date date);
 }

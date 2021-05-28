@@ -5,26 +5,36 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Calendar;
 import java.util.Date;
 
+import it.fooddiary.databinding.FragmentDiaryBinding;
+import it.fooddiary.models.MealProperties;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.ui.meal.MealActivity;
 import it.fooddiary.R;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
+import it.fooddiary.utils.MealType;
+import it.fooddiary.viewmodels.AppViewModel;
 
 public class DiaryFragment extends Fragment {
 
     private static final String TAG = "DiaryFragment";
 
+    private FragmentDiaryBinding binding;
+
     private final Date date;
+
+    private AppViewModel viewModel;
 
     public DiaryFragment() {
         this.date = Calendar.getInstance().getTime();
@@ -39,12 +49,25 @@ public class DiaryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // set up fragment diary view
-        View root = inflater.inflate(R.layout.fragment_diary, container, false);
+        binding = DataBindingUtil
+                .inflate(inflater, R.layout.fragment_diary, container, false);
 
-        setupOpenMealImageButton(root);
+        setupOpenMealImageButton();
 
-        return root;
+        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+
+        binding.setMealProperties(viewModel.getMealProperties().getValue());
+        binding.invalidateAll();
+
+        viewModel.getMealProperties().observe(getViewLifecycleOwner(), new Observer<MealProperties>() {
+            @Override
+            public void onChanged(MealProperties mealProperties) {
+                binding.setMealProperties(mealProperties);
+                binding.invalidateAll();
+            }
+        });
+
+        return binding.getRoot();
     }
 
     @Override
@@ -69,42 +92,38 @@ public class DiaryFragment extends Fragment {
             ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(date));
     }
 
-    private void setupOpenMealImageButton(View root) {
+    private void setupOpenMealImageButton() {
         Intent intent = new Intent(getActivity(), MealActivity.class);
         intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(date));
 
-        ImageButton breakfastAddButton = root.findViewById(R.id.breakfast_imageButton);
-        breakfastAddButton.setOnClickListener(new View.OnClickListener() {
+        binding.breakfastImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.breakfast));
+                intent.putExtra(Constants.MEAL_TYPE, MealType.BREAKFAST);
                 startActivity(intent);
             }
         });
 
-        ImageButton lunchAddButton = root.findViewById(R.id.lunch_imageButton);
-        lunchAddButton.setOnClickListener(new View.OnClickListener() {
+        binding.lunchImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.lunch));
+                intent.putExtra(Constants.MEAL_TYPE, MealType.LUNCH);
                 startActivity(intent);
             }
         });
 
-        ImageButton dinnerAddButton = root.findViewById(R.id.dinner_imageButton);
-        dinnerAddButton.setOnClickListener(new View.OnClickListener() {
+        binding.dinnerImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.dinner));
+                intent.putExtra(Constants.MEAL_TYPE, MealType.DINNER);
                 startActivity(intent);
             }
         });
 
-        ImageButton snacksAddButton = root.findViewById(R.id.snacks_imageButton);
-        snacksAddButton.setOnClickListener(new View.OnClickListener() {
+        binding.snacksImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra(Constants.MEALS_NAME, getResources().getString(R.string.snacks));
+                intent.putExtra(Constants.MEAL_TYPE, MealType.SNACKS);
                 startActivity(intent);
             }
         });

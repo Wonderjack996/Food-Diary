@@ -19,12 +19,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityMealsBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
+import it.fooddiary.utils.MealType;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MealActivity extends AppCompatActivity {
@@ -35,7 +37,7 @@ public class MealActivity extends AppCompatActivity {
     private FoodRecyclerAdapter recyclerAdapter;
 
     private Date currentDate;
-    private String mealType;
+    private MealType mealType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +45,18 @@ public class MealActivity extends AppCompatActivity {
 
         binding = ActivityMealsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        mealType = intent.getStringExtra(Constants.MEALS_NAME);
+        mealType = (MealType) intent.getSerializableExtra(Constants.MEAL_TYPE);
         try {
             currentDate = DateUtils.dateFormat.
                     parse(getIntent().getStringExtra(Constants.CURRENT_DATE));
         } catch (ParseException e) {
             currentDate = null;
         }
-
         if( mealType != null && currentDate != null )
-            getSupportActionBar().setTitle(mealType + " - " +
+            getSupportActionBar().setTitle(mealType.toString(getResources()) + " - " +
                     DateUtils.dateFormat.format(currentDate));
 
         // carico il dataset
@@ -119,6 +120,13 @@ public class MealActivity extends AppCompatActivity {
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(binding.foodRecyclerView);
+
+        binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override

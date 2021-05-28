@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -16,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.List;
 
 import it.fooddiary.R;
+import it.fooddiary.databinding.DialogFoodItemBinding;
 import it.fooddiary.databinding.HolderFoodItemBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.utils.Constants;
@@ -59,44 +59,61 @@ public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapte
 
     public class FoodViewHolder extends RecyclerView.ViewHolder {
 
-        private final HolderFoodItemBinding binding;
+        private final HolderFoodItemBinding holderFoodItemBinding;
+        private final DialogFoodItemBinding dialogActivityMealBinding;
+        private final MaterialAlertDialogBuilder foodDetailsDialog;
 
         public FoodViewHolder(View view, HolderFoodItemBinding binding) {
             super(view);
-            this.binding = binding;
+            this.holderFoodItemBinding = binding;
+            this.dialogActivityMealBinding = DialogFoodItemBinding
+                    .inflate(ownerActivity.getLayoutInflater());
+            this.foodDetailsDialog = new MaterialAlertDialogBuilder(ownerActivity);
+
+            foodDetailsDialog.setView(dialogActivityMealBinding.getRoot());
+            foodDetailsDialog.setNegativeButton(R.string.cancel, null);
+
+            dialogActivityMealBinding.quantityNumberPicker
+                    .setMinValue(Constants.MIN_FOOD_GRAMS);
+            dialogActivityMealBinding.quantityNumberPicker
+                    .setMaxValue(Constants.MAX_FOOD_GRAMS);
         }
 
         public void bind(Food foodClicked) {
-            binding.setFood(foodClicked);
+            holderFoodItemBinding.setFood(foodClicked);
+            dialogActivityMealBinding.setFood(foodClicked);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MaterialAlertDialogBuilder modifyQuantityAlert =
-                            new MaterialAlertDialogBuilder(ownerActivity);
-                    NumberPicker numberPicker = new NumberPicker(ownerActivity);
-                    numberPicker.setMinValue(Constants.MIN_FOOD_GRAMS);
-                    numberPicker.setMaxValue(Constants.MAX_FOOD_GRAMS);
-                    modifyQuantityAlert.setTitle(R.string.modifyQuantity);
-                    modifyQuantityAlert.setView(numberPicker);
-                    modifyQuantityAlert.setPositiveButton(R.string.ok,
+                    dialogActivityMealBinding.quantityNumberPicker
+                            .setValue(foodClicked.getQuantity());
+
+                    foodDetailsDialog.setTitle(foodClicked.getName());
+
+                    foodDetailsDialog.setPositiveButton(R.string.ok,
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    int newQuantity = numberPicker.getValue();
+                                    int newQuantity = dialogActivityMealBinding
+                                            .quantityNumberPicker.getValue();
                                     if (foodClicked.getQuantity() != newQuantity) {
                                         foodClicked.setQuantity(newQuantity);
-                                        binding.invalidateAll();
+                                        holderFoodItemBinding.invalidateAll();
+                                        dialogActivityMealBinding.invalidateAll();
                                     }
                                 }
                             });
-                    modifyQuantityAlert.setNegativeButton(R.string.cancel, null);
-                    numberPicker.setValue(foodClicked.getQuantity());
-                    modifyQuantityAlert.show();
+
+                    if (dialogActivityMealBinding.getRoot().getParent() != null)
+                        ((ViewGroup)dialogActivityMealBinding.getRoot()
+                                .getParent()).removeAllViews();
+
+                    foodDetailsDialog.show();
                 }
             });
 
-            binding.executePendingBindings();
+            holderFoodItemBinding.executePendingBindings();
         }
     }
 }

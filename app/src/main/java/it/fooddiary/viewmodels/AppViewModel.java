@@ -1,0 +1,59 @@
+package it.fooddiary.viewmodels;
+
+import android.app.Application;
+import android.content.SharedPreferences;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import it.fooddiary.models.Food;
+import it.fooddiary.models.MealProperties;
+import it.fooddiary.models.edamam_models.EdamamResponse;
+import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.utils.MealType;
+
+public class AppViewModel extends AndroidViewModel {
+
+    private final AppRepository repository;
+
+    public AppViewModel(@NonNull @NotNull Application application) {
+        super(application);
+        this.repository = AppRepository.getInstance(application);
+    }
+
+    public Date getCurrentDate(SharedPreferences preferences) {
+        return repository.loadCurrentDate(preferences);
+    }
+
+    public void setCurrentDate(Date date, SharedPreferences preferences) {
+        repository.saveCurrentDate(date, preferences);
+    }
+
+    public LiveData<Integer> insertFoodInMeal(Food foodToInsert, MealType mealType, Date date) {
+        return repository.insertFoodInMeal(foodToInsert, mealType, date);
+    }
+
+    public LiveData<Integer> removeFoodFromMeal(Food foodToRemove, MealType mealType, Date date) {
+        return repository.removeFoodFromMeal(foodToRemove, mealType, date);
+    }
+
+    public MutableLiveData<MealProperties> getMealProperties() {
+        return repository.getMealProperties();
+    }
+
+    public void setCaloriesIntake(int newIntake) {
+        repository.setDailyCaloriesIntake(newIntake);
+    }
+
+    public LiveData<EdamamResponse> getEdamamResponse(String ingredient) {
+        return repository.fetchFoods(ingredient);
+    }
+}

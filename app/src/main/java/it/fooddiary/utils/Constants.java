@@ -10,17 +10,23 @@ public class Constants {
     public static final int CALORIES_PER_CARB_GRAM = 4;
     public static final int CALORIES_PER_PROTEIN_GRAM = 4;
     public static final int CALORIES_PER_FAT_GRAM = 9;
+    public static final float DEFAULT_CARBS_PERCENT_DAILY = 0.5f;
+    public static final float DEFAULT_PROTEINS_PERCENT_DAILY = 0.2f;
+    public static final float DEFAULT_FATS_PERCENT_DAILY = 0.3f;
 
     /**
      * Login Fields
      */
     public static final String PERSONAL_DATA_PREFERENCES_FILE = "PersonalDataPreferencesFile";
-    public static final String USER_NAME = "UserName";
-    public static final String USER_SURNAME = "UserSurname";
-    public static final String USER_DATE_BIRTH = "UserDateBirth";
+    public static final String USER_GENDER = "UserGender";
+    public static final String USER_AGE = "UserAge";
     public static final String USER_WEIGHT_KG = "UserWeightKg";
     public static final String USER_HEIGHT_CM = "UserHeightCm";
     public static final String USER_ACTIVITY_LEVEL = "UserActivityLevel";
+    public static final String USER_DAILY_INTAKE_KCAL = "UserDailyIntakeKcal";
+    public static final String USER_DAILY_CARBS_PERCENT = "UserDailyCarbsPercent";
+    public static final String USER_DAILY_PROTEINS_PERCENT = "UserDailyProteinsPercent";
+    public static final String USER_DAILY_FATS_PERCENT = "UserDailyFatsPercent";
 
     /**
      * Data Ranges
@@ -55,7 +61,21 @@ public class Constants {
     public static final String DATABASE_NAME = "app_database";
     public static final int DATABASE_VERSION = 1;
 
-    public static final String MEALS_NAME = "MealsName";
+    /**
+     * Database status codes
+     */
+    public static final int DATABASE_INSERT_OK = 200;
+    public static final int DATABASE_UPDATE_OK = 210;
+    public static final int DATABASE_REMOVE_OK = 220;
+    public static final int DATABASE_INSERT_ERROR = 400;
+    public static final int DATABASE_UPDATE_ERROR = 410;
+    public static final int DATABASE_REMOVE_ERROR = 420;
+    public static final int DATABASE_REMOVE_NOT_PRESENT = 430;
+
+
+    public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";
+
+    public static final String MEAL_TYPE = "MealsName";
 
     public static final String CURRENT_DATE = "CurrentDate";
 }

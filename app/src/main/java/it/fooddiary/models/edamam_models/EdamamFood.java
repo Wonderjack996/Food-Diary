@@ -3,6 +3,8 @@ package it.fooddiary.models.edamam_models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import it.fooddiary.models.Food;
+
 public class EdamamFood implements Parcelable {
 
     private String foodId;
@@ -16,6 +18,16 @@ public class EdamamFood implements Parcelable {
     }
 
     public EdamamFood() { }
+
+    public Food toFood() {
+        String name = this.label;
+        String id = this.foodId;
+        int quantity = 100;
+        double carbsPerc = this.nutrients.getCHOCDF()/quantity;
+        double prosPerc = this.nutrients.getPROCNT()/quantity;
+        double fatsPerc = this.nutrients.getFAT()/quantity;
+        return new Food(name, id, quantity, carbsPerc, prosPerc, fatsPerc);
+    }
 
     public String getFoodId() {
         return foodId;

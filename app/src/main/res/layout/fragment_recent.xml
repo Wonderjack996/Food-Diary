@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.search.RecentFragment"
+    tools:context=".ui.search.recents.RecentFragment"
     android:paddingTop="52dp" >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recent_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/searchTab1"
+        android:text="@string/recents"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
