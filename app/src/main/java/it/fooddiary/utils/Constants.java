@@ -58,7 +58,7 @@ public class Constants {
     /**
      * Database Fields
      */
-    public static final String DATABASE_NAME = "app_database";
+    public static final String DATABASE_NAME = "food_diary_database";
     public static final int DATABASE_VERSION = 1;
 
     /**

@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import it.fooddiary.utils.MealType;
 
@@ -25,6 +26,10 @@ public class Meal implements IFoodProperties {
 
     @ColumnInfo(name = "meal_foods")
     private List<Food> mealFoods;
+
+    public static Meal getNullObject() {
+        return new Meal(null, null);
+    }
 
     public Meal(MealType mealType, Date mealDate) {
         this.mealType = mealType;

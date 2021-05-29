@@ -123,11 +123,12 @@ public class FoodSearchedFragment extends Fragment {
                 .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
                         Context.MODE_PRIVATE));
 
-        Snackbar dbSnackBar = Snackbar.make(binding.getRoot(), R.string.adding,
-            Snackbar.LENGTH_INDEFINITE);
-
         databaseResponseLiveData = viewModel.insertFoodInMeal(foodToAdd,
                 mealToModify, currentDate);
+
+        if (databaseResponseLiveData.hasActiveObservers())
+            databaseResponseLiveData.removeObservers(getViewLifecycleOwner());
+
         databaseResponseLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
@@ -135,15 +136,15 @@ public class FoodSearchedFragment extends Fragment {
                     case Constants.DATABASE_INSERT_OK:
                     case Constants.DATABASE_UPDATE_OK:
                         Snackbar.make(binding.getRoot(), R.string.added,
-                            Snackbar.LENGTH_SHORT)
-                            .setAction("Undo", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    FoodSearchedFragment.this
-                                            .onFoodRemovedToMeal(foodToAdd, mealToModify);
-                                }
-                            })
-                            .show();
+                                Snackbar.LENGTH_SHORT)
+                                .setAction("Undo", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        FoodSearchedFragment.this
+                                                .onFoodRemovedToMeal(foodToAdd, mealToModify);
+                                    }
+                                })
+                                .show();
                         break;
                     case Constants.DATABASE_REMOVE_OK:
                         Snackbar.make(binding.getRoot(), R.string.removed,
@@ -162,18 +163,12 @@ public class FoodSearchedFragment extends Fragment {
                 }
             }
         });
-
-        dbSnackBar.show();
     }
 
     private void onFoodRemovedToMeal(Food foodToRemove, MealType mealToModify) {
         Date currentDate = viewModel.getCurrentDate(getActivity()
                 .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
                         Context.MODE_PRIVATE));
-
         viewModel.removeFoodFromMeal(foodToRemove, mealToModify, currentDate);
-
-        Snackbar.make(binding.getRoot(), R.string.removing,
-                Snackbar.LENGTH_INDEFINITE).show();
     }
 }

@@ -50,4 +50,6 @@
     <string name="added">Aggiunto</string>
     <string name="removed">Rimosso</string>
     <string name="removing">Rimuovo...</string>
+    <string name="remained">rimaste</string>
+    <string name="consumed">consumate</string>
 </resources>

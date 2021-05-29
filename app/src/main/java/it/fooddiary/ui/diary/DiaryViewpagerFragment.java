@@ -1,7 +1,6 @@
 package it.fooddiary.ui.diary;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,16 +19,10 @@ import android.view.ViewGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.text.ParseException;
-import java.util.Calendar;
 import java.util.Date;
 
 import it.fooddiary.R;
-import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.utils.Constants;
-import it.fooddiary.utils.DateUtils;
 import it.fooddiary.viewmodels.AppViewModel;
 
 public class DiaryViewpagerFragment extends Fragment {
@@ -115,7 +108,7 @@ public class DiaryViewpagerFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 DiaryFragment x = (DiaryFragment) diaryPagerAdapter.getItem(position);
-                displayedDate = x.getDate();
+                displayedDate = x.getAssociatedDate();
                 viewModel.setCurrentDate(displayedDate, getActivity()
                         .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
                                 Context.MODE_PRIVATE));

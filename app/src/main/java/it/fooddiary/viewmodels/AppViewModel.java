@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import it.fooddiary.models.Food;
+import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.repositories.AppRepository;
@@ -35,6 +36,10 @@ public class AppViewModel extends AndroidViewModel {
 
     public void setCurrentDate(Date date, SharedPreferences preferences) {
         repository.saveCurrentDate(date, preferences);
+    }
+
+    public LiveData<Meal> getMealByTypeAndDate(MealType mealType, Date date) {
+        return repository.getMealByTypeAndDate(mealType, date);
     }
 
     public LiveData<Integer> insertFoodInMeal(Food foodToInsert, MealType mealType, Date date) {

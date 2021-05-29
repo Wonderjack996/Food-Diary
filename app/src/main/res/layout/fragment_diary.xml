@@ -9,6 +9,22 @@
         <variable
             name="mealProperties"
             type="it.fooddiary.models.MealProperties" />
+
+        <variable
+            name="breakfastMeal"
+            type="it.fooddiary.models.Meal" />
+
+        <variable
+            name="lunchMeal"
+            type="it.fooddiary.models.Meal" />
+
+        <variable
+            name="dinnerMeal"
+            type="it.fooddiary.models.Meal" />
+
+        <variable
+            name="snacksMeal"
+            type="it.fooddiary.models.Meal" />
     </data>
 
     <ScrollView
@@ -48,9 +64,8 @@
                         android:layout_height="200dp"
                         android:background="@drawable/circular_shape"
                         android:indeterminate="false"
-                        android:max="@{mealProperties.caloriesDailyIntake}"
+                        android:max="100"
                         android:padding="8dp"
-                        android:progress="1500"
                         android:progressDrawable="@drawable/circular_progress_bar"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +93,7 @@
                         android:layout_marginRight="8dp"
                         android:gravity="center"
                         android:lines="2"
-                        android:text="3000 KCal\nconsumed"
+                        android:text='@{String.valueOf(breakfastMeal.totalCalories + lunchMeal.totalCalories + dinnerMeal.totalCalories + snacksMeal.totalCalories) + " KCal\n" + @string/consumed}'
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/progressBar"
                         app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +108,7 @@
                         android:layout_marginLeft="8dp"
                         android:gravity="center"
                         android:lines="2"
-                        android:text="500 KCal\nremained"
+                        android:text='@{String.valueOf(mealProperties.caloriesDailyIntake - breakfastMeal.totalCalories - lunchMeal.totalCalories - dinnerMeal.totalCalories - snacksMeal.totalCalories) + " KCal\n" + @string/remained}'
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/progressBar"
@@ -288,7 +303,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:layout_marginLeft="32dp"
-                            android:text="300 KCal"
+                            android:text='@{breakfastMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/breakfast_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/breakfast_textView"
@@ -360,7 +375,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:layout_marginLeft="32dp"
-                            android:text="300 KCal"
+                            android:text='@{lunchMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/lunch_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/lunch_textView"
@@ -432,7 +447,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:layout_marginLeft="32dp"
-                            android:text="300 KCal"
+                            android:text='@{dinnerMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/dinner_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/dinner_textView"
@@ -504,7 +519,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="32dp"
                             android:layout_marginLeft="32dp"
-                            android:text="300 KCal"
+                            android:text='@{snacksMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/snacks_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/snacks_textView"

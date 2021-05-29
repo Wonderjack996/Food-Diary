@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.text.ParseException;
@@ -36,12 +37,12 @@ public class AppRepository {
     private final MealDao mealDao;
     private final Application application;
 
-    private MealProperties mealPropertiesCurrentSetting;
+    private final MealProperties mealPropertiesCurrentSetting;
 
-    private MutableLiveData<MealProperties> mealProperties;
-    private MutableLiveData<EdamamResponse> edamamResponse;
+    private final MutableLiveData<MealProperties> mealProperties;
+    private final MutableLiveData<EdamamResponse> edamamResponse;
 
-    private MutableLiveData<Integer> databaseOperationResult;
+    private final MutableLiveData<Integer> databaseOperationResult;
 
     public static AppRepository getInstance(Application application) {
         if (instance == null) {
@@ -86,7 +87,24 @@ public class AppRepository {
         return edamamResponse;
     }
 
-    public MutableLiveData<Integer> insertFoodInMeal(Food foodToInsert,
+    public LiveData<Meal> getMealByTypeAndDate(MealType mealType, Date date) {
+        MutableLiveData<Meal> mealMutableLiveData = new MutableLiveData<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Meal> meals = mealDao.getMeals(mealType, date);
+                if (meals == null || meals.size() != 1)
+                    mealMutableLiveData.postValue(Meal.getNullObject());
+                else
+                    mealMutableLiveData.postValue(meals.get(0));
+            }
+        }).start();
+
+        return mealMutableLiveData;
+    }
+
+    public LiveData<Integer> insertFoodInMeal(Food foodToInsert,
                                                      MealType mealType, Date date) {
         new Thread(new Runnable() {
             @Override
@@ -110,7 +128,7 @@ public class AppRepository {
         return databaseOperationResult;
     }
 
-    public MutableLiveData<Integer> removeFoodFromMeal(Food foodToRemove,
+    public LiveData<Integer> removeFoodFromMeal(Food foodToRemove,
                                                        MealType mealType, Date date) {
         new Thread(new Runnable() {
             @Override

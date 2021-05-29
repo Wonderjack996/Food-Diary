@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import it.fooddiary.databinding.FragmentDiaryBinding;
+import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.ui.meal.MealActivity;
@@ -32,16 +34,21 @@ public class DiaryFragment extends Fragment {
 
     private FragmentDiaryBinding binding;
 
-    private final Date date;
+    private final Date associatedDate;
 
     private AppViewModel viewModel;
 
+    private LiveData<Meal> breakfastMutableLiveData;
+    private LiveData<Meal> lunchMutableLiveData;
+    private LiveData<Meal> dinnerMutableLiveData;
+    private LiveData<Meal> snacksMutableLiveData;
+
     public DiaryFragment() {
-        this.date = Calendar.getInstance().getTime();
+        this.associatedDate = Calendar.getInstance().getTime();
     }
 
     public DiaryFragment(Date date) {
-        this.date = date;
+        this.associatedDate = date;
     }
 
     @Nullable
@@ -67,6 +74,44 @@ public class DiaryFragment extends Fragment {
             }
         });
 
+        breakfastMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.BREAKFAST, associatedDate);
+        lunchMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.LUNCH, associatedDate);
+        dinnerMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.DINNER, associatedDate);
+        snacksMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.SNACKS, associatedDate);
+
+        breakfastMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setBreakfastMeal(meal);
+                binding.invalidateAll();
+            }
+        });
+        lunchMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setLunchMeal(meal);
+                binding.invalidateAll();
+            }
+        });
+        dinnerMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setDinnerMeal(meal);
+                binding.invalidateAll();
+            }
+        });
+        snacksMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setSnacksMeal(meal);
+                binding.invalidateAll();
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -82,19 +127,19 @@ public class DiaryFragment extends Fragment {
         calendar.add(Calendar.DAY_OF_YEAR, 2);
         Date tomorrow = calendar.getTime();
 
-        if(DateUtils.dateEquals(date, today))
+        if(DateUtils.dateEquals(associatedDate, today))
             ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.today));
-        else if(DateUtils.dateEquals(date, yesterday))
+        else if(DateUtils.dateEquals(associatedDate, yesterday))
             ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.yesterday));
-        else if(DateUtils.dateEquals(date, tomorrow))
+        else if(DateUtils.dateEquals(associatedDate, tomorrow))
             ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.tomorrow));
         else
-            ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(date));
+            ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(associatedDate));
     }
 
     private void setupOpenMealImageButton() {
         Intent intent = new Intent(getActivity(), MealActivity.class);
-        intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(date));
+        intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(associatedDate));
 
         binding.breakfastImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +174,7 @@ public class DiaryFragment extends Fragment {
         });
     }
 
-    public Date getDate() {
-        return date;
+    public Date getAssociatedDate() {
+        return associatedDate;
     }
 }
