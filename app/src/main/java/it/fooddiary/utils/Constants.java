@@ -67,10 +67,12 @@ public class Constants {
     public static final int DATABASE_INSERT_OK = 200;
     public static final int DATABASE_UPDATE_OK = 210;
     public static final int DATABASE_REMOVE_OK = 220;
+    public static final int DATABASE_INSERT_FOOD_OK = 230;
     public static final int DATABASE_INSERT_ERROR = 400;
     public static final int DATABASE_UPDATE_ERROR = 410;
     public static final int DATABASE_REMOVE_ERROR = 420;
     public static final int DATABASE_REMOVE_NOT_PRESENT = 430;
+    public static final int DATABASE_INSERT_FOOD_ERROR = 440;
 
 
     public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";

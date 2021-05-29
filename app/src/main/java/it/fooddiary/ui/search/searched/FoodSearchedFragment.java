@@ -135,6 +135,7 @@ public class FoodSearchedFragment extends Fragment {
                 switch (integer) {
                     case Constants.DATABASE_INSERT_OK:
                     case Constants.DATABASE_UPDATE_OK:
+                        viewModel.addFoodToRecent(foodToAdd);
                         Snackbar.make(binding.getRoot(), R.string.added,
                                 Snackbar.LENGTH_SHORT)
                                 .setAction("Undo", new View.OnClickListener() {

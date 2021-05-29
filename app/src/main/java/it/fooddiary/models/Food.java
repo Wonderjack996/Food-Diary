@@ -3,17 +3,40 @@ package it.fooddiary.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Objects;
 
 import it.fooddiary.utils.Constants;
 
+@Entity(tableName = "recent_food")
+
+
 public class Food implements IFoodProperties, Parcelable {
 
+    @PrimaryKey(autoGenerate = true)
+    private int primaryKey;
+
+
+
+    @ColumnInfo(name = "food_id")
     private final String id;
+
+    @ColumnInfo(name = "food_name")
     private final String name;
+
+    @ColumnInfo(name = "food_carbs")
     private final double carbsPercent;
+
+    @ColumnInfo(name = "food_protein")
     private final double proteinsPercent;
+
+    @ColumnInfo(name = "food_fat")
     private final double fatsPercent;
+
+    @ColumnInfo(name = "food_quantity")
     private int quantity = 0;
 
     public Food(String name, String id, int quantity,
@@ -74,6 +97,30 @@ public class Food implements IFoodProperties, Parcelable {
                 getTotalFatsGrams()*Constants.CALORIES_PER_FAT_GRAM;
     }
 
+    public int getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public double getCarbsPercent() {
+        return carbsPercent;
+    }
+
+    public double getProteinsPercent() {
+        return proteinsPercent;
+    }
+
+    public double getFatsPercent() {
+        return fatsPercent;
+    }
+
+    public void setPrimaryKey(int primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
     public void setQuantity(int newQuantity) {
         if (newQuantity > 0)
             this.quantity = newQuantity;
@@ -104,6 +151,7 @@ public class Food implements IFoodProperties, Parcelable {
         return id.hashCode();
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -111,6 +159,7 @@ public class Food implements IFoodProperties, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.primaryKey);
         dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeDouble(this.carbsPercent);
@@ -120,6 +169,7 @@ public class Food implements IFoodProperties, Parcelable {
     }
 
     protected Food(Parcel in) {
+        this.primaryKey = in.readInt();
         this.id = in.readString();
         this.name = in.readString();
         this.carbsPercent = in.readDouble();
@@ -128,7 +178,7 @@ public class Food implements IFoodProperties, Parcelable {
         this.quantity = in.readInt();
     }
 
-    public static final Parcelable.Creator<Food> CREATOR = new Parcelable.Creator<Food>() {
+    public static final Creator<Food> CREATOR = new Creator<Food>() {
         @Override
         public Food createFromParcel(Parcel source) {
             return new Food(source);
