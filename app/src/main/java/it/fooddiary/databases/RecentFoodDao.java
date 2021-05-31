@@ -27,7 +27,4 @@ public interface RecentFoodDao {
 
     @Query("SELECT * FROM recent_food")
     List<Food> getAll();
-
-
-
 }

@@ -120,6 +120,8 @@ public class AppRepository {
     }
 
     public LiveData<Integer> addFoodToRecent(Food foodToAdd){
+        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
+
         new Thread(new Runnable() {
             @Override
             public void run() {

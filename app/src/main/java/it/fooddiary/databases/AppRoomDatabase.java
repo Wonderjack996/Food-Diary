@@ -14,7 +14,7 @@ import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.utils.Constants;
 
-@Database(entities = {Meal.class}, version = Constants.DATABASE_VERSION, exportSchema = false)
+@Database(entities = {Meal.class, Food.class}, version = Constants.DATABASE_VERSION, exportSchema = false)
 @TypeConverters({DateConverter.class, MealTypeConverter.class, FoodsListConverter.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
 
