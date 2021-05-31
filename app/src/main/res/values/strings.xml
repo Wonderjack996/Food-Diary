@@ -53,4 +53,5 @@
     <string name="removing">Removing...</string>
     <string name="remained">remained</string>
     <string name="consumed">consumed</string>
+    <string name="confirm">confirm</string>
 </resources>

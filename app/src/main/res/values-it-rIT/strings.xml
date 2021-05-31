@@ -52,4 +52,5 @@
     <string name="removing">Rimuovo...</string>
     <string name="remained">rimaste</string>
     <string name="consumed">consumate</string>
+    <string name="confirm">conferma</string>
 </resources>
