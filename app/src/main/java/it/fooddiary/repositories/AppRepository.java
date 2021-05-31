@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import it.fooddiary.databases.MealDao;
+import it.fooddiary.databases.RecentFoodDao;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.MealProperties;
 import it.fooddiary.models.Meal;
@@ -33,6 +34,7 @@ public class AppRepository {
 
     private final IFoodServices foodServices;
     private final MealDao mealDao;
+    private final RecentFoodDao recentFoodDao;
     private final Application application;
 
     private final MealProperties mealPropertiesCurrentSetting;
@@ -43,6 +45,7 @@ public class AppRepository {
         this.application = application;
         this.foodServices = ServicesLocator.getInstance().getFoodServicesWithRetrofit();
         this.mealDao = ServicesLocator.getInstance().getAppDatabase(application).mealDao();
+        this.recentFoodDao = ServicesLocator.getInstance().getAppDatabase(application).recentFoodDao();
 
         this.mealProperties = new MutableLiveData<>();
 
@@ -113,6 +116,24 @@ public class AppRepository {
             }
         }).start();
 
+        return databaseOperationResult;
+    }
+
+    public LiveData<Integer> addFoodToRecent(Food foodToAdd){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               List<Food> recentList = recentFoodDao.getAll();
+                if(recentList != null && !recentList.contains(foodToAdd)){
+                    recentFoodDao.insert(foodToAdd);
+                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_FOOD_OK);
+                }
+                else {
+                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_FOOD_ERROR);
+                }
+            }
+
+        }).start();
         return databaseOperationResult;
     }
 

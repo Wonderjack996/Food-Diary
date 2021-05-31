@@ -66,4 +66,7 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<EdamamResponse> getEdamamResponse(String ingredient) {
         return repository.fetchFoods(ingredient);
     }
+    public LiveData<Integer> addFoodToRecent(Food foodToAdd){
+        return repository.addFoodToRecent(foodToAdd);
+    }
 }

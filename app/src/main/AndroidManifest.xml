@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodDiary">
         <activity android:name=".ui.meal.SearchHostActivity"></activity>
+        <activity android:name=".ui.account.EditAccountActivity"></activity>
         <activity
             android:name=".ui.LaunchScreenActivity"
             android:theme="@style/LaunchTheme">

@@ -56,4 +56,5 @@
     <string name="quantity">Quantity (g)</string>
     <string name="meal">Meal</string>
     <string name="deleted">eliminato</string>
+    <string name="confirm">conferma</string>
 </resources>

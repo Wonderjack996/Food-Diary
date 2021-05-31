@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import it.fooddiary.databases.converters.DateConverter;
 import it.fooddiary.databases.converters.FoodsListConverter;
 import it.fooddiary.databases.converters.MealTypeConverter;
+import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.utils.Constants;
 
@@ -19,6 +20,7 @@ public abstract class AppRoomDatabase extends RoomDatabase {
 
     private static volatile AppRoomDatabase instance;
     public abstract MealDao mealDao();
+    public abstract RecentFoodDao recentFoodDao();
 
     public static AppRoomDatabase getDatabase(final Context context) {
         if (instance == null) {

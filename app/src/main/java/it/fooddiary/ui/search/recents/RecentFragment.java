@@ -79,6 +79,7 @@ public class RecentFragment extends Fragment {
 
         //ListView listView = view.findViewById(R.id.favourite_list);
         List<String> stringList = new ArrayList<String>();
+        //aggiunta lista da viewmodel con getAll
 
 
         // carico il dataset
