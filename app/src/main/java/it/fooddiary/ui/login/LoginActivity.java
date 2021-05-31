@@ -1,9 +1,11 @@
 package it.fooddiary.ui.login;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -29,11 +33,14 @@ import it.fooddiary.utils.DateUtils;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginPersonalDataFragment";
+    private static final String CURRENT_ERROR = "CurrentError";
 
     private ActivityLoginBinding binding;
 
+    private String currentError = "";
+
     @Override
-    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
@@ -41,6 +48,12 @@ public class LoginActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getString(CURRENT_ERROR) != null) {
+                currentError = savedInstanceState.getString(CURRENT_ERROR);
+                showError();
+            }
+        }
 
         binding.numberPickerHeight.setMaxValue(Constants.MAX_HEIGHT_CM);
         binding.numberPickerHeight.setMinValue(Constants.MIN_HEIGHT_CM);
@@ -56,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String error = "";
+                currentError = "";
                 int genderButtonId, activityButtonId, height, weight, age;
 
                 genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
@@ -66,16 +79,12 @@ public class LoginActivity extends AppCompatActivity {
                 age = binding.numberPickerAge.getValue();
 
                 if (genderButtonId < 0)
-                    error += "- " + getResources().getString(R.string.gender_error) + "\n";
+                    currentError += "- " + getResources().getString(R.string.gender_error) + "\n";
                 if (activityButtonId < 0)
-                    error += "- " + getResources().getString(R.string.activity_error);
+                    currentError += "- " + getResources().getString(R.string.activity_error);
 
-                if (!error.equals("")) {
-                    new MaterialAlertDialogBuilder(LoginActivity.this)
-                            .setTitle(R.string.error)
-                            .setMessage(error)
-                            .setPositiveButton(R.string.ok, null)
-                            .show();
+                if (!currentError.equals("")) {
+                    showError();
                 } else {
                     savePersonalData(age, genderButtonId, activityButtonId, height, weight);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -84,6 +93,28 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CURRENT_ERROR, currentError);
+    }
+
+    private void showError() {
+        if (currentError != null && !currentError.equals("")) {
+            new MaterialAlertDialogBuilder(LoginActivity.this)
+                    .setTitle(R.string.error)
+                    .setMessage(currentError)
+                    .setPositiveButton(R.string.ok, null)
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            currentError = "";
+                        }
+                    })
+                    .show();
+        }
     }
 
     private void savePersonalData(int age, int genderId, int activityId,

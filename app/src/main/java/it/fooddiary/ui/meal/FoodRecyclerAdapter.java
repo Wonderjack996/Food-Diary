@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.fooddiary.R;
@@ -25,9 +26,24 @@ public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapte
     private final List<Food> foodDataset;
     private final Activity ownerActivity;
 
+    public FoodRecyclerAdapter(Activity owner) {
+        this.ownerActivity = owner;
+        this.foodDataset = new ArrayList<>();
+    }
+
     public FoodRecyclerAdapter(List<Food> foods, Activity owner) {
         this.foodDataset = foods;
         this.ownerActivity = owner;
+    }
+
+    public void setFoodDataset(List<Food> foods) {
+        foodDataset.clear();
+        foodDataset.addAll(foods);
+        notifyDataSetChanged();
+    }
+
+    public Food getFoodByPosition(int position) {
+        return foodDataset.get(position);
     }
 
     @NonNull

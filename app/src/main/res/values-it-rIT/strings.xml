@@ -22,7 +22,7 @@
     <string name="yesterday">Ieri</string>
     <string name="prev"><![CDATA[< prec]]></string>
     <string name="next"><![CDATA[succ >]]></string>
-    <string name="Change_Image">Cambia Immagine</string>
+    <string name="change_image">Cambia Immagine</string>
     <string name="welcome">Benvenuto!</string>
     <string name="name">Nome</string>
     <string name="insert_personal_data">Inserisci i seguenti dati per estimare il tuo fabbisogno calorico giornaliero</string>
@@ -52,4 +52,8 @@
     <string name="removing">Rimuovo...</string>
     <string name="remained">rimaste</string>
     <string name="consumed">consumate</string>
+    <string name="calories">Calorie</string>
+    <string name="quantity">Quantity (g)</string>
+    <string name="meal">Meal</string>
+    <string name="deleted">eliminato</string>
 </resources>

@@ -31,8 +31,6 @@ public class AppRepository {
 
     private static final String TAG = "AppRepository";
 
-    private static AppRepository instance;
-
     private final IFoodServices foodServices;
     private final MealDao mealDao;
     private final Application application;
@@ -40,32 +38,20 @@ public class AppRepository {
     private final MealProperties mealPropertiesCurrentSetting;
 
     private final MutableLiveData<MealProperties> mealProperties;
-    private final MutableLiveData<EdamamResponse> edamamResponse;
 
-    private final MutableLiveData<Integer> databaseOperationResult;
-
-    public static AppRepository getInstance(Application application) {
-        if (instance == null) {
-            synchronized(ServicesLocator.class) {
-                instance = new AppRepository(application);
-            }
-        }
-        return instance;
-    }
-
-    private AppRepository(Application application) {
+    public AppRepository(Application application) {
         this.application = application;
         this.foodServices = ServicesLocator.getInstance().getFoodServicesWithRetrofit();
         this.mealDao = ServicesLocator.getInstance().getAppDatabase(application).mealDao();
 
         this.mealProperties = new MutableLiveData<>();
-        this.edamamResponse = new MutableLiveData<>();
-        this.databaseOperationResult = new MutableLiveData<>();
 
         this.mealPropertiesCurrentSetting = loadMealPropertiesFromSharedPreferences();
     }
 
     public MutableLiveData<EdamamResponse> fetchFoods(String ingredient) {
+        MutableLiveData<EdamamResponse> edamamResponse = new MutableLiveData<>();
+
         Call<EdamamResponse> call = foodServices.getFoodsByName(Constants.API_APP_ID,
                 Constants.API_APP_KEY, ingredient, Constants.API_NUTRITION_TYPE_LOGGING,
                 Constants.API_CATEGORY_LABEL_FOOD, Constants.API_CATEGORY_GENERIC_FOOD);
@@ -95,7 +81,7 @@ public class AppRepository {
             public void run() {
                 List<Meal> meals = mealDao.getMeals(mealType, date);
                 if (meals == null || meals.size() != 1)
-                    mealMutableLiveData.postValue(Meal.getNullObject());
+                    mealMutableLiveData.postValue(new Meal(mealType, date));
                 else
                     mealMutableLiveData.postValue(meals.get(0));
             }
@@ -106,6 +92,8 @@ public class AppRepository {
 
     public LiveData<Integer> insertFoodInMeal(Food foodToInsert,
                                                      MealType mealType, Date date) {
+        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -130,6 +118,8 @@ public class AppRepository {
 
     public LiveData<Integer> removeFoodFromMeal(Food foodToRemove,
                                                        MealType mealType, Date date) {
+        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -139,7 +129,7 @@ public class AppRepository {
                 } else if (mealList.size() == 1) {
                     Meal updatedMeal = mealList.get(0);
                     boolean isRemoved = updatedMeal.removeFood(foodToRemove);
-                    if (updatedMeal.getMealFoods().size() == 0) {
+                    if (isRemoved && updatedMeal.getMealFoods().size() == 0) {
                         mealDao.delete(updatedMeal);
                         databaseOperationResult.postValue(Constants.DATABASE_REMOVE_OK);
                     } else if (isRemoved) {
@@ -155,7 +145,7 @@ public class AppRepository {
         return databaseOperationResult;
     }
 
-    public MutableLiveData<MealProperties> getMealProperties() {
+    public LiveData<MealProperties> getMealProperties() {
         mealProperties.setValue(mealPropertiesCurrentSetting);
         return mealProperties;
     }

@@ -20,6 +20,7 @@ import java.util.Date;
 import it.fooddiary.databinding.FragmentDiaryBinding;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
+import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.ui.meal.MealActivity;
 import it.fooddiary.R;
@@ -27,6 +28,7 @@ import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class DiaryFragment extends Fragment {
 
@@ -37,11 +39,6 @@ public class DiaryFragment extends Fragment {
     private final Date associatedDate;
 
     private AppViewModel viewModel;
-
-    private LiveData<Meal> breakfastMutableLiveData;
-    private LiveData<Meal> lunchMutableLiveData;
-    private LiveData<Meal> dinnerMutableLiveData;
-    private LiveData<Meal> snacksMutableLiveData;
 
     public DiaryFragment() {
         this.associatedDate = Calendar.getInstance().getTime();
@@ -61,7 +58,10 @@ public class DiaryFragment extends Fragment {
 
         setupOpenMealImageButton();
 
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(requireActivity().getApplication(),
+                        new AppRepository(requireActivity().getApplication())))
+                .get(AppViewModel.class);
 
         binding.setMealProperties(viewModel.getMealProperties().getValue());
         binding.invalidateAll();
@@ -69,48 +69,12 @@ public class DiaryFragment extends Fragment {
         viewModel.getMealProperties().observe(getViewLifecycleOwner(), new Observer<MealProperties>() {
             @Override
             public void onChanged(MealProperties mealProperties) {
-                binding.setMealProperties(mealProperties);
-                binding.invalidateAll();
+                if (binding.getMealProperties() == null)
+                    binding.setMealProperties(mealProperties);
             }
         });
 
-        breakfastMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.BREAKFAST, associatedDate);
-        lunchMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.LUNCH, associatedDate);
-        dinnerMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.DINNER, associatedDate);
-        snacksMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.SNACKS, associatedDate);
-
-        breakfastMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
-            @Override
-            public void onChanged(Meal meal) {
-                binding.setBreakfastMeal(meal);
-                binding.invalidateAll();
-            }
-        });
-        lunchMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
-            @Override
-            public void onChanged(Meal meal) {
-                binding.setLunchMeal(meal);
-                binding.invalidateAll();
-            }
-        });
-        dinnerMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
-            @Override
-            public void onChanged(Meal meal) {
-                binding.setDinnerMeal(meal);
-                binding.invalidateAll();
-            }
-        });
-        snacksMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
-            @Override
-            public void onChanged(Meal meal) {
-                binding.setSnacksMeal(meal);
-                binding.invalidateAll();
-            }
-        });
+        reloadMealsFromDB();
 
         return binding.getRoot();
     }
@@ -118,6 +82,8 @@ public class DiaryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        reloadMealsFromDB();
 
         Calendar calendar = Calendar.getInstance();
         Date today = calendar.getTime();
@@ -137,9 +103,45 @@ public class DiaryFragment extends Fragment {
             ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(associatedDate));
     }
 
+    private void reloadMealsFromDB() {
+        LiveData<Meal> breakfastMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.BREAKFAST, associatedDate);
+        LiveData<Meal> lunchMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.LUNCH, associatedDate);
+        LiveData<Meal> dinnerMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.DINNER, associatedDate);
+        LiveData<Meal> snacksMutableLiveData =
+                viewModel.getMealByTypeAndDate(MealType.SNACKS, associatedDate);
+
+        breakfastMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setBreakfastMeal(meal);
+            }
+        });
+        lunchMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setLunchMeal(meal);
+            }
+        });
+        dinnerMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setDinnerMeal(meal);
+            }
+        });
+        snacksMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
+            @Override
+            public void onChanged(Meal meal) {
+                binding.setSnacksMeal(meal);
+            }
+        });
+    }
+
     private void setupOpenMealImageButton() {
         Intent intent = new Intent(getActivity(), MealActivity.class);
-        intent.putExtra(Constants.CURRENT_DATE, DateUtils.dateFormat.format(associatedDate));
+        intent.putExtra(Constants.CURRENT_DATE, associatedDate);
 
         binding.breakfastImageButton.setOnClickListener(new View.OnClickListener() {
             @Override

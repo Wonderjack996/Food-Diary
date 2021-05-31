@@ -23,11 +23,16 @@ import it.fooddiary.utils.MealType;
 
 public class AppViewModel extends AndroidViewModel {
 
-    private final AppRepository repository;
+    private AppRepository repository;
 
     public AppViewModel(@NonNull @NotNull Application application) {
         super(application);
-        this.repository = AppRepository.getInstance(application);
+    }
+
+    public AppViewModel(@NonNull @NotNull Application application,
+                        AppRepository repository) {
+        super(application);
+        this.repository = repository;
     }
 
     public Date getCurrentDate(SharedPreferences preferences) {
@@ -50,7 +55,7 @@ public class AppViewModel extends AndroidViewModel {
         return repository.removeFoodFromMeal(foodToRemove, mealType, date);
     }
 
-    public MutableLiveData<MealProperties> getMealProperties() {
+    public LiveData<MealProperties> getMealProperties() {
         return repository.getMealProperties();
     }
 

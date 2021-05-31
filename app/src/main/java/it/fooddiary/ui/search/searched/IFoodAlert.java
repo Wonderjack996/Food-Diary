@@ -3,7 +3,7 @@ package it.fooddiary.ui.search.searched;
 import it.fooddiary.models.Food;
 import it.fooddiary.utils.MealType;
 
-public interface IFoodAdded {
+public interface IFoodAlert {
 
-    void onFoodAddedToMeal(Food foodToAdd, MealType mealToModify);
+    void setFood(Food food);
 }

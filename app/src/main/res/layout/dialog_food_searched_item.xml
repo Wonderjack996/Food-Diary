@@ -16,6 +16,24 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/calories"
+            style="@style/TextAppearance.MdcTypographyStyles.Headline4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text='@{@string/calories + ": " + food.totalCalories + " KCal"}'
+            android:textColor="@color/primaryColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/carbs"
             style="@style/TextAppearance.MdcTypographyStyles.Headline4"
             android:layout_width="match_parent"
@@ -27,11 +45,11 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="center"
-            android:text='@{@string/carbs + ": " + food.totalCarbsGrams + "g"}'
+            android:text='@{@string/carbs + ": " + food.totalCarbsGrams + " g"}'
             android:textColor="@color/primaryColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/calories" />
 
         <TextView
             android:id="@+id/proteins"
@@ -41,11 +59,11 @@
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="center"
-            android:text='@{@string/proteins + ": " + food.totalProteinsGrams + "g"}'
+            android:text='@{@string/proteins + ": " + food.totalProteinsGrams + " g"}'
             android:textColor="@color/primaryColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,78 +77,78 @@
             android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:gravity="center"
-            android:text='@{@string/fats + ": " + food.totalFatsGrams + "g"}'
+            android:text='@{@string/fats + ": " + food.totalFatsGrams + " g"}'
             android:textColor="@color/primaryColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/proteins" />
 
-        <TextView
-            android:id="@+id/modifyQuantity"
-            style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginRight="32dp"
-            android:text="Quantity (g)"
-            android:textColor="@color/primaryColor"
-            app:layout_constraintEnd_toStartOf="@+id/chooseMeal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fats" />
-
-        <NumberPicker
-            android:id="@+id/quantityNumberPicker"
-            android:layout_width="0dp"
-            android:layout_height="128dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/mealNumberPicker"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/modifyQuantity" />
-
-        <TextView
-            android:id="@+id/chooseMeal"
-            style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="32dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="Meal"
-            android:textColor="@color/primaryColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/modifyQuantity"
-            app:layout_constraintTop_toBottomOf="@+id/fats" />
-
-        <NumberPicker
-            android:id="@+id/mealNumberPicker"
-            android:layout_width="0dp"
-            android:layout_height="128dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fats">
+
+            <TextView
+                android:id="@+id/modifyQuantity"
+                style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/quantity"
+                android:textColor="@color/primaryColor" />
+
+            <NumberPicker
+                android:id="@+id/quantityNumberPicker"
+                android:layout_width="match_parent"
+                android:layout_height="128dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/quantityNumberPicker"
-            app:layout_constraintTop_toBottomOf="@+id/chooseMeal" />
+            app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+            app:layout_constraintTop_toBottomOf="@id/fats">
+
+            <TextView
+                android:id="@+id/chooseMeal"
+                style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/meal"
+                android:textColor="@color/primaryColor" />
+
+            <NumberPicker
+                android:id="@+id/mealNumberPicker"
+                android:layout_width="match_parent"
+                android:layout_height="128dp" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

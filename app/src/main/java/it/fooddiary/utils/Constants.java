@@ -72,10 +72,8 @@ public class Constants {
     public static final int DATABASE_REMOVE_ERROR = 420;
     public static final int DATABASE_REMOVE_NOT_PRESENT = 430;
 
-
     public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";
 
-    public static final String MEAL_TYPE = "MealsName";
-
     public static final String CURRENT_DATE = "CurrentDate";
+    public static final String MEAL_TYPE = "MealType";
 }

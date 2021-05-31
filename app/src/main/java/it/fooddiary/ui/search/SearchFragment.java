@@ -29,6 +29,7 @@ import it.fooddiary.ui.search.favourites.FavouriteFragment;
 import it.fooddiary.ui.search.recents.RecentFragment;
 import it.fooddiary.ui.search.searched.FoodSearchedFragment;
 import it.fooddiary.utils.Constants;
+import it.fooddiary.utils.MealType;
 
 public class SearchFragment extends Fragment {
 
@@ -138,5 +139,9 @@ public class SearchFragment extends Fragment {
                             tab.setText("error");
                     }
                 }).attach();
+    }
+
+    public void setDisplayedMealType(MealType mealType) {
+        foodSearchedFragment.setDisplayedMealType(mealType);
     }
 }

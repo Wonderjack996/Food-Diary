@@ -25,9 +25,11 @@ import it.fooddiary.R;
 import it.fooddiary.databinding.FragmentFoodSearchedBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.edamam_models.EdamamResponse;
+import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class FoodSearchedFragment extends Fragment {
 
@@ -40,23 +42,26 @@ public class FoodSearchedFragment extends Fragment {
     private FoodSearchedRecyclerAdapter recyclerAdapter = null;
     private FragmentFoodSearchedBinding binding;
 
-    private LiveData<EdamamResponse> edamamResponseLiveData;
-    private LiveData<Integer> databaseResponseLiveData;
     private AppViewModel viewModel;
+
+    public void setDisplayedMealType(MealType mealType) {
+
+    }
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentFoodSearchedBinding.inflate(inflater);
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(requireActivity().getApplication(),
+                        new AppRepository(requireActivity().getApplication())))
+                .get(AppViewModel.class);
 
-        recyclerAdapter = new FoodSearchedRecyclerAdapter(getActivity(), new IFoodAdded() {
-            @Override
-            public void onFoodAddedToMeal(Food foodToAdd, MealType mealToModify) {
-                FoodSearchedFragment.this.onFoodAddedToMeal(foodToAdd, mealToModify);
-            }
-        });
+        recyclerAdapter =
+                new FoodSearchedRecyclerAdapter(getChildFragmentManager(),
+                        new FoodSearchedItemAlert());
+
         if (lastSearchedFoodList.size() == 0) {
             binding.searchingTextView.setVisibility(View.VISIBLE);
         } else {
@@ -74,101 +79,43 @@ public class FoodSearchedFragment extends Fragment {
         binding.searchingTextView.setVisibility(View.INVISIBLE);
         binding.searchingProgressBar.setVisibility(View.VISIBLE);
 
-        if (edamamResponseLiveData == null) {
-            edamamResponseLiveData = viewModel.getEdamamResponse(ingredient);
-            edamamResponseLiveData.observe(getViewLifecycleOwner(),
-                    new Observer<EdamamResponse>() {
-                        @Override
-                        public void onChanged(EdamamResponse edamamResponse) {
-                            if (edamamResponse.getMessage() == null &&
-                                    edamamResponse.getStatus() == null) {
-                                if (edamamResponse.getHints().size() > 0 ||
-                                        edamamResponse.getParsed().size() > 0) {
-                                    int i;
-                                    lastSearchedFoodList.clear();
-                                    for(i = 0; i < edamamResponse.getParsed().size() &&
-                                            i < MAX_SEARCHED_FOODS_DISPLAYED; ++i) {
-                                        Food tmp = edamamResponse.getParsed().get(i)
-                                                .getFood().toFood();
-                                        lastSearchedFoodList.add(tmp);
-                                    }
-                                    for(int j = 0; j < edamamResponse.getHints().size() &&
-                                            i < MAX_SEARCHED_FOODS_DISPLAYED; ++i, ++j) {
-                                        Food tmp = edamamResponse.getHints().get(j)
-                                                .getFood().toFood();
-                                        lastSearchedFoodList.add(tmp);
-                                    }
-                                    recyclerAdapter.setFoodDataset(lastSearchedFoodList);
-                                } else {
-                                    recyclerAdapter.setFoodDataset(new ArrayList<>());
-                                    binding.searchingTextView.setText(edamamResponse.getText()
-                                            + " "
-                                            + getResources().getString(R.string.not_found) + "!");
-                                    binding.searchingTextView.setVisibility(View.VISIBLE);
-                                }
-                            } else {
-                                recyclerAdapter.setFoodDataset(new ArrayList<>());
-                                binding.searchingTextView.setText(edamamResponse.getMessage());
-                                binding.searchingTextView.setVisibility(View.VISIBLE);
+        LiveData<EdamamResponse> edamamResponseLiveData = viewModel.getEdamamResponse(ingredient);
+        edamamResponseLiveData.observe(getViewLifecycleOwner(), new Observer<EdamamResponse>() {
+                @Override
+                public void onChanged(EdamamResponse edamamResponse) {
+                    if (edamamResponse.getMessage() == null &&
+                            edamamResponse.getStatus() == null) {
+                        if (edamamResponse.getHints().size() > 0 ||
+                                edamamResponse.getParsed().size() > 0) {
+                            int i;
+                            lastSearchedFoodList.clear();
+                            for(i = 0; i < edamamResponse.getParsed().size() &&
+                                    i < MAX_SEARCHED_FOODS_DISPLAYED; ++i) {
+                                Food tmp = edamamResponse.getParsed().get(i)
+                                        .getFood().toFood();
+                                lastSearchedFoodList.add(tmp);
                             }
-                            binding.searchingProgressBar.setVisibility(View.INVISIBLE);
+                            for(int j = 0; j < edamamResponse.getHints().size() &&
+                                    i < MAX_SEARCHED_FOODS_DISPLAYED; ++i, ++j) {
+                                Food tmp = edamamResponse.getHints().get(j)
+                                        .getFood().toFood();
+                                lastSearchedFoodList.add(tmp);
+                            }
+                            recyclerAdapter.setFoodDataset(lastSearchedFoodList);
+                        } else {
+                            recyclerAdapter.setFoodDataset(new ArrayList<>());
+                            binding.searchingTextView.setText(edamamResponse.getText()
+                                    + " "
+                                    + getResources().getString(R.string.not_found) + "!");
+                            binding.searchingTextView.setVisibility(View.VISIBLE);
                         }
-                    });
-        } else
-            viewModel.getEdamamResponse(ingredient);
-    }
-
-    private void onFoodAddedToMeal(Food foodToAdd, MealType mealToModify) {
-        Date currentDate = viewModel.getCurrentDate(getActivity()
-                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE));
-
-        databaseResponseLiveData = viewModel.insertFoodInMeal(foodToAdd,
-                mealToModify, currentDate);
-
-        if (databaseResponseLiveData.hasActiveObservers())
-            databaseResponseLiveData.removeObservers(getViewLifecycleOwner());
-
-        databaseResponseLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_INSERT_OK:
-                    case Constants.DATABASE_UPDATE_OK:
-                        Snackbar.make(binding.getRoot(), R.string.added,
-                                Snackbar.LENGTH_SHORT)
-                                .setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        FoodSearchedFragment.this
-                                                .onFoodRemovedToMeal(foodToAdd, mealToModify);
-                                    }
-                                })
-                                .show();
-                        break;
-                    case Constants.DATABASE_REMOVE_OK:
-                        Snackbar.make(binding.getRoot(), R.string.removed,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
-                    case Constants.DATABASE_REMOVE_NOT_PRESENT:
-                        Snackbar.make(binding.getRoot(), R.string.not_found,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
-                    case Constants.DATABASE_INSERT_ERROR:
-                    case Constants.DATABASE_UPDATE_ERROR:
-                    case Constants.DATABASE_REMOVE_ERROR:
-                        Snackbar.make(binding.getRoot(), R.string.error,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
+                    } else {
+                        recyclerAdapter.setFoodDataset(new ArrayList<>());
+                        binding.searchingTextView.setText(edamamResponse.getMessage());
+                        binding.searchingTextView.setVisibility(View.VISIBLE);
+                    }
+                    binding.searchingProgressBar.setVisibility(View.INVISIBLE);
                 }
-            }
         });
-    }
-
-    private void onFoodRemovedToMeal(Food foodToRemove, MealType mealToModify) {
-        Date currentDate = viewModel.getCurrentDate(getActivity()
-                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE));
-        viewModel.removeFoodFromMeal(foodToRemove, mealToModify, currentDate);
     }
 }

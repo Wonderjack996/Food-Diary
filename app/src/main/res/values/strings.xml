@@ -22,7 +22,7 @@
     <string name="yesterday">Yesterday</string>
     <string name="prev"><![CDATA[< prev]]></string>
     <string name="next"><![CDATA[next >]]></string>
-    <string name="Change_Image">Change Image</string>
+    <string name="change_image">Change Image</string>
     <string name="welcome">"Welcome!"</string>
     <string name="name">Name</string>
     <string name="insert_personal_data">Insert following data to estimate your daily calories intake</string>
@@ -53,4 +53,8 @@
     <string name="removing">Removing...</string>
     <string name="remained">remained</string>
     <string name="consumed">consumed</string>
+    <string name="calories">Calories</string>
+    <string name="quantity">Quantity (g)</string>
+    <string name="meal">Meal</string>
+    <string name="deleted">deleted</string>
 </resources>

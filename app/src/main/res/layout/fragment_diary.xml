@@ -65,6 +65,7 @@
                         android:background="@drawable/circular_shape"
                         android:indeterminate="false"
                         android:max="100"
+                        android:progress='@{(int)(((float)(breakfastMeal.totalCalories+lunchMeal.totalCalories+dinnerMeal.totalCalories+snacksMeal.totalCalories)/mealProperties.caloriesDailyIntake)*100)}'
                         android:padding="8dp"
                         android:progressDrawable="@drawable/circular_progress_bar"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -159,6 +160,8 @@
                         <ProgressBar
                             android:id="@+id/carbs_progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
+                            android:max="100"
+                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/mealProperties.carbsGrams)*100)}'
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center" />
@@ -168,7 +171,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text='@{String.valueOf(mealProperties.carbsGrams) + " g total"}' />
+                            android:text='@{String.valueOf(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams) + " / " + String.valueOf(mealProperties.carbsGrams) + " g"}' />
                     </LinearLayout>
 
                     <LinearLayout
@@ -195,6 +198,8 @@
                         <ProgressBar
                             android:id="@+id/proteins_progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
+                            android:max="100"
+                            android:progress='@{(int)(((float)(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams)/mealProperties.proteinsGrams)*100)}'
                             android:layout_width="100dp"
                             android:layout_height="wrap_content" />
 
@@ -203,7 +208,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text='@{String.valueOf(mealProperties.proteinsGrams) + " g total"}' />
+                            android:text='@{String.valueOf(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams) + " / " + String.valueOf(mealProperties.proteinsGrams) + " g"}' />
                     </LinearLayout>
 
                     <LinearLayout
@@ -228,6 +233,8 @@
                         <ProgressBar
                             android:id="@+id/fats_progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
+                            android:max="100"
+                            android:progress='@{(int)(((float)(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams)/mealProperties.fatsGrams)*100)}'
                             android:layout_width="100dp"
                             android:layout_height="wrap_content" />
 
@@ -236,7 +243,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text='@{String.valueOf(mealProperties.fatsGrams) + " g total"}' />
+                            android:text='@{String.valueOf(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams) + " / " + String.valueOf(mealProperties.fatsGrams) + " g"}' />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -299,10 +306,10 @@
 
                         <TextView
                             android:id="@+id/caloriesBreakfast_textView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:text='@{breakfastMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/breakfast_imageButton"
@@ -313,8 +320,8 @@
                             android:id="@+id/breakfast_imageButton"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:background="@drawable/round_button"
                             android:contentDescription="@string/breakfast"
                             android:cropToPadding="false"
@@ -371,10 +378,10 @@
 
                         <TextView
                             android:id="@+id/caloriesLunch_textView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:text='@{lunchMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/lunch_imageButton"
@@ -385,8 +392,8 @@
                             android:id="@+id/lunch_imageButton"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:background="@drawable/round_button"
                             android:contentDescription="@string/lunch"
                             android:cropToPadding="false"
@@ -443,10 +450,10 @@
 
                         <TextView
                             android:id="@+id/caloriesDinner_textView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:text='@{dinnerMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/dinner_imageButton"
@@ -457,8 +464,8 @@
                             android:id="@+id/dinner_imageButton"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:background="@drawable/round_button"
                             android:contentDescription="@string/dinner"
                             android:cropToPadding="false"
@@ -515,10 +522,10 @@
 
                         <TextView
                             android:id="@+id/caloriesSnacks_textView"
-                            android:layout_width="wrap_content"
+                            android:layout_width="70dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:text='@{snacksMeal.totalCalories + " KCal"}'
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/snacks_imageButton"
@@ -529,8 +536,8 @@
                             android:id="@+id/snacks_imageButton"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
-                            android:layout_marginStart="32dp"
-                            android:layout_marginLeft="32dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginLeft="16dp"
                             android:background="@drawable/round_button"
                             android:contentDescription="@string/snacks"
                             android:cropToPadding="false"

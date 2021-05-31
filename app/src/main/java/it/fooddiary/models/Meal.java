@@ -1,5 +1,8 @@
 package it.fooddiary.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -13,7 +16,7 @@ import java.util.Objects;
 import it.fooddiary.utils.MealType;
 
 @Entity(tableName = "meals")
-public class Meal implements IFoodProperties {
+public class Meal implements IFoodProperties, Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -26,10 +29,6 @@ public class Meal implements IFoodProperties {
 
     @ColumnInfo(name = "meal_foods")
     private List<Food> mealFoods;
-
-    public static Meal getNullObject() {
-        return new Meal(null, null);
-    }
 
     public Meal(MealType mealType, Date mealDate) {
         this.mealType = mealType;
@@ -100,4 +99,38 @@ public class Meal implements IFoodProperties {
     public void setId(int id) {
         this.id = id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeInt(this.mealType == null ? -1 : this.mealType.ordinal());
+        dest.writeLong(this.mealDate != null ? this.mealDate.getTime() : -1);
+        dest.writeTypedList(this.mealFoods);
+    }
+
+    protected Meal(Parcel in) {
+        this.id = in.readInt();
+        int tmpMealType = in.readInt();
+        this.mealType = tmpMealType == -1 ? null : MealType.values()[tmpMealType];
+        long tmpMealDate = in.readLong();
+        this.mealDate = tmpMealDate == -1 ? null : new Date(tmpMealDate);
+        this.mealFoods = in.createTypedArrayList(Food.CREATOR);
+    }
+
+    public static final Parcelable.Creator<Meal> CREATOR = new Parcelable.Creator<Meal>() {
+        @Override
+        public Meal createFromParcel(Parcel source) {
+            return new Meal(source);
+        }
+
+        @Override
+        public Meal[] newArray(int size) {
+            return new Meal[size];
+        }
+    };
 }
