@@ -17,22 +17,18 @@ import java.util.List;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
+import it.fooddiary.models.UserProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.utils.MealType;
 
 public class AppViewModel extends AndroidViewModel {
 
-    private AppRepository repository;
+    private final AppRepository repository;
 
     public AppViewModel(@NonNull @NotNull Application application) {
         super(application);
-    }
-
-    public AppViewModel(@NonNull @NotNull Application application,
-                        AppRepository repository) {
-        super(application);
-        this.repository = repository;
+        this.repository = AppRepository.getInstance(application);
     }
 
     public Date getCurrentDate(SharedPreferences preferences) {
@@ -63,8 +59,12 @@ public class AppViewModel extends AndroidViewModel {
         return repository.getMealProperties();
     }
 
-    public void setCaloriesIntake(int newIntake) {
-        repository.setDailyCaloriesIntake(newIntake);
+    public LiveData<UserProperties> getUserProperties() {
+        return repository.getUserProperties();
+    }
+
+    public void setUserProperties(UserProperties newProperties) {
+        repository.setUserProperties(newProperties);
     }
 
     public LiveData<EdamamResponse> getEdamamResponse(String ingredient) {

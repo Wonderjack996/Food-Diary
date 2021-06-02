@@ -125,11 +125,11 @@ public class LoginActivity extends AppCompatActivity {
         editor.putInt(Constants.USER_WEIGHT_KG, weight);
         switch(genderId) {
             case R.id.maleRadioButton:
-                bmr = calculateBMR_Male(weight, height, age);
+                bmr = Constants.calculateBMR_Male(weight, height, age);
                 editor.putInt(Constants.USER_GENDER, Constants.GENDER_MALE);
                 break;
             default:
-                bmr = calculateBMR_Female(weight, height, age);
+                bmr = Constants.calculateBMR_Female(weight, height, age);
                 editor.putInt(Constants.USER_GENDER, Constants.GENDER_FEMALE);
                 break;
         }
@@ -155,13 +155,5 @@ public class LoginActivity extends AppCompatActivity {
                 Constants.DEFAULT_FATS_PERCENT_DAILY);
 
         editor.apply();
-    }
-
-    private int calculateBMR_Male(int weight, int height, int age) {
-        return 10*weight + 6*height - 5*age + 5;
-    }
-
-    private int calculateBMR_Female(int weight, int height, int age) {
-        return 10*weight + 6*height - 5*age - 161;
     }
 }

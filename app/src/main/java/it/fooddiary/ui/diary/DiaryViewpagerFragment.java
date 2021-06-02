@@ -1,7 +1,6 @@
 package it.fooddiary.ui.diary;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,6 @@ import it.fooddiary.R;
 import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class DiaryViewpagerFragment extends Fragment {
 
@@ -72,10 +70,7 @@ public class DiaryViewpagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
         // set up date picker
         datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();

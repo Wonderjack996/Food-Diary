@@ -31,7 +31,6 @@ import it.fooddiary.ui.FoodSearchedRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class FoodSearchedFragment extends Fragment implements IDatabaseOperation {
 
@@ -52,11 +51,7 @@ public class FoodSearchedFragment extends Fragment implements IDatabaseOperation
                              Bundle savedInstanceState) {
         binding = FragmentFoodSearchedBinding.inflate(inflater);
 
-        viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
-
+        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
         recyclerAdapter =
                 new FoodSearchedRecyclerAdapter(getChildFragmentManager(),
                         new FoodSearchedItemAlert(this));

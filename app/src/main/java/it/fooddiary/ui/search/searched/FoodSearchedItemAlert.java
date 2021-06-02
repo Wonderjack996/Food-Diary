@@ -10,7 +10,6 @@ import android.widget.NumberPicker;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -20,12 +19,9 @@ import it.fooddiary.R;
 import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.DialogFoodSearchedItemBinding;
 import it.fooddiary.models.Food;
-import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.ui.IFoodAlert;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert {
 

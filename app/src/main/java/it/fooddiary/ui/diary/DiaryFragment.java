@@ -28,7 +28,6 @@ import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class DiaryFragment extends Fragment {
 
@@ -58,10 +57,7 @@ public class DiaryFragment extends Fragment {
 
         setupOpenMealImageButton();
 
-        viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
         binding.setMealProperties(viewModel.getMealProperties().getValue());
         binding.invalidateAll();

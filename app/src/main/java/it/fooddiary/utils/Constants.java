@@ -85,4 +85,12 @@ public class Constants {
 
     public static final String CURRENT_DATE = "CurrentDate";
     public static final String MEAL_TYPE = "MealType";
+
+    public static int calculateBMR_Male(int weight, int height, int age) {
+        return 10*weight + 6*height - 5*age + 5;
+    }
+
+    public static int calculateBMR_Female(int weight, int height, int age) {
+        return 10*weight + 6*height - 5*age - 161;
+    }
 }

@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fillViewport="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
 
-    <FrameLayout
-        android:id="@+id/accountLayout"
+        <variable
+            name="userProperties"
+            type="it.fooddiary.models.UserProperties" />
+
+        <variable
+            name="constants"
+            type="it.fooddiary.utils.Constants" />
+    </data>
+
+    <ScrollView
+        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -64,11 +71,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_marginLeft="32dp"
-
                         android:layout_marginTop="32dp"
                         android:layout_marginBottom="24dp"
                         android:gravity="center"
-                        android:text="20"
+                        android:text="@{String.valueOf(userProperties.age)}"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +92,7 @@
                         android:layout_marginRight="32dp"
                         android:layout_marginBottom="32dp"
                         android:gravity="center"
-                        android:text='gender'
+                        android:text="@{userProperties.gender == constants.GENDER_FEMALE ? @string/female : @string/male}"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -96,8 +102,6 @@
                         app:layout_constraintVertical_bias="0.0" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -113,5 +117,5 @@
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
-</ScrollView>
+    </ScrollView>
+</layout>

@@ -13,11 +13,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import it.fooddiary.R;
 import it.fooddiary.databases.MealDao;
 import it.fooddiary.databases.RecentFoodDao;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.MealProperties;
 import it.fooddiary.models.Meal;
+import it.fooddiary.models.UserProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.services.IFoodServices;
 import it.fooddiary.utils.Constants;
@@ -32,24 +34,36 @@ public class AppRepository {
 
     private static final String TAG = "AppRepository";
 
+    private static AppRepository instance;
+
     private final IFoodServices foodServices;
     private final MealDao mealDao;
     private final RecentFoodDao recentFoodDao;
     private final Application application;
 
-    private final MealProperties mealPropertiesCurrentSetting;
-
     private final MutableLiveData<MealProperties> mealProperties;
+    private final MutableLiveData<UserProperties> userProperties;
 
-    public AppRepository(Application application) {
+    public static AppRepository getInstance(Application application) {
+        if (instance == null) {
+            synchronized(ServicesLocator.class) {
+                instance = new AppRepository(application);
+            }
+        }
+        return instance;
+    }
+
+    private AppRepository(Application application) {
         this.application = application;
         this.foodServices = ServicesLocator.getInstance().getFoodServicesWithRetrofit();
         this.mealDao = ServicesLocator.getInstance().getAppDatabase(application).mealDao();
         this.recentFoodDao = ServicesLocator.getInstance().getAppDatabase(application).recentFoodDao();
 
         this.mealProperties = new MutableLiveData<>();
+        this.userProperties = new MutableLiveData<>();
 
-        this.mealPropertiesCurrentSetting = loadMealPropertiesFromSharedPreferences();
+        mealProperties.setValue(loadMealPropertiesFromSharedPreferences());
+        userProperties.setValue(loadUserPropertiesFromSharedPreferences());
     }
 
     public MutableLiveData<EdamamResponse> fetchFoods(String ingredient) {
@@ -197,47 +211,74 @@ public class AppRepository {
     }
 
     public LiveData<MealProperties> getMealProperties() {
-        mealProperties.setValue(mealPropertiesCurrentSetting);
         return mealProperties;
     }
 
-    public void setDailyCaloriesIntake(int newCaloriesIntake) {
-        mealPropertiesCurrentSetting.setCaloriesDailyIntake(newCaloriesIntake);
-        mealProperties.postValue(mealPropertiesCurrentSetting);
+    public LiveData<UserProperties> getUserProperties() {
+        return userProperties;
+    }
+
+    public void setUserProperties(UserProperties newProperties) {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int bmr, newDailyIntake;
                 SharedPreferences preferences = application
                         .getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
                                 Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
 
+                editor.remove(Constants.USER_AGE);
+                editor.remove(Constants.USER_HEIGHT_CM);
+                editor.remove(Constants.USER_WEIGHT_KG);
+                editor.putInt(Constants.USER_AGE, newProperties.getAge());
+                editor.putInt(Constants.USER_HEIGHT_CM, newProperties.getHeightCm());
+                editor.putInt(Constants.USER_WEIGHT_KG, newProperties.getWeightKg());
+
+                editor.remove(Constants.USER_GENDER);
+                switch(newProperties.getGender()) {
+                    case Constants.GENDER_MALE:
+                        bmr = Constants.calculateBMR_Male(newProperties.getWeightKg(),
+                                newProperties.getHeightCm(), newProperties.getAge());
+                        editor.putInt(Constants.USER_GENDER, Constants.GENDER_MALE);
+                        break;
+                    default:
+                        bmr = Constants.calculateBMR_Female(newProperties.getWeightKg(),
+                                newProperties.getHeightCm(), newProperties.getAge());
+                        editor.putInt(Constants.USER_GENDER, Constants.GENDER_FEMALE);
+                        break;
+                }
+
+                editor.remove(Constants.USER_ACTIVITY_LEVEL);
                 editor.remove(Constants.USER_DAILY_INTAKE_KCAL);
-                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, newCaloriesIntake);
+                switch(newProperties.getActivityLevel()) {
+                    case Constants.ACTIVITY_HIGH:
+                        newDailyIntake = (int)(bmr*1.725);
+                        editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_HIGH);
+                        editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, newDailyIntake);
+                        break;
+                    case Constants.ACTIVITY_LOW:
+                        newDailyIntake = (int)(bmr*1.2);
+                        editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_LOW);
+                        editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, newDailyIntake);
+                        break;
+                    default:
+                        newDailyIntake = (int)(bmr*1.55);
+                        editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_MID);
+                        editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, newDailyIntake);
+                        break;
+                }
+
+                MealProperties newMealProperties = new MealProperties(newDailyIntake,
+                        Constants.DEFAULT_CARBS_PERCENT_DAILY,
+                        Constants.DEFAULT_PROTEINS_PERCENT_DAILY,
+                        Constants.DEFAULT_FATS_PERCENT_DAILY);
+                mealProperties.postValue(newMealProperties);
+                userProperties.postValue(newProperties);
 
                 editor.apply();
             }
         }).start();
-    }
-
-    private MealProperties loadMealPropertiesFromSharedPreferences() {
-        SharedPreferences preferences = application
-                .getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE);
-
-        int cal = preferences
-                .getInt(Constants.USER_DAILY_INTAKE_KCAL, 0);
-        float carbsPerc = preferences
-                .getFloat(Constants.USER_DAILY_CARBS_PERCENT,
-                        Constants.DEFAULT_CARBS_PERCENT_DAILY);
-        float proteinsPerc = preferences
-                .getFloat(Constants.USER_DAILY_PROTEINS_PERCENT,
-                        Constants.DEFAULT_PROTEINS_PERCENT_DAILY);
-        float fatsPerc = preferences
-                .getFloat(Constants.USER_DAILY_FATS_PERCENT,
-                        Constants.DEFAULT_FATS_PERCENT_DAILY);
-
-        return new MealProperties(cal, carbsPerc, proteinsPerc, fatsPerc);
     }
 
     public Date loadCurrentDate(SharedPreferences preferences) {
@@ -272,5 +313,39 @@ public class AppRepository {
                 }
             }).start();
         }
+    }
+
+    private MealProperties loadMealPropertiesFromSharedPreferences() {
+        SharedPreferences preferences = application
+                .getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
+                        Context.MODE_PRIVATE);
+
+        int cal = preferences
+                .getInt(Constants.USER_DAILY_INTAKE_KCAL, 0);
+        float carbsPerc = preferences
+                .getFloat(Constants.USER_DAILY_CARBS_PERCENT,
+                        Constants.DEFAULT_CARBS_PERCENT_DAILY);
+        float proteinsPerc = preferences
+                .getFloat(Constants.USER_DAILY_PROTEINS_PERCENT,
+                        Constants.DEFAULT_PROTEINS_PERCENT_DAILY);
+        float fatsPerc = preferences
+                .getFloat(Constants.USER_DAILY_FATS_PERCENT,
+                        Constants.DEFAULT_FATS_PERCENT_DAILY);
+
+        return new MealProperties(cal, carbsPerc, proteinsPerc, fatsPerc);
+    }
+
+    private UserProperties loadUserPropertiesFromSharedPreferences() {
+        SharedPreferences preferences = application
+                .getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
+                        Context.MODE_PRIVATE);
+
+        int age = preferences.getInt(Constants.USER_AGE, Constants.MAX_AGE);
+        int gender = preferences.getInt(Constants.USER_GENDER, Constants.GENDER_MALE);
+        int heightCm = preferences.getInt(Constants.USER_HEIGHT_CM, Constants.MAX_HEIGHT_CM);
+        int weightKg = preferences.getInt(Constants.USER_WEIGHT_KG, Constants.MAX_WEIGHT_KG);
+        int activityLevel = preferences.getInt(Constants.USER_ACTIVITY_LEVEL, Constants.OTHER);
+
+        return new UserProperties(age, gender, heightCm, weightKg, activityLevel);
     }
 }

@@ -1,10 +1,7 @@
 package it.fooddiary.ui.account;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,29 +10,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import it.fooddiary.R;
 import it.fooddiary.databinding.FragmentAccountBinding;
-import it.fooddiary.utils.Constants;
+import it.fooddiary.models.UserProperties;
+import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.viewmodels.AppViewModel;
 
 public class AccountFragment extends Fragment {
     private static final String TAG = "AccountFragment";
 
     private FragmentAccountBinding binding;
 
+    private AppViewModel viewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
-
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.toolbar_menu_account, menu);
-
     }
 
     @Nullable
@@ -43,21 +45,21 @@ public class AccountFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        binding = FragmentAccountBinding.inflate(inflater, container, false);
+        binding = DataBindingUtil
+                .inflate(inflater, R.layout.fragment_account, container, false);
 
+        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
-        SharedPreferences preferences =
-                getActivity().getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE);
-
-        Log.d(TAG, preferences.getString(Constants.USER_GENDER, null));
-        //Log.d(TAG, preferences.getInt(Constants.USER_AGE, 0));
-        binding.ageText.setText("" + preferences.getInt(Constants.USER_AGE, 0));
-        binding.genderText.setText(preferences.getString(Constants.USER_GENDER, null));
+        viewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
+            @Override
+            public void onChanged(UserProperties userProperties) {
+                binding.setUserProperties(userProperties);
+                binding.invalidateAll();
+            }
+        });
 
         return binding.getRoot();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

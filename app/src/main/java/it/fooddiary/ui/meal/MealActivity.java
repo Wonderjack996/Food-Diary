@@ -36,7 +36,6 @@ import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MealActivity extends AppCompatActivity implements IDatabaseOperation {
@@ -58,10 +57,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(getApplication(),
-                        new AppRepository(getApplication())))
-                .get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
 
         Intent intent = getIntent();
         associatedDate = (Date) intent.getSerializableExtra(Constants.CURRENT_DATE);
