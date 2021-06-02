@@ -1,6 +1,5 @@
 package it.fooddiary.ui.search;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,20 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.fooddiary.R;
-import it.fooddiary.ui.search.favourites.FavouriteFragment;
 import it.fooddiary.ui.search.recents.RecentFragment;
 import it.fooddiary.ui.search.searched.FoodSearchedFragment;
 import it.fooddiary.utils.Constants;
-import it.fooddiary.utils.MealType;
 
 public class SearchFragment extends Fragment {
 
     private ViewPager2 searchViewPager;
-    private TabLayout searchTabLayout;
-    private TabsStateAdapter tabsAdapter;
 
-    private FoodSearchedFragment foodSearchedFragment = new FoodSearchedFragment();
-    private RecentFragment recentFragment = new RecentFragment();
+    private TabsStateAdapter tabsAdapter;
 
     private MaterialAlertDialogBuilder addCaloriesDialog;
 
@@ -60,8 +54,20 @@ public class SearchFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 if (query != null && query.length() > 1) {
                     query = query.trim();
+
+                    FoodSearchedFragment foodSearchedFragment;
+
+                    Fragment frag = getChildFragmentManager()
+                            .findFragmentById((int)tabsAdapter.getItemId(0));
+                    if (frag instanceof FoodSearchedFragment)
+                        foodSearchedFragment = (FoodSearchedFragment) frag;
+                    else
+                        return false;
+
                     foodSearchedFragment.onFoodSearched(query);
                     searchView.clearFocus();
+                    searchViewPager.setCurrentItem(0);
+                    return true;
                 }
                 return true;
             }
@@ -80,7 +86,7 @@ public class SearchFragment extends Fragment {
                              @Nullable Bundle savedInstanceState){
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 
-        addCaloriesDialog = new MaterialAlertDialogBuilder(getActivity());
+        addCaloriesDialog = new MaterialAlertDialogBuilder(requireActivity());
 
         FloatingActionButton fab = root.findViewById(R.id.addCalories_floatingButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -92,18 +98,8 @@ public class SearchFragment extends Fragment {
                 numberPicker.setValue(Constants.MID_CALORIES_KCAL);
                 addCaloriesDialog.setTitle(R.string.addCalories);
                 addCaloriesDialog.setView(numberPicker);
-                addCaloriesDialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                addCaloriesDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        return;
-                    }
-                });
+                addCaloriesDialog.setPositiveButton(R.string.ok, null);
+                addCaloriesDialog.setNegativeButton(R.string.cancel, null);
                 addCaloriesDialog.show();
             }
         });
@@ -115,14 +111,19 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        FoodSearchedFragment foodSearchedFragment = new FoodSearchedFragment();
+        RecentFragment recentFragment = new RecentFragment();
+
+        TabLayout searchTabLayout;
+
         List<Fragment> fragmentToShow = new ArrayList<>();
         fragmentToShow.add(foodSearchedFragment);
         fragmentToShow.add(recentFragment);
 
         searchViewPager = view.findViewById(R.id.searchViewPager2);
         searchTabLayout = view.findViewById(R.id.searchTabLayout);
-        tabsAdapter = new TabsStateAdapter(getChildFragmentManager(), getLifecycle(),
-                fragmentToShow);
+        tabsAdapter = new TabsStateAdapter(getChildFragmentManager(),
+                getLifecycle(), fragmentToShow);
 
         searchViewPager.setAdapter(tabsAdapter);
 
@@ -136,12 +137,8 @@ public class SearchFragment extends Fragment {
                             tab.setText(R.string.recents);
                             break;
                         default:
-                            tab.setText("error");
+                            tab.setText(R.string.error);
                     }
-                }).attach();
-    }
-
-    public void setDisplayedMealType(MealType mealType) {
-        foodSearchedFragment.setDisplayedMealType(mealType);
+        }).attach();
     }
 }

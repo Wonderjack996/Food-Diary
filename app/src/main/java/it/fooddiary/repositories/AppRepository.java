@@ -119,6 +119,34 @@ public class AppRepository {
         return databaseOperationResult;
     }
 
+    public LiveData<Integer> updateFoodInMeal(Food foodToUpdate,
+                                              MealType mealType, Date date) {
+        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Meal> meals = mealDao.getMeals(mealType, date);
+                if (meals == null || meals.size() != 1)
+                    databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                else {
+                    Meal newMeal = meals.get(0);
+                    if (newMeal.getMealFoods().contains(foodToUpdate)) {
+                        boolean isRemoved = newMeal.removeFood(foodToUpdate);
+                        if (isRemoved) {
+                            newMeal.addFood(foodToUpdate);
+                            mealDao.update(newMeal);
+                        } else
+                            databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                    } else
+                        databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                }
+            }
+        }).start();
+
+        return databaseOperationResult;
+    }
+
     public LiveData<Integer> addFoodToRecent(Food foodToAdd){
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 

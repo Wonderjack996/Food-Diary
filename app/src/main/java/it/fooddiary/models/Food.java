@@ -12,17 +12,10 @@ import java.util.Objects;
 import it.fooddiary.utils.Constants;
 
 @Entity(tableName = "recent_food")
-
-
 public class Food implements IFoodProperties, Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int primaryKey;
-
-
-
-    @ColumnInfo(name = "food_id")
-    private final String id;
 
     @ColumnInfo(name = "food_name")
     private final String name;
@@ -39,17 +32,14 @@ public class Food implements IFoodProperties, Parcelable {
     @ColumnInfo(name = "food_quantity")
     private int quantity = 0;
 
-    public Food(String name, String id, int quantity,
-                double carbsPercent, double proteinsPercent, double fatsPercent) {
+    public Food(String name, int quantity,
+                double carbsPercent,
+                double proteinsPercent,
+                double fatsPercent) {
         if (name != null)
             this.name = name;
         else
             this.name = "";
-
-        if (id != null)
-            this.id = id;
-        else
-            this.id = "";
 
         if (quantity >= Constants.MIN_FOOD_GRAMS && quantity <= Constants.MAX_FOOD_GRAMS)
             this.quantity = quantity;
@@ -101,10 +91,6 @@ public class Food implements IFoodProperties, Parcelable {
         return primaryKey;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public double getCarbsPercent() {
         return carbsPercent;
     }
@@ -131,24 +117,12 @@ public class Food implements IFoodProperties, Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Food food = (Food) o;
-        return id.equals(food.id);
-    }
-
-    @Override
-    public String toString() {
-        return "Food{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", carbsPercent=" + carbsPercent +
-                ", proteinsPercent=" + proteinsPercent +
-                ", fatsPercent=" + fatsPercent +
-                ", quantity=" + quantity +
-                '}';
+        return name.equals(food.name);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return name.hashCode();
     }
 
 
@@ -160,7 +134,6 @@ public class Food implements IFoodProperties, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.primaryKey);
-        dest.writeString(this.id);
         dest.writeString(this.name);
         dest.writeDouble(this.carbsPercent);
         dest.writeDouble(this.proteinsPercent);
@@ -170,7 +143,6 @@ public class Food implements IFoodProperties, Parcelable {
 
     protected Food(Parcel in) {
         this.primaryKey = in.readInt();
-        this.id = in.readString();
         this.name = in.readString();
         this.carbsPercent = in.readDouble();
         this.proteinsPercent = in.readDouble();

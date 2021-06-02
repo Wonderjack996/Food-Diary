@@ -13,7 +13,7 @@
     <string name="add">aggiungi</string>
     <string name="breakfast">Colazione</string>
     <string name="cancel">Cancella</string>
-    <string name="modifyQuantity">Modifica Quantità (grammi)</string>
+    <string name="modifyQuantity">Modifica Quantità (g)</string>
     <string name="lunch">Pranzo</string>
     <string name="dinner">Cena</string>
     <string name="snacks">Spuntini</string>
@@ -27,7 +27,6 @@
     <string name="name">Nome</string>
     <string name="insert_personal_data">Inserisci i seguenti dati per estimare il tuo fabbisogno calorico giornaliero</string>
     <string name="surname">Cognome</string>
-    <string name="date_birth">Data di Nascita (per età)</string>
     <string name="weight_kg">Peso (Kg)</string>
     <string name="height_cm">Altezza (cm)</string>
     <string name="activity_level">Livello attività fisica giornaliera</string>
@@ -53,8 +52,9 @@
     <string name="remained">rimaste</string>
     <string name="consumed">consumate</string>
     <string name="calories">Calorie</string>
-    <string name="quantity">Quantity (g)</string>
-    <string name="meal">Meal</string>
+    <string name="quantity">Quantità (g)</string>
+    <string name="meal">Pasto</string>
     <string name="deleted">eliminato</string>
     <string name="confirm">conferma</string>
+    <string name="select_date">Seleziona Data</string>
 </resources>

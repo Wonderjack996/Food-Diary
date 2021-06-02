@@ -143,6 +143,13 @@ public class DiaryFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MealActivity.class);
         intent.putExtra(Constants.CURRENT_DATE, associatedDate);
 
+        binding.breakfastCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra(Constants.MEAL_TYPE, MealType.BREAKFAST);
+                startActivity(intent);
+            }
+        });
         binding.breakfastImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,6 +158,13 @@ public class DiaryFragment extends Fragment {
             }
         });
 
+        binding.lunchCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra(Constants.MEAL_TYPE, MealType.LUNCH);
+                startActivity(intent);
+            }
+        });
         binding.lunchImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +173,13 @@ public class DiaryFragment extends Fragment {
             }
         });
 
+        binding.dinnerCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra(Constants.MEAL_TYPE, MealType.DINNER);
+                startActivity(intent);
+            }
+        });
         binding.dinnerImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +188,13 @@ public class DiaryFragment extends Fragment {
             }
         });
 
+        binding.snacksCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.putExtra(Constants.MEAL_TYPE, MealType.SNACKS);
+                startActivity(intent);
+            }
+        });
         binding.snacksImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

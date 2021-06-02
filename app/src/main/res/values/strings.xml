@@ -13,7 +13,7 @@
     <string name="favourite">Favourites</string>
     <string name="add">add</string>
     <string name="cancel">Cancel</string>
-    <string name="modifyQuantity">Modify Quantity (grams)</string>
+    <string name="modifyQuantity">Modify Quantity (g)</string>
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
     <string name="snacks">Snacks</string>
@@ -27,7 +27,6 @@
     <string name="name">Name</string>
     <string name="insert_personal_data">Insert following data to estimate your daily calories intake</string>
     <string name="surname">Surname</string>
-    <string name="date_birth">Date of Birth (for the age)</string>
     <string name="height_cm">Height (cm)</string>
     <string name="weight_kg">Weight (Kg)</string>
     <string name="activity_level">Daily activity level</string>
@@ -58,4 +57,5 @@
     <string name="meal">Meal</string>
     <string name="deleted">deleted</string>
     <string name="confirm">confirm</string>
+    <string name="select_date">Select Date</string>
 </resources>

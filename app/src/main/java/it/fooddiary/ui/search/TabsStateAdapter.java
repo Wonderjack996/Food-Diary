@@ -8,10 +8,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
-import it.fooddiary.ui.search.favourites.FavouriteFragment;
-import it.fooddiary.ui.search.recents.RecentFragment;
-import it.fooddiary.ui.search.searched.FoodSearchedFragment;
-
 public class TabsStateAdapter extends FragmentStateAdapter {
 
     private final List<Fragment> fragmentList;

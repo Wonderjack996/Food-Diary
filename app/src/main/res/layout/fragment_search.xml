@@ -16,7 +16,8 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/searchViewPager2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="52dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addCalories_floatingButton"

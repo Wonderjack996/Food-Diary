@@ -37,8 +37,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
 
-    private String currentError = "";
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,28 +46,42 @@ public class LoginActivity extends AppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.getString(CURRENT_ERROR) != null) {
-                currentError = savedInstanceState.getString(CURRENT_ERROR);
-                showError();
-            }
-        }
-
         binding.numberPickerHeight.setMaxValue(Constants.MAX_HEIGHT_CM);
         binding.numberPickerHeight.setMinValue(Constants.MIN_HEIGHT_CM);
-        binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
 
         binding.numberPickerWeight.setMaxValue(Constants.MAX_WEIGHT_KG);
         binding.numberPickerWeight.setMinValue(Constants.MIN_WEIGHT_KG);
-        binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
 
         binding.numberPickerAge.setMaxValue(Constants.MAX_AGE);
         binding.numberPickerAge.setMinValue(Constants.MIN_AGE);
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getInt(Constants.USER_AGE, 0) != 0)
+                binding.numberPickerAge
+                        .setValue(savedInstanceState.getInt(Constants.USER_AGE));
+            else
+                binding.numberPickerAge.setValue(Constants.MID_AGE);
+
+            if (savedInstanceState.getInt(Constants.USER_WEIGHT_KG, 0) != 0)
+                binding.numberPickerWeight
+                        .setValue(savedInstanceState.getInt(Constants.USER_WEIGHT_KG));
+            else
+                binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
+
+            if (savedInstanceState.getInt(Constants.USER_HEIGHT_CM, 0) != 0)
+                binding.numberPickerHeight
+                        .setValue(savedInstanceState.getInt(Constants.USER_HEIGHT_CM));
+            else
+                binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
+        } else {
+            binding.numberPickerAge.setValue(Constants.MID_AGE);
+            binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
+            binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
+        }
+
         binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentError = "";
                 int genderButtonId, activityButtonId, height, weight, age;
 
                 genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
@@ -78,19 +90,10 @@ public class LoginActivity extends AppCompatActivity {
                 weight = binding.numberPickerWeight.getValue();
                 age = binding.numberPickerAge.getValue();
 
-                if (genderButtonId < 0)
-                    currentError += "- " + getResources().getString(R.string.gender_error) + "\n";
-                if (activityButtonId < 0)
-                    currentError += "- " + getResources().getString(R.string.activity_error);
-
-                if (!currentError.equals("")) {
-                    showError();
-                } else {
-                    savePersonalData(age, genderButtonId, activityButtonId, height, weight);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    LoginActivity.this.finish();
-                }
+                savePersonalData(age, genderButtonId, activityButtonId, height, weight);
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                LoginActivity.this.finish();
             }
         });
     }
@@ -98,23 +101,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(CURRENT_ERROR, currentError);
-    }
+        int height, weight, age;
 
-    private void showError() {
-        if (currentError != null && !currentError.equals("")) {
-            new MaterialAlertDialogBuilder(LoginActivity.this)
-                    .setTitle(R.string.error)
-                    .setMessage(currentError)
-                    .setPositiveButton(R.string.ok, null)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialog) {
-                            currentError = "";
-                        }
-                    })
-                    .show();
-        }
+        height = binding.numberPickerHeight.getValue();
+        weight = binding.numberPickerWeight.getValue();
+        age = binding.numberPickerAge.getValue();
+
+        outState.putInt(Constants.USER_AGE, age);
+        outState.putInt(Constants.USER_WEIGHT_KG, weight);
+        outState.putInt(Constants.USER_HEIGHT_CM, height);
     }
 
     private void savePersonalData(int age, int genderId, int activityId,
@@ -131,29 +126,24 @@ public class LoginActivity extends AppCompatActivity {
         switch(genderId) {
             case R.id.maleRadioButton:
                 bmr = calculateBMR_Male(weight, height, age);
-                editor.putString(Constants.USER_GENDER, getResources()
-                        .getString(R.string.male));
+                editor.putInt(Constants.USER_GENDER, Constants.GENDER_MALE);
                 break;
             default:
                 bmr = calculateBMR_Female(weight, height, age);
-                editor.putString(Constants.USER_GENDER, getResources()
-                        .getString(R.string.female));
+                editor.putInt(Constants.USER_GENDER, Constants.GENDER_FEMALE);
                 break;
         }
         switch(activityId) {
             case R.id.highRadioButton:
-                editor.putString(Constants.USER_ACTIVITY_LEVEL, getResources()
-                        .getString(R.string.high));
+                editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_HIGH);
                 editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.725));
                 break;
             case R.id.lowRadioButton:
-                editor.putString(Constants.USER_ACTIVITY_LEVEL, getResources()
-                        .getString(R.string.low));
+                editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_LOW);
                 editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.2));
                 break;
             default:
-                editor.putString(Constants.USER_ACTIVITY_LEVEL, getResources()
-                        .getString(R.string.mid));
+                editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_MID);
                 editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.55));
                 break;
         }

@@ -1,12 +1,8 @@
-package it.fooddiary.ui.search.searched;
+package it.fooddiary.ui;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -14,15 +10,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.HolderFoodItemBinding;
 import it.fooddiary.models.Food;
-import it.fooddiary.utils.MealType;
 
 public class FoodSearchedRecyclerAdapter extends
         RecyclerView.Adapter<FoodSearchedRecyclerAdapter.FoodSearchedViewHolder> {
@@ -43,6 +36,29 @@ public class FoodSearchedRecyclerAdapter extends
         foodDataset.clear();
         foodDataset.addAll(foods);
         notifyDataSetChanged();
+    }
+
+    public Food getFood(Food tmp) {
+        if (foodDataset.contains(tmp))
+            return foodDataset.get(foodDataset.indexOf(tmp));
+        return null;
+    }
+
+    public Food getFoodByPosition(int position) {
+        if (position >= 0 && position < foodDataset.size())
+            return foodDataset.get(position);
+        return null;
+    }
+
+    public Food removeItem(int position) {
+        if (position >= 0 && position < foodDataset.size())
+            return foodDataset.remove(position);
+        return null;
+    }
+
+    public void addItem(Food food, int position) {
+        if (position >= 0 && position < foodDataset.size())
+            foodDataset.add(position, food);
     }
 
     @NonNull

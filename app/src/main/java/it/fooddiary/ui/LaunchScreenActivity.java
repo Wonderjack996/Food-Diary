@@ -28,7 +28,8 @@ public class LaunchScreenActivity extends AppCompatActivity {
                 getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
                         Context.MODE_PRIVATE);
 
-        if (preferences.getString(Constants.USER_GENDER, null) == null)
+        if (preferences.getInt(Constants.USER_GENDER, Constants.OTHER)
+                == Constants.OTHER)
             ret = new Intent(this, LoginActivity.class);
         else if (preferences.getInt(Constants.USER_AGE, 0) == 0)
             ret = new Intent(this, LoginActivity.class);
@@ -36,7 +37,10 @@ public class LaunchScreenActivity extends AppCompatActivity {
             ret = new Intent(this, LoginActivity.class);
         else if (preferences.getInt(Constants.USER_WEIGHT_KG, 0) == 0)
             ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getString(Constants.USER_ACTIVITY_LEVEL, null) == null)
+        else if (preferences.getInt(Constants.USER_ACTIVITY_LEVEL, Constants.OTHER)
+                == Constants.OTHER)
+            ret = new Intent(this, LoginActivity.class);
+        else if (preferences.getInt(Constants.USER_DAILY_INTAKE_KCAL, 0) == 0)
             ret = new Intent(this, LoginActivity.class);
         else if (preferences.getFloat(Constants.USER_DAILY_CARBS_PERCENT, 0f) == 0f)
             ret = new Intent(this, LoginActivity.class);

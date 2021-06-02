@@ -2,19 +2,24 @@ package it.fooddiary.ui.meal;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import java.util.Objects;
 
 import it.fooddiary.R;
+import it.fooddiary.models.Meal;
 import it.fooddiary.ui.search.SearchFragment;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 
 public class SearchHostActivity extends AppCompatActivity {
+
+    private MealType mealType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,20 +29,11 @@ public class SearchHostActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.search);
 
-        SearchFragment searchFragment = new SearchFragment();
-        Intent intent = getIntent();
-        MealType mealType;
-        try {
-            mealType = (MealType) intent.getSerializableExtra(Constants.MEAL_TYPE);
-        } catch (ClassCastException cce) {
-            mealType = null;
+        if (getSupportFragmentManager().findFragmentById(R.id.fragment_container_view) == null) {
+            SearchFragment searchFragment = new SearchFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_view,
+                    searchFragment).commit();
         }
-
-        if (mealType != null)
-            searchFragment.setDisplayedMealType(mealType);
-
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container_view,
-                searchFragment).commit();
     }
 
     @Override

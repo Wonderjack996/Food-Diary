@@ -27,12 +27,19 @@ public class Constants {
     public static final String USER_DAILY_CARBS_PERCENT = "UserDailyCarbsPercent";
     public static final String USER_DAILY_PROTEINS_PERCENT = "UserDailyProteinsPercent";
     public static final String USER_DAILY_FATS_PERCENT = "UserDailyFatsPercent";
+    public static final int GENDER_MALE = 0;
+    public static final int GENDER_FEMALE = 1;
+    public static final int ACTIVITY_HIGH = 2;
+    public static final int ACTIVITY_MID = 3;
+    public static final int ACTIVITY_LOW = 4;
+    public static final int OTHER = 5;
 
     /**
      * Data Ranges
      */
     public static final int MIN_AGE = 10;
     public static final int MAX_AGE = 120;
+    public static final int MID_AGE = 30;
     public static final int MAX_CALORIES_KCAL = 10000;
     public static final int MIN_CALORIES_KCAL = 1;
     public static final int MID_CALORIES_KCAL = 200;

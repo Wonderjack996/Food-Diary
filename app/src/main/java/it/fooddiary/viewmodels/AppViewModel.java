@@ -55,6 +55,10 @@ public class AppViewModel extends AndroidViewModel {
         return repository.removeFoodFromMeal(foodToRemove, mealType, date);
     }
 
+    public LiveData<Integer> updateFoodInMeal(Food foodToUpdate, MealType mealType, Date date) {
+        return repository.updateFoodInMeal(foodToUpdate, mealType, date);
+    }
+
     public LiveData<MealProperties> getMealProperties() {
         return repository.getMealProperties();
     }

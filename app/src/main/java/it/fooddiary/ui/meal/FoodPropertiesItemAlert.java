@@ -1,4 +1,4 @@
-package it.fooddiary.ui.search.searched;
+package it.fooddiary.ui.meal;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import it.fooddiary.R;
 import it.fooddiary.databases.IDatabaseOperation;
+import it.fooddiary.databinding.DialogFoodPropertiesItemBinding;
 import it.fooddiary.databinding.DialogFoodSearchedItemBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.repositories.AppRepository;
@@ -27,20 +28,20 @@ import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
 import it.fooddiary.viewmodels.AppViewModelFactory;
 
-public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert {
+public class FoodPropertiesItemAlert extends DialogFragment implements IFoodAlert {
 
     private static final String LAST_FOOD_CLICKED = "LastFoodClicked";
 
     private static IDatabaseOperation databaseOperation;
 
-    private DialogFoodSearchedItemBinding binding;
+    private DialogFoodPropertiesItemBinding binding;
 
     private Food foodClicked = new Food("error",0,
             0, 0, 0);
 
-    public FoodSearchedItemAlert() { }
+    public FoodPropertiesItemAlert() { }
 
-    public FoodSearchedItemAlert(IDatabaseOperation dbOperation) {
+    public FoodPropertiesItemAlert(IDatabaseOperation dbOperation) {
         databaseOperation = dbOperation;
     }
 
@@ -49,21 +50,11 @@ public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert 
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         MaterialAlertDialogBuilder dialogBuilder = new MaterialAlertDialogBuilder(requireContext());
-        this.binding = DialogFoodSearchedItemBinding.inflate(getLayoutInflater());
-
-        MealType[] mealTypes = MealType.values();
-        String[] mealNames = new String[mealTypes.length];
-        for (int i = 0; i < mealTypes.length; ++i)
-            mealNames[i] = mealTypes[i].toString(getResources());
-        binding.mealNumberPicker.setDisplayedValues(mealNames);
-        binding.mealNumberPicker.setMinValue(0);
-        binding.mealNumberPicker.setMaxValue(mealNames.length-1);
+        this.binding = DialogFoodPropertiesItemBinding.inflate(getLayoutInflater());
 
         if (savedInstanceState != null) {
             if (savedInstanceState.getParcelable(LAST_FOOD_CLICKED) != null)
                 foodClicked = savedInstanceState.getParcelable(LAST_FOOD_CLICKED);
-            if (savedInstanceState.getInt(Constants.MEAL_TYPE, -1) != -1)
-                binding.mealNumberPicker.setValue(savedInstanceState.getInt(Constants.MEAL_TYPE));
         }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
@@ -89,15 +80,13 @@ public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert 
         });
         binding.quantityNumberPicker.setValue(foodClicked.getQuantity());
         dialogBuilder.setTitle(foodClicked.getName());
-        dialogBuilder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int quantity = binding.quantityNumberPicker.getValue();
-                int mealTypeNum = binding.mealNumberPicker.getValue();
-                MealType mealType = MealType.values()[mealTypeNum];
                 foodClicked.setQuantity(quantity);
                 if (databaseOperation != null)
-                    databaseOperation.addFoodToMeal(foodClicked, mealType);
+                    databaseOperation.modifyFood(foodClicked);
             }
         });
         return dialogBuilder.create();
@@ -107,7 +96,6 @@ public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert 
     public void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(LAST_FOOD_CLICKED, foodClicked);
-        outState.putInt(Constants.MEAL_TYPE, binding.mealNumberPicker.getValue());
     }
 
     @Override

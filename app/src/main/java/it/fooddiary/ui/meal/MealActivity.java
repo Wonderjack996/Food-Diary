@@ -18,19 +18,20 @@ import android.view.View;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.ParseException;
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import it.fooddiary.R;
+import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.ActivityMealBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
 import it.fooddiary.repositories.AppRepository;
-import it.fooddiary.ui.MainActivity;
+import it.fooddiary.ui.search.searched.FoodSearchedItemAlert;
+import it.fooddiary.ui.FoodSearchedRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
@@ -38,12 +39,11 @@ import it.fooddiary.viewmodels.AppViewModel;
 import it.fooddiary.viewmodels.AppViewModelFactory;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
-public class MealActivity extends AppCompatActivity {
+public class MealActivity extends AppCompatActivity implements IDatabaseOperation {
 
     private ActivityMealBinding binding;
 
-    private final List<Food> foodDataset = new ArrayList<>();
-    private FoodRecyclerAdapter recyclerAdapter;
+    private FoodSearchedRecyclerAdapter recyclerAdapter;
 
     private Date associatedDate;
     private MealType mealType;
@@ -70,13 +70,14 @@ public class MealActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(mealType.toString(getResources())
                 + " - " + DateUtils.dateFormat.format(associatedDate));
 
-        recyclerAdapter = new FoodRecyclerAdapter(this);
+        recyclerAdapter = new FoodSearchedRecyclerAdapter(getSupportFragmentManager(),
+                new FoodSearchedItemAlert(this));
 
         viewModel.getMealProperties().observe(this, new Observer<MealProperties>() {
             @Override
             public void onChanged(MealProperties mealProperties) {
-                if (binding.getMealProperties() == null)
-                    binding.setMealProperties(mealProperties);
+                binding.setMealProperties(mealProperties);
+                binding.invalidateAll();
             }
         });
 
@@ -93,52 +94,46 @@ public class MealActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+            public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int position;
-                switch(swipeDir) {
-                    case ItemTouchHelper.LEFT:
-                        position = viewHolder.getAdapterPosition();
-                        Food foodToRemove = recyclerAdapter.getFoodByPosition(position);
+                if (swipeDir == ItemTouchHelper.LEFT) {
+                    position = viewHolder.getAdapterPosition();
+                    Food foodToRemove = recyclerAdapter.getFoodByPosition(position);
 
-                        LiveData<Integer> databaseLiveData = viewModel
-                                .removeFoodFromMeal(foodToRemove, mealType, associatedDate);
-
-                        databaseLiveData.observe(MealActivity.this,
-                                new Observer<Integer>() {
-                                    @Override
-                                    public void onChanged(Integer integer) {
-                                        switch (integer) {
-                                            case Constants.DATABASE_REMOVE_OK:
-                                                Food removed = recyclerAdapter.removeItem(position);
-                                                recyclerAdapter.notifyItemRemoved(position);
-                                                Snackbar.make(binding.getRoot(),
-                                                        removed.getName() + " " +
-                                                                getResources().getString(R.string.deleted),
-                                                        Snackbar.LENGTH_LONG)
-                                                        .setAction("Undo", new View.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(View view) {
-                                                                onDeleteUndo(removed,
-                                                                        mealType, associatedDate,
-                                                                        position);
-                                                            }
-                                                }).show();
-                                                reloadMeal();
-                                                break;
-                                            case Constants.DATABASE_REMOVE_NOT_PRESENT:
-                                                Snackbar.make(binding.getRoot(),
-                                                        R.string.not_found, Snackbar.LENGTH_LONG)
-                                                        .show();
-                                                break;
-                                            case Constants.DATABASE_REMOVE_ERROR:
-                                                Snackbar.make(binding.getRoot(),
-                                                        R.string.error, Snackbar.LENGTH_LONG)
-                                                        .show();
-                                                break;
-                                        }
+                    viewModel.removeFoodFromMeal(foodToRemove, mealType, associatedDate)
+                            .observe(MealActivity.this, new Observer<Integer>() {
+                                @Override
+                                public void onChanged(Integer integer) {
+                                    switch (integer) {
+                                        case Constants.DATABASE_REMOVE_OK:
+                                            Food removed = recyclerAdapter.removeItem(position);
+                                            recyclerAdapter.notifyItemRemoved(position);
+                                            Snackbar.make(binding.getRoot(),
+                                                    removed.getName() + " " + getResources().getString(R.string.deleted),
+                                                    Snackbar.LENGTH_LONG)
+                                                    .setAction("Undo", new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View view) {
+                                                            onDeleteUndo(removed,
+                                                                    mealType, associatedDate,
+                                                                    position);
+                                                        }
+                                                    }).show();
+                                            reloadMeal();
+                                            break;
+                                        case Constants.DATABASE_REMOVE_NOT_PRESENT:
+                                            Snackbar.make(binding.getRoot(),
+                                                    R.string.not_found, Snackbar.LENGTH_LONG)
+                                                    .show();
+                                            break;
+                                        case Constants.DATABASE_REMOVE_ERROR:
+                                            Snackbar.make(binding.getRoot(),
+                                                    R.string.error, Snackbar.LENGTH_LONG)
+                                                    .show();
+                                            break;
                                     }
-                                });
-                        break;
+                                }
+                            });
                 }
             }
 
@@ -166,9 +161,6 @@ public class MealActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MealActivity.this,
                         SearchHostActivity.class);
-
-                intent.putExtra(Constants.MEAL_TYPE, mealType);
-
                 startActivity(intent);
             }
         });
@@ -177,14 +169,7 @@ public class MealActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        viewModel.getMealByTypeAndDate(mealType, associatedDate).observe(this, new Observer<Meal>() {
-            @Override
-            public void onChanged(Meal meal) {
-                recyclerAdapter.setFoodDataset(meal.getMealFoods());
-                binding.setMeal(meal);
-            }
-        });
+        reloadMeal();
     }
 
     private void onDeleteUndo(Food foodToAdd, MealType mealType, Date date, int position) {
@@ -215,14 +200,15 @@ public class MealActivity extends AppCompatActivity {
     }
 
     private void reloadMeal() {
-        LiveData<Meal> databaseResponse = viewModel
-                .getMealByTypeAndDate(mealType, associatedDate);
+        binding.searchingTextView.setVisibility(View.VISIBLE);
 
-        databaseResponse.observe(this, new Observer<Meal>() {
+        viewModel.getMealByTypeAndDate(mealType, associatedDate).observe(this, new Observer<Meal>() {
             @Override
             public void onChanged(Meal meal) {
+                recyclerAdapter.setFoodDataset(meal.getMealFoods());
                 binding.setMeal(meal);
-                binding.invalidateAll();
+                if (meal.getMealFoods().size() > 0)
+                    binding.searchingTextView.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -237,5 +223,19 @@ public class MealActivity extends AppCompatActivity {
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public void addFoodToMeal(Food foodToAdd, MealType mealType) {
+
+    }
+
+    @Override
+    public void modifyFood(Food newFood) {
+        Food oldFood = recyclerAdapter.getFood(newFood);
+        if (oldFood != null) {
+            if (oldFood.getQuantity() != newFood.getQuantity())
+                viewModel.updateFoodInMeal(newFood, mealType, associatedDate);
+        }
     }
 }

@@ -21,12 +21,11 @@ public class EdamamFood implements Parcelable {
 
     public Food toFood() {
         String name = this.label;
-        String id = this.foodId;
         int quantity = 100;
         double carbsPerc = this.nutrients.getCHOCDF()/quantity;
         double prosPerc = this.nutrients.getPROCNT()/quantity;
         double fatsPerc = this.nutrients.getFAT()/quantity;
-        return new Food(name, id, quantity, carbsPerc, prosPerc, fatsPerc);
+        return new Food(name, quantity, carbsPerc, prosPerc, fatsPerc);
     }
 
     public String getFoodId() {

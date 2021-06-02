@@ -1,4 +1,4 @@
-package it.fooddiary.ui.search.searched;
+package it.fooddiary.ui;
 
 import it.fooddiary.models.Food;
 import it.fooddiary.utils.MealType;

@@ -86,68 +86,31 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="128dp"
+            <TextView
+                android:id="@+id/modifyQuantity"
+                style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/modifyQuantity"
+                android:textColor="@color/primaryColor" />
 
-                <TextView
-                    android:id="@+id/modifyQuantity"
-                    style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/quantity"
-                    android:textColor="@color/primaryColor" />
-
-                <NumberPicker
-                    android:id="@+id/quantityNumberPicker"
-                    android:layout_width="match_parent"
-                    android:layout_height="128dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="128dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/chooseMeal"
-                    style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/meal"
-                    android:textColor="@color/primaryColor" />
-
-                <NumberPicker
-                    android:id="@+id/mealNumberPicker"
-                    android:layout_width="match_parent"
-                    android:layout_height="128dp" />
-            </LinearLayout>
+            <NumberPicker
+                android:id="@+id/quantityNumberPicker"
+                android:layout_width="match_parent"
+                android:layout_height="128dp" />
         </LinearLayout>
     </LinearLayout>
 </layout>

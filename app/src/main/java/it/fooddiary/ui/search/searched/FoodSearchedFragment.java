@@ -22,16 +22,18 @@ import java.util.Date;
 import java.util.List;
 
 import it.fooddiary.R;
+import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.FragmentFoodSearchedBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.ui.FoodSearchedRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
 import it.fooddiary.viewmodels.AppViewModelFactory;
 
-public class FoodSearchedFragment extends Fragment {
+public class FoodSearchedFragment extends Fragment implements IDatabaseOperation {
 
     private static final String TAG = "FoodSearchedFragment";
 
@@ -44,15 +46,12 @@ public class FoodSearchedFragment extends Fragment {
 
     private AppViewModel viewModel;
 
-    public void setDisplayedMealType(MealType mealType) {
-
-    }
-
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentFoodSearchedBinding.inflate(inflater);
+
         viewModel = new ViewModelProvider(this,
                 new AppViewModelFactory(requireActivity().getApplication(),
                         new AppRepository(requireActivity().getApplication())))
@@ -60,7 +59,7 @@ public class FoodSearchedFragment extends Fragment {
 
         recyclerAdapter =
                 new FoodSearchedRecyclerAdapter(getChildFragmentManager(),
-                        new FoodSearchedItemAlert());
+                        new FoodSearchedItemAlert(this));
 
         if (lastSearchedFoodList.size() == 0) {
             binding.searchingTextView.setVisibility(View.VISIBLE);
@@ -93,13 +92,15 @@ public class FoodSearchedFragment extends Fragment {
                                     i < MAX_SEARCHED_FOODS_DISPLAYED; ++i) {
                                 Food tmp = edamamResponse.getParsed().get(i)
                                         .getFood().toFood();
-                                lastSearchedFoodList.add(tmp);
+                                if (!lastSearchedFoodList.contains(tmp) && tmp.getTotalCalories() > 0)
+                                    lastSearchedFoodList.add(tmp);
                             }
                             for(int j = 0; j < edamamResponse.getHints().size() &&
                                     i < MAX_SEARCHED_FOODS_DISPLAYED; ++i, ++j) {
                                 Food tmp = edamamResponse.getHints().get(j)
                                         .getFood().toFood();
-                                lastSearchedFoodList.add(tmp);
+                                if (!lastSearchedFoodList.contains(tmp) && tmp.getTotalCalories() > 0)
+                                    lastSearchedFoodList.add(tmp);
                             }
                             recyclerAdapter.setFoodDataset(lastSearchedFoodList);
                         } else {
@@ -116,6 +117,75 @@ public class FoodSearchedFragment extends Fragment {
                     }
                     binding.searchingProgressBar.setVisibility(View.INVISIBLE);
                 }
+        });
+    }
+
+    @Override
+    public void addFoodToMeal(Food foodToAdd, MealType mealToModify) {
+        Date currentDate = viewModel.getCurrentDate(requireActivity()
+                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
+                        Context.MODE_PRIVATE));
+
+        LiveData<Integer> databaseResponseLiveData = viewModel.insertFoodInMeal(foodToAdd,
+                mealToModify, currentDate);
+
+        databaseResponseLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                switch (integer) {
+                    case Constants.DATABASE_INSERT_OK:
+                    case Constants.DATABASE_UPDATE_OK:
+                        Snackbar.make(binding.getRoot(), R.string.added,
+                                Snackbar.LENGTH_SHORT)
+                                .setAction("Undo", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        removeFoodFromMeal(foodToAdd, mealToModify);
+                                    }
+                                })
+                                .show();
+                        break;
+                    case Constants.DATABASE_INSERT_ERROR:
+                    case Constants.DATABASE_UPDATE_ERROR:
+                        Snackbar.make(binding.getRoot(), R.string.error,
+                                Snackbar.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void modifyFood(Food updatedFood) {
+
+    }
+
+    private void removeFoodFromMeal(Food foodToRemove, MealType mealToModify) {
+        Date currentDate = viewModel.getCurrentDate(requireActivity()
+                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
+                        Context.MODE_PRIVATE));
+
+        LiveData<Integer> databaseResponse = viewModel
+                .removeFoodFromMeal(foodToRemove, mealToModify, currentDate);
+
+        databaseResponse.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                switch (integer) {
+                    case Constants.DATABASE_REMOVE_OK:
+                        Snackbar.make(binding.getRoot(), R.string.removed,
+                                Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case Constants.DATABASE_REMOVE_NOT_PRESENT:
+                        Snackbar.make(binding.getRoot(), R.string.not_found,
+                                Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case Constants.DATABASE_REMOVE_ERROR:
+                        Snackbar.make(binding.getRoot(), R.string.error,
+                                Snackbar.LENGTH_SHORT).show();
+                        break;
+                }
+            }
         });
     }
 }
