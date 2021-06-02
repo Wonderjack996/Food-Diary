@@ -11,6 +11,8 @@ import android.view.View;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Objects;
 
 import it.fooddiary.R;
@@ -41,14 +43,52 @@ public class EditAccountActivity extends AppCompatActivity {
 
         binding.numberPickerHeight.setMaxValue(Constants.MAX_HEIGHT_CM);
         binding.numberPickerHeight.setMinValue(Constants.MIN_HEIGHT_CM);
-        binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
         binding.numberPickerWeight.setMaxValue(Constants.MAX_WEIGHT_KG);
         binding.numberPickerWeight.setMinValue(Constants.MIN_WEIGHT_KG);
-        binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
         binding.numberPickerAge.setMaxValue(Constants.MAX_AGE);
         binding.numberPickerAge.setMinValue(Constants.MIN_AGE);
 
-        readInformation();
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getInt(Constants.USER_AGE, 0) != 0)
+                binding.numberPickerAge.setValue(savedInstanceState.getInt(Constants.USER_AGE));
+            else binding.numberPickerAge.setValue(Constants.MID_AGE);
+
+            if (savedInstanceState.getInt(Constants.USER_WEIGHT_KG, 0) != 0)
+                binding.numberPickerWeight.setValue(savedInstanceState.getInt(Constants.USER_WEIGHT_KG));
+            else  binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
+
+            if (savedInstanceState.getInt(Constants.USER_HEIGHT_CM, 0) != 0)
+                binding.numberPickerHeight.setValue(savedInstanceState.getInt(Constants.USER_HEIGHT_CM));
+            else binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
+
+            switch (savedInstanceState.getInt(Constants.USER_GENDER, Constants.GENDER_FEMALE)) {
+                case Constants.GENDER_FEMALE:
+                    binding.femaleRadioButton.setChecked(true);
+                    break;
+                case Constants.GENDER_MALE:
+                    binding.maleRadioButton.setChecked(true);
+                    break;
+            }
+
+            switch (savedInstanceState.getInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_MID)) {
+                case Constants.ACTIVITY_HIGH:
+                    binding.highRadioButton.setChecked(true);
+                    break;
+                case Constants.ACTIVITY_MID:
+                    binding.midRadioButton.setChecked(true);
+                    break;
+                case Constants.ACTIVITY_LOW:
+                    binding.lowRadioButton.setChecked(true);
+                    break;
+            }
+
+
+        } else {
+            binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
+            binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
+            binding.numberPickerAge.setValue(Constants.MID_AGE);
+            readInformation();
+        }
 
         binding.confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +178,26 @@ public class EditAccountActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+
+
+    @Override
+    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int height, weight, age, genderButtonId, activityButtonId;
+
+        genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
+        activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
+        height = binding.numberPickerHeight.getValue();
+        weight = binding.numberPickerWeight.getValue();
+        age = binding.numberPickerAge.getValue();
+
+        outState.putInt(Constants.USER_AGE, age);
+        outState.putInt(Constants.USER_WEIGHT_KG, weight);
+        outState.putInt(Constants.USER_HEIGHT_CM, height);
+        outState.putInt(Constants.USER_ACTIVITY_LEVEL, genderButtonId);
+        outState.putInt(Constants.USER_GENDER, activityButtonId);
     }
 
     @Override
