@@ -37,7 +37,7 @@
     <string name="gender_error">Seleziona il tuo sesso!</string>
     <string name="birth_error">Inserisci la data di nascita!</string>
     <string name="activity_error">Seleziona il tuo livello di attività!</string>
-    <string name="addCalories">Add Calories</string>
+    <string name="addCalories">Aggiungi calorie</string>
     <string name="male">Maschio</string>
     <string name="female">Femmina</string>
     <string name="age">Età (anni)</string>
@@ -57,4 +57,5 @@
     <string name="deleted">eliminato</string>
     <string name="confirm">conferma</string>
     <string name="select_date">Seleziona Data</string>
+    <string name="editAccount">Modifica Account</string>
 </resources>
