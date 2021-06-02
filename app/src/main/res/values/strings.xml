@@ -58,4 +58,5 @@
     <string name="meal">Meal</string>
     <string name="deleted">deleted</string>
     <string name="confirm">confirm</string>
+    <string name="editAccount">Edit Account</string>
 </resources>
