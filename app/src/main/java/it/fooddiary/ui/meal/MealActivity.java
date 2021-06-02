@@ -29,9 +29,7 @@ import it.fooddiary.databinding.ActivityMealBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
-import it.fooddiary.repositories.AppRepository;
-import it.fooddiary.ui.search.searched.FoodSearchedItemAlert;
-import it.fooddiary.ui.FoodSearchedRecyclerAdapter;
+import it.fooddiary.ui.FoodRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
@@ -42,7 +40,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
 
     private ActivityMealBinding binding;
 
-    private FoodSearchedRecyclerAdapter recyclerAdapter;
+    private FoodRecyclerAdapter recyclerAdapter;
 
     private Date associatedDate;
     private MealType mealType;
@@ -66,8 +64,8 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         getSupportActionBar().setTitle(mealType.toString(getResources())
                 + " - " + DateUtils.dateFormat.format(associatedDate));
 
-        recyclerAdapter = new FoodSearchedRecyclerAdapter(getSupportFragmentManager(),
-                new FoodSearchedItemAlert(this));
+        recyclerAdapter = new FoodRecyclerAdapter(getSupportFragmentManager(),
+                new FoodPropertiesItemAlert(this));
 
         viewModel.getMealProperties().observe(this, new Observer<MealProperties>() {
             @Override
@@ -230,8 +228,21 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     public void modifyFood(Food newFood) {
         Food oldFood = recyclerAdapter.getFood(newFood);
         if (oldFood != null) {
-            if (oldFood.getQuantity() != newFood.getQuantity())
-                viewModel.updateFoodInMeal(newFood, mealType, associatedDate);
+            viewModel.updateFoodInMeal(newFood, mealType, associatedDate).observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    switch (integer) {
+                        case Constants.DATABASE_UPDATE_OK:
+                            reloadMeal();
+                            break;
+                        case Constants.DATABASE_UPDATE_ERROR:
+                            Snackbar.make(binding.getRoot(),
+                                    R.string.error,
+                                    Snackbar.LENGTH_LONG).show();
+                            break;
+                    }
+                }
+            });
         }
     }
 }

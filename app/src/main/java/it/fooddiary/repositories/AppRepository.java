@@ -146,12 +146,17 @@ public class AppRepository {
                 else {
                     Meal newMeal = meals.get(0);
                     if (newMeal.getMealFoods().contains(foodToUpdate)) {
-                        boolean isRemoved = newMeal.removeFood(foodToUpdate);
-                        if (isRemoved) {
-                            newMeal.addFood(foodToUpdate);
-                            mealDao.update(newMeal);
-                        } else
-                            databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                        Food oldFood = newMeal.getMealFoods()
+                                .get(newMeal.getMealFoods().indexOf(foodToUpdate));
+                        if (oldFood.getQuantity() != foodToUpdate.getQuantity()) {
+                            boolean isRemoved = newMeal.removeFood(foodToUpdate);
+                            if (isRemoved) {
+                                newMeal.addFood(foodToUpdate);
+                                mealDao.update(newMeal);
+                                databaseOperationResult.postValue(Constants.DATABASE_UPDATE_OK);
+                            } else
+                                databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                        }
                     } else
                         databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
                 }

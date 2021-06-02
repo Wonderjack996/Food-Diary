@@ -78,9 +78,9 @@ public class FoodPropertiesItemAlert extends DialogFragment implements IFoodAler
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int quantity = binding.quantityNumberPicker.getValue();
-                foodClicked.setQuantity(quantity);
                 if (databaseOperation != null)
                     databaseOperation.modifyFood(foodClicked);
+                foodClicked.setQuantity(quantity);
             }
         });
         return dialogBuilder.create();

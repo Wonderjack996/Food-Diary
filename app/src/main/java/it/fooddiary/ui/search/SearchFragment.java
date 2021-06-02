@@ -92,15 +92,7 @@ public class SearchFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NumberPicker numberPicker = new NumberPicker(getActivity());
-                numberPicker.setMinValue(Constants.MIN_CALORIES_KCAL);
-                numberPicker.setMaxValue(Constants.MAX_CALORIES_KCAL);
-                numberPicker.setValue(Constants.MID_CALORIES_KCAL);
-                addCaloriesDialog.setTitle(R.string.addCalories);
-                addCaloriesDialog.setView(numberPicker);
-                addCaloriesDialog.setPositiveButton(R.string.ok, null);
-                addCaloriesDialog.setNegativeButton(R.string.cancel, null);
-                addCaloriesDialog.show();
+
             }
         });
 

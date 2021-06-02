@@ -17,8 +17,8 @@ import it.fooddiary.R;
 import it.fooddiary.databinding.HolderFoodItemBinding;
 import it.fooddiary.models.Food;
 
-public class FoodSearchedRecyclerAdapter extends
-        RecyclerView.Adapter<FoodSearchedRecyclerAdapter.FoodSearchedViewHolder> {
+public class FoodRecyclerAdapter extends
+        RecyclerView.Adapter<FoodRecyclerAdapter.FoodSearchedViewHolder> {
 
     private static final String TAG = "FoodSearchRecAdapter";
 
@@ -26,7 +26,7 @@ public class FoodSearchedRecyclerAdapter extends
     private final FragmentManager fragmentManager;
     private final IFoodAlert foodAlert;
 
-    public FoodSearchedRecyclerAdapter(FragmentManager fragmentManager, IFoodAlert foodAlert) {
+    public FoodRecyclerAdapter(FragmentManager fragmentManager, IFoodAlert foodAlert) {
         this.foodDataset = new ArrayList<>();
         this.fragmentManager = fragmentManager;
         this.foodAlert = foodAlert;

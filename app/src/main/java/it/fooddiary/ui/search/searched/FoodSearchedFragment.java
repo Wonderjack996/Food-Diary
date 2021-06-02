@@ -26,8 +26,7 @@ import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.FragmentFoodSearchedBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.edamam_models.EdamamResponse;
-import it.fooddiary.repositories.AppRepository;
-import it.fooddiary.ui.FoodSearchedRecyclerAdapter;
+import it.fooddiary.ui.FoodRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
@@ -40,7 +39,7 @@ public class FoodSearchedFragment extends Fragment implements IDatabaseOperation
 
     private static final List<Food> lastSearchedFoodList = new ArrayList<>();
 
-    private FoodSearchedRecyclerAdapter recyclerAdapter = null;
+    private FoodRecyclerAdapter recyclerAdapter = null;
     private FragmentFoodSearchedBinding binding;
 
     private AppViewModel viewModel;
@@ -53,7 +52,7 @@ public class FoodSearchedFragment extends Fragment implements IDatabaseOperation
 
         viewModel = new ViewModelProvider(this).get(AppViewModel.class);
         recyclerAdapter =
-                new FoodSearchedRecyclerAdapter(getChildFragmentManager(),
+                new FoodRecyclerAdapter(getChildFragmentManager(),
                         new FoodSearchedItemAlert(this));
 
         if (lastSearchedFoodList.size() == 0) {
