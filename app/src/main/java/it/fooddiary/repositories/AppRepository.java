@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -210,6 +211,42 @@ public class AppRepository {
         return databaseOperationResult;
     }
 
+    public LiveData<List<Food>> getRecentFoods() {
+        MutableLiveData<List<Food>> listFoodLiveData = new MutableLiveData<>();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Food> recentList = recentFoodDao.getAll();
+                if(recentList != null)
+                    listFoodLiveData.postValue(recentList);
+                else
+                    listFoodLiveData.postValue(new ArrayList<>());
+
+            }
+        }).start();
+        return listFoodLiveData;
+    }
+    public LiveData<Integer> removeFoodFormRecent(Food foodToRemove) {
+        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Food> recentList = recentFoodDao.getAll();
+                if(recentList != null && recentList.contains(foodToRemove)){
+                    recentFoodDao.delete(foodToRemove);
+                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_OK);
+                }
+                else {
+                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_ERROR);
+                }
+            }
+        }).start();
+        return databaseOperationResult;
+
+    }
+
+
     public LiveData<MealProperties> getMealProperties() {
         return mealProperties;
     }
@@ -356,4 +393,5 @@ public class AppRepository {
 
         return new UserProperties(age, gender, heightCm, weightKg, activityLevel);
     }
+
 }

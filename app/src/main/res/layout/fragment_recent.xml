@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".ui.search.recents.RecentFragment" >
 
+    <TextView
+        android:id="@+id/searchingTextView"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/nothing_to_show"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recent_list"
         android:layout_width="match_parent"

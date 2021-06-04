@@ -195,6 +195,21 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
                             }
                         }
                     });
+            viewModel.addFoodToRecent(foodToAdd).observe(this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    switch (integer){
+                        case Constants.DATABASE_INSERT_RECENT_FOOD_OK:
+                            break;
+                        default:
+                            Snackbar.make(requireView(), R.string.error,
+                                    Snackbar.LENGTH_SHORT)
+                                    .setAnchorView(R.id.addCalories_floatingButton)
+                                    .show();
+                            break;
+                    }
+                }
+            });
         }
     }
 
@@ -210,6 +225,7 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
                 .removeFoodFromMeal(foodToRemove, mealToModify, currentDate);
 
         databaseResponse.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+
             @Override
             public void onChanged(Integer integer) {
                 switch (integer) {
@@ -232,6 +248,22 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
                                 .show();
                         break;
                 }
+            }
+        });
+        viewModel.removeFoodFromRecent(foodToRemove).observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                switch (integer) {
+                    case Constants.DATABASE_REMOVE_RECENT_FOOD_OK:
+                        break;
+                    default:
+                        Snackbar.make(requireView(), R.string.error,
+                                Snackbar.LENGTH_SHORT)
+                                .setAnchorView(R.id.addCalories_floatingButton)
+                                .show();
+                        break;
+                }
+
             }
         });
     }

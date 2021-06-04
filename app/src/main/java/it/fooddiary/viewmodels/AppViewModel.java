@@ -74,4 +74,10 @@ public class AppViewModel extends AndroidViewModel {
     public LiveData<Integer> addFoodToRecent(Food foodToAdd){
         return repository.addFoodToRecent(foodToAdd);
     }
+    public LiveData<List<Food>> getRecentFoods(){
+        return repository.getRecentFoods();
+    }
+    public LiveData<Integer> removeFoodFromRecent(Food foodToRemove){
+        return repository.removeFoodFormRecent(foodToRemove);
+    }
 }

@@ -72,18 +72,21 @@ public class Constants {
     public static final int DATABASE_INSERT_OK = 200;
     public static final int DATABASE_UPDATE_OK = 210;
     public static final int DATABASE_REMOVE_OK = 220;
-    public static final int DATABASE_INSERT_RECENT_FOOD_OK = 230;
+    public static final int DATABASE_REMOVE_RECENT_FOOD_OK =230 ;
+    public static final int DATABASE_INSERT_RECENT_FOOD_OK = 240;
     public static final int DATABASE_INSERT_ALREADY_PRESENT = 300;
     public static final int DATABASE_INSERT_ERROR = 400;
     public static final int DATABASE_UPDATE_ERROR = 410;
     public static final int DATABASE_REMOVE_ERROR = 420;
     public static final int DATABASE_REMOVE_NOT_PRESENT = 430;
     public static final int DATABASE_INSERT_RECENT_FOOD_ERROR = 440;
+    public static final int DATABASE_REMOVE_RECENT_FOOD_ERROR = 450;
 
     public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";
 
     public static final String CURRENT_DATE = "CurrentDate";
     public static final String MEAL_TYPE = "MealType";
+
 
     public static int calculateBMR_Male(int weight, int height, int age) {
         return 10*weight + 6*height - 5*age + 5;
