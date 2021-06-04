@@ -244,7 +244,6 @@
                         android:text="@string/low" />
                 </RadioGroup>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -264,6 +263,5 @@
                 android:layout_marginTop="32dp"
                 android:text="@string/confirm" />
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

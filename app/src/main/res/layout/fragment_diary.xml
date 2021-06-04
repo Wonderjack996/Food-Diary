@@ -65,8 +65,8 @@
                         android:background="@drawable/circular_shape"
                         android:indeterminate="false"
                         android:max="100"
-                        android:progress='@{(int)(((float)(breakfastMeal.totalCalories+lunchMeal.totalCalories+dinnerMeal.totalCalories+snacksMeal.totalCalories)/mealProperties.caloriesDailyIntake)*100)}'
                         android:padding="8dp"
+                        android:progress='@{(int)(((float)(breakfastMeal.totalCalories+lunchMeal.totalCalories+dinnerMeal.totalCalories+snacksMeal.totalCalories)/mealProperties.caloriesDailyIntake)*100)}'
                         android:progressDrawable="@drawable/circular_progress_bar"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

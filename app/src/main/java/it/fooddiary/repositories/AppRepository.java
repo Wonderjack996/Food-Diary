@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,36 +36,29 @@ public class AppRepository {
 
     private static final String TAG = "AppRepository";
 
-    private static AppRepository instance;
-
     private final IFoodServices foodServices;
     private final MealDao mealDao;
     private final RecentFoodDao recentFoodDao;
     private final Application application;
 
-    private final MutableLiveData<MealProperties> mealProperties;
-    private final MutableLiveData<UserProperties> userProperties;
+    private static MutableLiveData<MealProperties> mealProperties;
+    private static MutableLiveData<UserProperties> userProperties;
 
-    public static AppRepository getInstance(Application application) {
-        if (instance == null) {
-            synchronized(ServicesLocator.class) {
-                instance = new AppRepository(application);
-            }
-        }
-        return instance;
-    }
-
-    private AppRepository(Application application) {
+    public AppRepository(Application application) {
         this.application = application;
         this.foodServices = ServicesLocator.getInstance().getFoodServicesWithRetrofit();
         this.mealDao = ServicesLocator.getInstance().getAppDatabase(application).mealDao();
         this.recentFoodDao = ServicesLocator.getInstance().getAppDatabase(application).recentFoodDao();
 
-        this.mealProperties = new MutableLiveData<>();
-        this.userProperties = new MutableLiveData<>();
+        if (mealProperties == null) {
+            mealProperties = new MutableLiveData<>();
+            mealProperties.setValue(loadMealPropertiesFromSharedPreferences());
+        }
 
-        mealProperties.setValue(loadMealPropertiesFromSharedPreferences());
-        userProperties.setValue(loadUserPropertiesFromSharedPreferences());
+        if (userProperties == null) {
+            userProperties = new MutableLiveData<>();
+            userProperties.setValue(loadUserPropertiesFromSharedPreferences());
+        }
     }
 
     public MutableLiveData<EdamamResponse> fetchFoods(String ingredient) {
@@ -107,8 +102,7 @@ public class AppRepository {
         return mealMutableLiveData;
     }
 
-    public LiveData<Integer> insertFoodInMeal(Food foodToInsert,
-                                                     MealType mealType, Date date) {
+    public LiveData<Integer> insertFoodInMeal(Food foodToInsert, MealType mealType, Date date) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
         new Thread(new Runnable() {
@@ -122,19 +116,22 @@ public class AppRepository {
                     databaseOperationResult.postValue(Constants.DATABASE_INSERT_OK);
                 } else if (mealList.size() == 1) {
                     Meal updatedMeal = mealList.get(0);
-                    updatedMeal.addFood(foodToInsert);
-                    mealDao.update(updatedMeal);
-                    databaseOperationResult.postValue(Constants.DATABASE_UPDATE_OK);
+                    if (!updatedMeal.getMealFoods().contains(foodToInsert)) {
+                        updatedMeal.addFood(foodToInsert);
+                        mealDao.update(updatedMeal);
+                        databaseOperationResult.postValue(Constants.DATABASE_INSERT_OK);
+                    } else {
+                        databaseOperationResult.postValue(Constants.DATABASE_INSERT_ALREADY_PRESENT);
+                    }
                 } else
-                    databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_ERROR);
             }
         }).start();
 
         return databaseOperationResult;
     }
 
-    public LiveData<Integer> updateFoodInMeal(Food foodToUpdate,
-                                              MealType mealType, Date date) {
+    public LiveData<Integer> updateFoodInMeal(Food foodToUpdate, MealType mealType, Date date) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
         new Thread(new Runnable() {
@@ -166,28 +163,7 @@ public class AppRepository {
         return databaseOperationResult;
     }
 
-    public LiveData<Integer> addFoodToRecent(Food foodToAdd){
-        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-               List<Food> recentList = recentFoodDao.getAll();
-                if(recentList != null && !recentList.contains(foodToAdd)){
-                    recentFoodDao.insert(foodToAdd);
-                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_FOOD_OK);
-                }
-                else {
-                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_FOOD_ERROR);
-                }
-            }
-
-        }).start();
-        return databaseOperationResult;
-    }
-
-    public LiveData<Integer> removeFoodFromMeal(Food foodToRemove,
-                                                       MealType mealType, Date date) {
+    public LiveData<Integer> removeFoodFromMeal(Food foodToRemove, MealType mealType, Date date) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
         new Thread(new Runnable() {
@@ -212,6 +188,25 @@ public class AppRepository {
             }
         }).start();
 
+        return databaseOperationResult;
+    }
+
+    public LiveData<Integer> addFoodToRecent(Food foodToAdd){
+        MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Food> recentList = recentFoodDao.getAll();
+                if(recentList != null && !recentList.contains(foodToAdd)){
+                    recentFoodDao.insert(foodToAdd);
+                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_OK);
+                }
+                else {
+                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_ERROR);
+                }
+            }
+        }).start();
         return databaseOperationResult;
     }
 
@@ -286,8 +281,11 @@ public class AppRepository {
         }).start();
     }
 
-    public Date loadCurrentDate(SharedPreferences preferences) {
+    public Date loadCurrentDate() {
         Date ret;
+        SharedPreferences preferences = application
+                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
+                        Context.MODE_PRIVATE);
         String date = preferences.getString(Constants.CURRENT_DATE, null);
 
         if (date == null)
@@ -303,12 +301,15 @@ public class AppRepository {
         return ret;
     }
 
-    public void saveCurrentDate(Date date, SharedPreferences preferences) {
+    public void saveCurrentDate(Date date) {
         if (date != null) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     synchronized (this) {
+                        SharedPreferences preferences = application
+                                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
+                                        Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
 
                         editor.putString(Constants.CURRENT_DATE, DateUtils.dateFormat.format(date));
@@ -320,6 +321,7 @@ public class AppRepository {
         }
     }
 
+    @NotNull
     private MealProperties loadMealPropertiesFromSharedPreferences() {
         SharedPreferences preferences = application
                 .getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
@@ -340,6 +342,7 @@ public class AppRepository {
         return new MealProperties(cal, carbsPerc, proteinsPerc, fatsPerc);
     }
 
+    @NotNull
     private UserProperties loadUserPropertiesFromSharedPreferences() {
         SharedPreferences preferences = application
                 .getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,

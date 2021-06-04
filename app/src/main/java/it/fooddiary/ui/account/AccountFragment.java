@@ -20,6 +20,7 @@ import it.fooddiary.databinding.FragmentAccountBinding;
 import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class AccountFragment extends Fragment {
     private static final String TAG = "AccountFragment";
@@ -48,7 +49,10 @@ public class AccountFragment extends Fragment {
         binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_account, container, false);
 
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(requireActivity().getApplication(),
+                        new AppRepository(requireActivity().getApplication())))
+                .get(AppViewModel.class);
 
         viewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
             @Override

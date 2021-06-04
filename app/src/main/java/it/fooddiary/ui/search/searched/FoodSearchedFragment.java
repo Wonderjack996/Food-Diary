@@ -24,14 +24,18 @@ import java.util.List;
 import it.fooddiary.R;
 import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.FragmentFoodSearchedBinding;
+import it.fooddiary.databinding.FragmentViewpagerDiaryBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.edamam_models.EdamamResponse;
+import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.ui.FoodRecyclerAdapter;
+import it.fooddiary.ui.search.SearchFragment;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 
-public class FoodSearchedFragment extends Fragment implements IDatabaseOperation {
+public class FoodSearchedFragment extends Fragment {
 
     private static final String TAG = "FoodSearchedFragment";
 
@@ -49,11 +53,21 @@ public class FoodSearchedFragment extends Fragment implements IDatabaseOperation
                              ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentFoodSearchedBinding.inflate(inflater);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(requireActivity().getApplication(),
+                        new AppRepository(requireActivity().getApplication())))
+                .get(AppViewModel.class);
 
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
-        recyclerAdapter =
-                new FoodRecyclerAdapter(getChildFragmentManager(),
-                        new FoodSearchedItemAlert(this));
+        Fragment parent = getParentFragment();
+        if (parent instanceof SearchFragment) {
+            recyclerAdapter =
+                    new FoodRecyclerAdapter(getChildFragmentManager(),
+                            new FoodSearchedItemAlert((SearchFragment)parent));
+        } else {
+            recyclerAdapter =
+                    new FoodRecyclerAdapter(getChildFragmentManager(),
+                            new FoodSearchedItemAlert(null));
+        }
 
         if (lastSearchedFoodList.size() == 0) {
             binding.searchingTextView.setVisibility(View.VISIBLE);
@@ -111,75 +125,6 @@ public class FoodSearchedFragment extends Fragment implements IDatabaseOperation
                     }
                     binding.searchingProgressBar.setVisibility(View.INVISIBLE);
                 }
-        });
-    }
-
-    @Override
-    public void addFoodToMeal(Food foodToAdd, MealType mealToModify) {
-        Date currentDate = viewModel.getCurrentDate(requireActivity()
-                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE));
-
-        LiveData<Integer> databaseResponseLiveData = viewModel.insertFoodInMeal(foodToAdd,
-                mealToModify, currentDate);
-
-        databaseResponseLiveData.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_INSERT_OK:
-                    case Constants.DATABASE_UPDATE_OK:
-                        Snackbar.make(binding.getRoot(), R.string.added,
-                                Snackbar.LENGTH_SHORT)
-                                .setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        removeFoodFromMeal(foodToAdd, mealToModify);
-                                    }
-                                })
-                                .show();
-                        break;
-                    case Constants.DATABASE_INSERT_ERROR:
-                    case Constants.DATABASE_UPDATE_ERROR:
-                        Snackbar.make(binding.getRoot(), R.string.error,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        });
-    }
-
-    @Override
-    public void modifyFood(Food updatedFood) {
-
-    }
-
-    private void removeFoodFromMeal(Food foodToRemove, MealType mealToModify) {
-        Date currentDate = viewModel.getCurrentDate(requireActivity()
-                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE));
-
-        LiveData<Integer> databaseResponse = viewModel
-                .removeFoodFromMeal(foodToRemove, mealToModify, currentDate);
-
-        databaseResponse.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_REMOVE_OK:
-                        Snackbar.make(binding.getRoot(), R.string.removed,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
-                    case Constants.DATABASE_REMOVE_NOT_PRESENT:
-                        Snackbar.make(binding.getRoot(), R.string.not_found,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
-                    case Constants.DATABASE_REMOVE_ERROR:
-                        Snackbar.make(binding.getRoot(), R.string.error,
-                                Snackbar.LENGTH_SHORT).show();
-                        break;
-                }
-            }
         });
     }
 }

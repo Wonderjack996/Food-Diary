@@ -29,11 +29,13 @@ import it.fooddiary.databinding.ActivityMealBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
+import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.ui.FoodRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MealActivity extends AppCompatActivity implements IDatabaseOperation {
@@ -55,7 +57,10 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(getApplication(),
+                        new AppRepository(getApplication())))
+                .get(AppViewModel.class);
 
         Intent intent = getIntent();
         associatedDate = (Date) intent.getSerializableExtra(Constants.CURRENT_DATE);
@@ -112,17 +117,21 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                                                                     mealType, associatedDate,
                                                                     position);
                                                         }
-                                                    }).show();
+                                                    })
+                                                    .setAnchorView(binding.floatingActionButton)
+                                                    .show();
                                             reloadMeal();
                                             break;
                                         case Constants.DATABASE_REMOVE_NOT_PRESENT:
                                             Snackbar.make(binding.getRoot(),
                                                     R.string.not_found, Snackbar.LENGTH_LONG)
+                                                    .setAnchorView(binding.floatingActionButton)
                                                     .show();
                                             break;
                                         case Constants.DATABASE_REMOVE_ERROR:
                                             Snackbar.make(binding.getRoot(),
                                                     R.string.error, Snackbar.LENGTH_LONG)
+                                                    .setAnchorView(binding.floatingActionButton)
                                                     .show();
                                             break;
                                     }
@@ -177,15 +186,16 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                     case Constants.DATABASE_UPDATE_OK:
                         recyclerAdapter.addItem(foodToAdd, position);
                         recyclerAdapter.notifyItemInserted(position);
-                        Snackbar.make(binding.getRoot(),
-                                R.string.added, Snackbar.LENGTH_LONG)
-                                .show();
+                        Snackbar.make(binding.getRoot(), R.string.added, Snackbar.LENGTH_LONG)
+                                    .setAnchorView(binding.floatingActionButton)
+                                    .show();
                         reloadMeal();
                         break;
                     case Constants.DATABASE_INSERT_ERROR:
                     case Constants.DATABASE_UPDATE_ERROR:
                         Snackbar.make(binding.getRoot(),
                                 R.string.error, Snackbar.LENGTH_LONG)
+                                .setAnchorView(binding.floatingActionButton)
                                 .show();
                         break;
                 }
@@ -238,7 +248,9 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                         case Constants.DATABASE_UPDATE_ERROR:
                             Snackbar.make(binding.getRoot(),
                                     R.string.error,
-                                    Snackbar.LENGTH_LONG).show();
+                                    Snackbar.LENGTH_LONG)
+                                    .setAnchorView(binding.floatingActionButton)
+                                    .show();
                             break;
                     }
                 }

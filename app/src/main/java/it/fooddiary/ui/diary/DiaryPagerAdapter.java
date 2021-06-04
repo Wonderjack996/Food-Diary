@@ -1,23 +1,19 @@
 package it.fooddiary.ui.diary;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class DiaryPagerAdapter extends FragmentStatePagerAdapter {
+
+    private static final String TAG = "DiaryPagerAdapter";
 
     private final FragmentManager fragmentManager;
 
@@ -38,21 +34,13 @@ public class DiaryPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object){
-        /*
-         * called when the fragments are reordered to get the
-         * changes.
-         */
-        int idx = dataSet.indexOf((DiaryFragment) object);
-        return idx < 0 ? POSITION_NONE : idx;
-    }
-
-    @Override
     public int getCount() {
         return dataSet.size();
     }
 
     private void loadFragment(Date centralDate, int numFragment) {
+        for(Fragment frag : fragmentManager.getFragments())
+            fragmentManager.beginTransaction().remove(frag).commit();
         for(int i = 0; i < dataSet.size(); ++i)
             fragmentManager.beginTransaction().remove(dataSet.get(i)).commit();
         dataSet.clear();

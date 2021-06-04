@@ -2,6 +2,7 @@ package it.fooddiary.ui.account;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -21,6 +22,7 @@ import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class EditAccountActivity extends AppCompatActivity {
     private static final String TAG = "EditAccountActivity";
@@ -37,7 +39,10 @@ public class EditAccountActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(getApplication(),
+                        new AppRepository(getApplication())))
+                .get(AppViewModel.class);
 
         getSupportActionBar().setTitle(R.string.editAccount);
 
@@ -81,8 +86,6 @@ public class EditAccountActivity extends AppCompatActivity {
                     binding.lowRadioButton.setChecked(true);
                     break;
             }
-
-
         } else {
             binding.numberPickerWeight.setValue(Constants.MID_WEIGHT_KG);
             binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
@@ -142,6 +145,36 @@ public class EditAccountActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int height, weight, age, genderButtonId, activityButtonId;
+
+        genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
+        activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
+        height = binding.numberPickerHeight.getValue();
+        weight = binding.numberPickerWeight.getValue();
+        age = binding.numberPickerAge.getValue();
+
+        outState.putInt(Constants.USER_AGE, age);
+        outState.putInt(Constants.USER_WEIGHT_KG, weight);
+        outState.putInt(Constants.USER_HEIGHT_CM, height);
+        outState.putInt(Constants.USER_ACTIVITY_LEVEL, genderButtonId);
+        outState.putInt(Constants.USER_GENDER, activityButtonId);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch(item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
     private void readInformation(){
         viewModel.getUserProperties().observe(this, new Observer<UserProperties>() {
             @Override
@@ -178,37 +211,5 @@ public class EditAccountActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-
-
-    @Override
-    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        int height, weight, age, genderButtonId, activityButtonId;
-
-        genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
-        activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
-        height = binding.numberPickerHeight.getValue();
-        weight = binding.numberPickerWeight.getValue();
-        age = binding.numberPickerAge.getValue();
-
-        outState.putInt(Constants.USER_AGE, age);
-        outState.putInt(Constants.USER_WEIGHT_KG, weight);
-        outState.putInt(Constants.USER_HEIGHT_CM, height);
-        outState.putInt(Constants.USER_ACTIVITY_LEVEL, genderButtonId);
-        outState.putInt(Constants.USER_GENDER, activityButtonId);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            default:
-                return false;
-        }
-        return true;
     }
 }

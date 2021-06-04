@@ -19,12 +19,16 @@ import android.view.ViewGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 
 import it.fooddiary.R;
+import it.fooddiary.databinding.FragmentViewpagerDiaryBinding;
 import it.fooddiary.repositories.AppRepository;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.viewmodels.AppViewModel;
+import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class DiaryViewpagerFragment extends Fragment {
 
@@ -34,11 +38,11 @@ public class DiaryViewpagerFragment extends Fragment {
 
     private static final int NUM_PRELOADED_FRAGMENT = 31;
 
+    private FragmentViewpagerDiaryBinding binding;
+    private DiaryPagerAdapter diaryPagerAdapter;
+
     private MaterialDatePicker<Long> datePicker;
     private Date displayedDate;
-
-    private ViewPager diaryViewPager;
-    private DiaryPagerAdapter diaryPagerAdapter;
 
     private AppViewModel viewModel;
 
@@ -70,7 +74,11 @@ public class DiaryViewpagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        viewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        binding = FragmentViewpagerDiaryBinding.inflate(inflater);
+        viewModel = new ViewModelProvider(this,
+                new AppViewModelFactory(requireActivity().getApplication(),
+                        new AppRepository(requireActivity().getApplication())))
+                .get(AppViewModel.class);
 
         // set up date picker
         datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();
@@ -81,14 +89,11 @@ public class DiaryViewpagerFragment extends Fragment {
             }
         });
 
-        displayedDate = viewModel
-                .getCurrentDate(getActivity()
-                        .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                                Context.MODE_PRIVATE));
+        displayedDate = viewModel.getCurrentDate();
         diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
                 displayedDate, NUM_PRELOADED_FRAGMENT);
 
-        return inflater.inflate(R.layout.fragment_viewpager_diary, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -96,11 +101,11 @@ public class DiaryViewpagerFragment extends Fragment {
                               @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        diaryViewPager = view.findViewById(R.id.diary_viewPager);
-        diaryViewPager.setAdapter(diaryPagerAdapter);
-        diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
+        binding.diaryViewPager.setSaveEnabled(false);
+        binding.diaryViewPager.setAdapter(diaryPagerAdapter);
+        binding.diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
 
-        diaryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        binding.diaryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -110,9 +115,7 @@ public class DiaryViewpagerFragment extends Fragment {
             public void onPageSelected(int position) {
                 DiaryFragment x = (DiaryFragment) diaryPagerAdapter.getItem(position);
                 displayedDate = x.getAssociatedDate();
-                viewModel.setCurrentDate(displayedDate, getActivity()
-                        .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                                Context.MODE_PRIVATE));
+                viewModel.setCurrentDate(displayedDate);
             }
 
             @Override
@@ -124,14 +127,12 @@ public class DiaryViewpagerFragment extends Fragment {
 
     private void onDateChanged(Date date) {
         displayedDate = date;
-        viewModel.setCurrentDate(displayedDate, getActivity()
-                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE));
+        viewModel.setCurrentDate(displayedDate);
 
         diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
                 date, NUM_PRELOADED_FRAGMENT);
-        diaryViewPager.setAdapter(diaryPagerAdapter);
-        diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
+        binding.diaryViewPager.setAdapter(diaryPagerAdapter);
+        binding.diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
     }
 
     private void onItemCalendarClicked() {

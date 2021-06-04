@@ -46,7 +46,7 @@ public class Food implements IFoodProperties, Parcelable {
         else
             this.quantity = 0;
 
-        if (carbsPercent > 0 && proteinsPercent > 0 && fatsPercent > 0) {
+        if (carbsPercent >= 0 && proteinsPercent >= 0 && fatsPercent >= 0) {
             this.carbsPercent = carbsPercent;
             this.proteinsPercent = proteinsPercent;
             this.fatsPercent = fatsPercent;
@@ -117,12 +117,12 @@ public class Food implements IFoodProperties, Parcelable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Food food = (Food) o;
-        return name.equals(food.name);
+        return name.toUpperCase().equals(food.name.toUpperCase());
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return name.toUpperCase().hashCode();
     }
 
 

@@ -37,7 +37,7 @@
     <string name="gender_error">Select your gender!</string>
     <string name="birth_error">Insert a date of birth!</string>
     <string name="activity_error">Select your activity level!</string>
-    <string name="addCalories">Add Calories</string>
+    <string name="add_personal">Add your food</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="age">Age (years)</string>
@@ -59,4 +59,9 @@
     <string name="confirm">confirm</string>
     <string name="select_date">Select Date</string>
     <string name="editAccount">Edit Account</string>
+    <string name="carbs_percent">Carbs (%)</string>
+    <string name="pro_percent">Pro (%)</string>
+    <string name="fats_percent">Fats (%)</string>
+    <string name="name_not_valid">Name not valid!</string>
+    <string name="food_present">Food with same name already present in that meal</string>
 </resources>

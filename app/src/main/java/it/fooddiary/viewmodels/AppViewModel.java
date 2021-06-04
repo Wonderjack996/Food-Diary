@@ -26,17 +26,18 @@ public class AppViewModel extends AndroidViewModel {
 
     private final AppRepository repository;
 
-    public AppViewModel(@NonNull @NotNull Application application) {
+    public AppViewModel(@NonNull @NotNull Application application,
+                        @NonNull @NotNull AppRepository repository) {
         super(application);
-        this.repository = AppRepository.getInstance(application);
+        this.repository = repository;
     }
 
-    public Date getCurrentDate(SharedPreferences preferences) {
-        return repository.loadCurrentDate(preferences);
+    public Date getCurrentDate() {
+        return repository.loadCurrentDate();
     }
 
-    public void setCurrentDate(Date date, SharedPreferences preferences) {
-        repository.saveCurrentDate(date, preferences);
+    public void setCurrentDate(Date date) {
+        repository.saveCurrentDate(date);
     }
 
     public LiveData<Meal> getMealByTypeAndDate(MealType mealType, Date date) {

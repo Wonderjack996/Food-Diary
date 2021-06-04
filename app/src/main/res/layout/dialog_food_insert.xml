@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/mainLinearLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -14,7 +18,7 @@
 
         <EditText
             android:id="@+id/editTextTextPersonName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:autofillHints="@string/name"
             android:ems="10"
@@ -22,103 +26,149 @@
             android:inputType="textPersonName" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="128dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/modifyQuantity"
+                    style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/quantity"
+                    android:textColor="@color/primaryColor" />
+
+                <NumberPicker
+                    android:id="@+id/quantityNumberPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="128dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="128dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/chooseMeal"
+                    style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/meal"
+                    android:textColor="@color/primaryColor" />
+
+                <NumberPicker
+                    android:id="@+id/mealNumberPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="128dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/modifyQuantity"
+                android:id="@+id/modifyCarbs"
                 style="@style/TextAppearance.MdcTypographyStyles.Headline5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="@string/quantity"
+                android:text="@string/carbs_percent"
                 android:textColor="@color/primaryColor" />
 
             <NumberPicker
-                android:id="@+id/quantityNumberPicker"
+                android:id="@+id/carbsNumberPicker"
                 android:layout_width="match_parent"
                 android:layout_height="100dp" />
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/modifyCarbs"
-            style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="8dp"
             android:gravity="center"
-            android:text="@string/carbs"
-            android:textColor="@color/primaryColor" />
+            android:orientation="vertical">
 
-        <NumberPicker
-            android:id="@+id/carbsNumberPicker"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/modifyProteins"
+                style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/pro_percent"
+                android:textColor="@color/primaryColor" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="vertical">
+            <NumberPicker
+                android:id="@+id/proteinsNumberPicker"
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/modifyProteins"
-            style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="8dp"
             android:gravity="center"
-            android:text="@string/proteins"
-            android:textColor="@color/primaryColor" />
+            android:orientation="vertical">
 
-        <NumberPicker
-            android:id="@+id/proteinsNumberPicker"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/modifyFats"
+                style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/fats_percent"
+                android:textColor="@color/primaryColor" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/modifyFats"
-            style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/fats"
-            android:textColor="@color/primaryColor" />
-
-        <NumberPicker
-            android:id="@+id/fatsNumberPicker"
-            android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            <NumberPicker
+                android:id="@+id/fatsNumberPicker"
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

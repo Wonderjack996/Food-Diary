@@ -40,9 +40,6 @@ public class Constants {
     public static final int MIN_AGE = 10;
     public static final int MAX_AGE = 120;
     public static final int MID_AGE = 30;
-    public static final int MAX_CALORIES_KCAL = 10000;
-    public static final int MIN_CALORIES_KCAL = 1;
-    public static final int MID_CALORIES_KCAL = 200;
     public static final int MAX_HEIGHT_CM = 300;
     public static final int MIN_HEIGHT_CM = 10;
     public static final int MID_HEIGHT_CM = 160;
@@ -51,6 +48,7 @@ public class Constants {
     public static final int MID_WEIGHT_KG = 70;
     public static final int MAX_FOOD_GRAMS = 10000;
     public static final int MIN_FOOD_GRAMS = 1;
+    public static final int MID_FOOD_GRAMS = 100;
 
     /**
      * Edamam API Fields
@@ -74,12 +72,13 @@ public class Constants {
     public static final int DATABASE_INSERT_OK = 200;
     public static final int DATABASE_UPDATE_OK = 210;
     public static final int DATABASE_REMOVE_OK = 220;
-    public static final int DATABASE_INSERT_FOOD_OK = 230;
+    public static final int DATABASE_INSERT_RECENT_FOOD_OK = 230;
+    public static final int DATABASE_INSERT_ALREADY_PRESENT = 300;
     public static final int DATABASE_INSERT_ERROR = 400;
     public static final int DATABASE_UPDATE_ERROR = 410;
     public static final int DATABASE_REMOVE_ERROR = 420;
     public static final int DATABASE_REMOVE_NOT_PRESENT = 430;
-    public static final int DATABASE_INSERT_FOOD_ERROR = 440;
+    public static final int DATABASE_INSERT_RECENT_FOOD_ERROR = 440;
 
     public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";
 

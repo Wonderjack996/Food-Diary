@@ -48,6 +48,4 @@ public class MainActivity extends AppCompatActivity {
                 appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
     }
-
-
 }

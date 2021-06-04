@@ -11,18 +11,23 @@ import it.fooddiary.utils.DateUtils;
 public class DateConverter {
 
     @TypeConverter
-    public static Date fromTimestamp(String value) {
+    public static Date fromTimestamp(Long value) {
         if (value == null)
             return null;
-        try {
-            return DateUtils.dateFormat.parse(value);
-        } catch (ParseException e) {
-            return null;
-        }
+        Date date = new Date(value);
+        return date;
     }
 
     @TypeConverter
-    public static String dateToTimestamp(Date date) {
-        return date == null ? null : DateUtils.dateFormat.format(date);
+    public static Long dateToTimestamp(Date date) {
+        if (date == null)
+            return null;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.HOUR, 0);
+        return cal.getTimeInMillis();
     }
 }
