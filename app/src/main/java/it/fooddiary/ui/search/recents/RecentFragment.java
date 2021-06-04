@@ -33,11 +33,12 @@ import it.fooddiary.viewmodels.AppViewModel;
 import it.fooddiary.viewmodels.AppViewModelFactory;
 
 public class RecentFragment extends Fragment {
+
     private FoodRecyclerAdapter foodRecyclerAdapter;
+
     private FragmentRecentBinding binding;
 
     private AppViewModel viewModel;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +60,14 @@ public class RecentFragment extends Fragment {
         }
         binding.recentList.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.recentList.setAdapter(foodRecyclerAdapter);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         viewModel.getRecentFoods().observe(getViewLifecycleOwner(), new Observer<List<Food>>() {
             @Override
             public void onChanged(List<Food> foods) {
@@ -69,16 +78,9 @@ public class RecentFragment extends Fragment {
                         binding.searchingTextView.setVisibility(View.VISIBLE);
                     else
                         binding.searchingTextView.setVisibility(View.INVISIBLE);
-
                 }
-
-
-
             }
         });
-
-
-        return binding.getRoot();
     }
 
     @Override

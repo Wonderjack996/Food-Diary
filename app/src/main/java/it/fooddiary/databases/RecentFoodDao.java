@@ -28,5 +28,9 @@ public interface RecentFoodDao {
     @Query("SELECT * FROM recent_food")
     List<Food> getAll();
 
+    @Query("DELETE FROM recent_food WHERE food_name = :foodToRemove")
+    void deleteFood(String foodToRemove);
 
+    @Query("DELETE FROM recent_food WHERE primaryKey IN (SELECT MIN(primaryKey) FROM recent_food)")
+    void deleteOlder();
 }

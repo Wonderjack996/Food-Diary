@@ -68,18 +68,14 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
                 if (query != null && query.length() > 1) {
                     query = query.trim();
 
-                    FoodSearchedFragment foodSearchedFragment;
+                    for( Fragment frag : getChildFragmentManager().getFragments()) {
+                        if (frag instanceof FoodSearchedFragment) {
+                            ((FoodSearchedFragment)frag).onFoodSearched(query);
+                            searchView.clearFocus();
+                            searchViewPager.setCurrentItem(0);
+                        }
+                    }
 
-                    Fragment frag = getChildFragmentManager()
-                            .findFragmentById((int)tabsAdapter.getItemId(0));
-                    if (frag instanceof FoodSearchedFragment)
-                        foodSearchedFragment = (FoodSearchedFragment) frag;
-                    else
-                        return false;
-
-                    foodSearchedFragment.onFoodSearched(query);
-                    searchView.clearFocus();
-                    searchViewPager.setCurrentItem(0);
                     return true;
                 }
                 return true;
@@ -221,11 +217,8 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
     private void removeFoodFromMeal(Food foodToRemove, MealType mealToModify) {
         Date currentDate = viewModel.getCurrentDate();
 
-        LiveData<Integer> databaseResponse = viewModel
-                .removeFoodFromMeal(foodToRemove, mealToModify, currentDate);
-
-        databaseResponse.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-
+        viewModel.removeFoodFromMeal(foodToRemove, mealToModify, currentDate)
+                .observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
             public void onChanged(Integer integer) {
                 switch (integer) {

@@ -32,6 +32,8 @@ public class FoodRecyclerAdapter extends
         this.foodAlert = foodAlert;
     }
 
+
+
     public void setFoodDataset(List<Food> foods) {
         foodDataset.clear();
         foodDataset.addAll(foods);

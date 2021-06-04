@@ -36,6 +36,8 @@ import retrofit2.Response;
 public class AppRepository {
 
     private static final String TAG = "AppRepository";
+    private static final int MAX_RECENT_FOOD_DIM = 30;
+    private static final int NUM_RECENT_FOOD_TO_REMOVE = 3;
 
     private final IFoodServices foodServices;
     private final MealDao mealDao;
@@ -199,7 +201,11 @@ public class AppRepository {
             @Override
             public void run() {
                 List<Food> recentList = recentFoodDao.getAll();
-                if(recentList != null && !recentList.contains(foodToAdd)){
+                if(recentList != null && !recentList.contains(foodToAdd)) {
+                    if (recentList.size() >= MAX_RECENT_FOOD_DIM) {
+                        for (int i = 0; i < NUM_RECENT_FOOD_TO_REMOVE; ++i)
+                            recentFoodDao.deleteOlder();
+                    }
                     recentFoodDao.insert(foodToAdd);
                     databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_OK);
                 }
@@ -208,6 +214,7 @@ public class AppRepository {
                 }
             }
         }).start();
+
         return databaseOperationResult;
     }
 
@@ -221,11 +228,11 @@ public class AppRepository {
                     listFoodLiveData.postValue(recentList);
                 else
                     listFoodLiveData.postValue(new ArrayList<>());
-
             }
         }).start();
         return listFoodLiveData;
     }
+
     public LiveData<Integer> removeFoodFormRecent(Food foodToRemove) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
@@ -233,8 +240,8 @@ public class AppRepository {
             @Override
             public void run() {
                 List<Food> recentList = recentFoodDao.getAll();
-                if(recentList != null && recentList.contains(foodToRemove)){
-                    recentFoodDao.delete(foodToRemove);
+                if(recentList != null && recentList.contains(foodToRemove)) {
+                    recentFoodDao.deleteFood(foodToRemove.getName());
                     databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_OK);
                 }
                 else {
@@ -242,10 +249,9 @@ public class AppRepository {
                 }
             }
         }).start();
+
         return databaseOperationResult;
-
     }
-
 
     public LiveData<MealProperties> getMealProperties() {
         return mealProperties;
