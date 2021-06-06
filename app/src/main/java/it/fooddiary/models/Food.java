@@ -41,10 +41,10 @@ public class Food implements IFoodProperties, Parcelable {
         else
             this.name = "";
 
-        if (quantity >= Constants.MIN_FOOD_GRAMS && quantity <= Constants.MAX_FOOD_GRAMS)
-            this.quantity = quantity;
+        if (quantity < Constants.MIN_FOOD_GRAMS)
+            this.quantity = Constants.MIN_FOOD_GRAMS;
         else
-            this.quantity = 0;
+            this.quantity = Math.min(quantity, Constants.MAX_FOOD_GRAMS);
 
         if (carbsPercent >= 0 && proteinsPercent >= 0 && fatsPercent >= 0) {
             this.carbsPercent = carbsPercent;
@@ -108,8 +108,10 @@ public class Food implements IFoodProperties, Parcelable {
     }
 
     public void setQuantity(int newQuantity) {
-        if (newQuantity > 0)
-            this.quantity = newQuantity;
+        if (newQuantity < Constants.MIN_FOOD_GRAMS)
+            this.quantity = Constants.MIN_FOOD_GRAMS;
+        else
+            this.quantity = Math.min(newQuantity, Constants.MAX_FOOD_GRAMS);
     }
 
     @Override

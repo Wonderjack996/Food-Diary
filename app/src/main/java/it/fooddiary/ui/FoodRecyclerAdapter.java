@@ -59,7 +59,7 @@ public class FoodRecyclerAdapter extends
     }
 
     public void addItem(Food food, int position) {
-        if (position >= 0 && position < foodDataset.size())
+        if (position >= 0 && position <= foodDataset.size())
             foodDataset.add(position, food);
     }
 

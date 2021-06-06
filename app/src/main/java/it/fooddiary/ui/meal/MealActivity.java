@@ -172,7 +172,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     @Override
     protected void onResume() {
         super.onResume();
-        reloadMeal();
+        completeReload();
     }
 
     private void onDeleteUndo(Food foodToAdd, MealType mealType, Date date, int position) {
@@ -186,10 +186,10 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                     case Constants.DATABASE_UPDATE_OK:
                         recyclerAdapter.addItem(foodToAdd, position);
                         recyclerAdapter.notifyItemInserted(position);
+                        reloadMeal();
                         Snackbar.make(binding.getRoot(), R.string.added, Snackbar.LENGTH_LONG)
                                     .setAnchorView(binding.floatingActionButton)
                                     .show();
-                        reloadMeal();
                         break;
                     case Constants.DATABASE_INSERT_ERROR:
                     case Constants.DATABASE_UPDATE_ERROR:
@@ -204,17 +204,29 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     }
 
     private void reloadMeal() {
-        binding.searchingTextView.setVisibility(View.VISIBLE);
-
+        binding.searchingTextView.setVisibility(View.INVISIBLE);
         viewModel.getMealByTypeAndDate(mealType, associatedDate).observe(this, new Observer<Meal>() {
             @Override
             public void onChanged(Meal meal) {
-                recyclerAdapter.setFoodDataset(meal.getMealFoods());
                 binding.setMeal(meal);
-                if (meal.getMealFoods().size() > 0)
-                    binding.searchingTextView.setVisibility(View.INVISIBLE);
+                if (meal.getMealFoods().size() == 0)
+                    binding.searchingTextView.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private void completeReload() {
+        binding.searchingTextView.setVisibility(View.INVISIBLE);
+        viewModel.getMealByTypeAndDate(mealType, associatedDate)
+                .observe(MealActivity.this, new Observer<Meal>() {
+                    @Override
+                    public void onChanged(Meal meal) {
+                        recyclerAdapter.setFoodDataset(meal.getMealFoods());
+                        binding.setMeal(meal);
+                        if (meal.getMealFoods().size() == 0)
+                            binding.searchingTextView.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     @Override
@@ -243,7 +255,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                 public void onChanged(Integer integer) {
                     switch (integer) {
                         case Constants.DATABASE_UPDATE_OK:
-                            reloadMeal();
+                            completeReload();
                             break;
                         case Constants.DATABASE_UPDATE_ERROR:
                             Snackbar.make(binding.getRoot(),

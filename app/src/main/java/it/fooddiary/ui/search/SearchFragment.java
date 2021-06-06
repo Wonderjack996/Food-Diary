@@ -45,7 +45,7 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
 
     private ViewPager2 searchViewPager;
 
-    private TabsStateAdapter tabsAdapter;
+    private FoodInsertItemAlert alert;
 
     private AppViewModel viewModel;
 
@@ -100,11 +100,12 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
                         new AppRepository(requireActivity().getApplication())))
                 .get(AppViewModel.class);
 
+        alert = new FoodInsertItemAlert(this);
+
         FloatingActionButton fab = root.findViewById(R.id.addCalories_floatingButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FoodInsertItemAlert alert = new FoodInsertItemAlert(SearchFragment.this);
                 alert.show(getChildFragmentManager(), TAG);
             }
         });
@@ -127,7 +128,7 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
 
         searchViewPager = view.findViewById(R.id.searchViewPager2);
         searchTabLayout = view.findViewById(R.id.searchTabLayout);
-        tabsAdapter = new TabsStateAdapter(getChildFragmentManager(),
+        TabsStateAdapter tabsAdapter = new TabsStateAdapter(getChildFragmentManager(),
                 getLifecycle(), fragmentToShow);
 
         searchViewPager.setAdapter(tabsAdapter);

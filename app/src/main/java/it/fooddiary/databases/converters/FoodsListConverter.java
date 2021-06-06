@@ -13,7 +13,7 @@ import it.fooddiary.models.Food;
 public class FoodsListConverter {
 
     @TypeConverter
-    public String listToTimestamp(List<Food> foodList) {
+    public static String listToTimestamp(List<Food> foodList) {
         if (foodList == null)
             return null;
         Gson gson = new Gson();
@@ -23,7 +23,7 @@ public class FoodsListConverter {
     }
 
     @TypeConverter
-    public List<Food> fromTimestamp(String foodList) {
+    public static List<Food> fromTimestamp(String foodList) {
         if (foodList == null)
             return null;
         Gson gson = new Gson();
