@@ -20,15 +20,15 @@ import java.util.Date;
 import it.fooddiary.databinding.FragmentDiaryBinding;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
-import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.ui.meal.MealActivity;
 import it.fooddiary.R;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class DiaryFragment extends Fragment {
 
@@ -38,7 +38,7 @@ public class DiaryFragment extends Fragment {
 
     private final Date associatedDate;
 
-    private AppViewModel viewModel;
+    private FoodViewModel viewModel;
 
     public DiaryFragment() {
         this.associatedDate = Calendar.getInstance().getTime();
@@ -59,9 +59,9 @@ public class DiaryFragment extends Fragment {
         setupOpenMealImageButton();
 
         viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+                new FoodViewModelFactory(requireActivity().getApplication(),
+                        new FoodRepository(requireActivity().getApplication())))
+                .get(FoodViewModel.class);
 
         binding.setMealProperties(viewModel.getMealProperties().getValue());
         binding.invalidateAll();

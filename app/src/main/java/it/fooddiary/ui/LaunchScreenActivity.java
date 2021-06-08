@@ -23,30 +23,12 @@ public class LaunchScreenActivity extends AppCompatActivity {
     }
 
     private Intent chooseActivityToLaunch() {
-        Intent ret = null;
+        Intent ret;
         SharedPreferences preferences =
-                getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
+                getSharedPreferences(Constants.FIREBASE_USER_PREFERENCES_FILE,
                         Context.MODE_PRIVATE);
 
-        if (preferences.getInt(Constants.USER_GENDER, Constants.OTHER)
-                == Constants.OTHER)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getInt(Constants.USER_AGE, 0) == 0)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getInt(Constants.USER_HEIGHT_CM, 0) == 0)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getInt(Constants.USER_WEIGHT_KG, 0) == 0)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getInt(Constants.USER_ACTIVITY_LEVEL, Constants.OTHER)
-                == Constants.OTHER)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getInt(Constants.USER_DAILY_INTAKE_KCAL, 0) == 0)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getFloat(Constants.USER_DAILY_CARBS_PERCENT, 0f) == 0f)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getFloat(Constants.USER_DAILY_PROTEINS_PERCENT, 0f) == 0f)
-            ret = new Intent(this, LoginActivity.class);
-        else if (preferences.getFloat(Constants.USER_DAILY_FATS_PERCENT, 0f) == 0f)
+        if (preferences.getString(Constants.FIREBASE_USER_TOKEN, "").isEmpty())
             ret = new Intent(this, LoginActivity.class);
         else
             ret = new Intent(this, MainActivity.class);

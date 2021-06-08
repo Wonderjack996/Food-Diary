@@ -1,5 +1,9 @@
 package it.fooddiary.model_test;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.junit.Test;
 
 import it.fooddiary.models.Food;

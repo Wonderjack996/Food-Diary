@@ -33,9 +33,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AppRepository {
+public class FoodRepository {
 
-    private static final String TAG = "AppRepository";
+    private static final String TAG = "FoodRepository";
     private static final int MAX_RECENT_FOOD_DIM = 30;
     private static final int NUM_RECENT_FOOD_TO_REMOVE = 3;
 
@@ -47,7 +47,7 @@ public class AppRepository {
     private static MutableLiveData<MealProperties> mealProperties;
     private static MutableLiveData<UserProperties> userProperties;
 
-    public AppRepository(Application application) {
+    public FoodRepository(Application application) {
         this.application = application;
         this.foodServices = ServicesLocator.getInstance().getFoodServicesWithRetrofit();
         this.mealDao = ServicesLocator.getInstance().getAppDatabase(application).mealDao();

@@ -1,6 +1,5 @@
 package it.fooddiary.ui.diary;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,16 +18,13 @@ import android.view.ViewGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Date;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.FragmentViewpagerDiaryBinding;
-import it.fooddiary.repositories.AppRepository;
-import it.fooddiary.utils.Constants;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.repositories.FoodRepository;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class DiaryViewpagerFragment extends Fragment {
 
@@ -44,7 +40,7 @@ public class DiaryViewpagerFragment extends Fragment {
     private MaterialDatePicker<Long> datePicker;
     private Date displayedDate;
 
-    private AppViewModel viewModel;
+    private FoodViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,9 +72,9 @@ public class DiaryViewpagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentViewpagerDiaryBinding.inflate(inflater);
         viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+                new FoodViewModelFactory(requireActivity().getApplication(),
+                        new FoodRepository(requireActivity().getApplication())))
+                .get(FoodViewModel.class);
 
         // set up date picker
         datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Select date").build();

@@ -18,16 +18,23 @@ import androidx.lifecycle.ViewModelProvider;
 import it.fooddiary.R;
 import it.fooddiary.databinding.FragmentAccountBinding;
 import it.fooddiary.models.UserProperties;
-import it.fooddiary.repositories.AppRepository;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.repositories.FoodRepository;
+import it.fooddiary.repositories.UserRepository;
+import it.fooddiary.ui.LaunchScreenActivity;
+import it.fooddiary.ui.MainActivity;
+import it.fooddiary.ui.login.LoginActivity;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
+import it.fooddiary.viewmodels.user.UserViewModel;
+import it.fooddiary.viewmodels.user.UserViewModelFactory;
 
 public class AccountFragment extends Fragment {
     private static final String TAG = "AccountFragment";
 
     private FragmentAccountBinding binding;
 
-    private AppViewModel viewModel;
+    private FoodViewModel foodViewModel;
+    private UserViewModel userViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,12 +56,16 @@ public class AccountFragment extends Fragment {
         binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_account, container, false);
 
-        viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+        foodViewModel = new ViewModelProvider(this,
+                new FoodViewModelFactory(requireActivity().getApplication(),
+                        new FoodRepository(requireActivity().getApplication())))
+                .get(FoodViewModel.class);
+        userViewModel = new ViewModelProvider(this,
+                new UserViewModelFactory(requireActivity().getApplication(),
+                        new UserRepository(requireActivity().getApplication())))
+                .get(UserViewModel.class);
 
-        viewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
+        foodViewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
             @Override
             public void onChanged(UserProperties userProperties) {
                 binding.setUserProperties(userProperties);
@@ -67,10 +78,18 @@ public class AccountFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.item_edit:
-                Intent intent = new Intent(this.getContext(), EditAccountActivity.class);
+                intent = new Intent(this.getContext(), EditAccountActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.item_logout:
+                // clear meal table, recent food table
+                userViewModel.logout();
+                intent = new Intent(this.getContext(), LoginActivity.class);
+                startActivity(intent);
+                this.requireActivity().finish();
                 break;
             default:
                 return false;

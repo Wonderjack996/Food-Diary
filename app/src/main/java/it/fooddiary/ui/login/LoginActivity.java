@@ -3,6 +3,8 @@ package it.fooddiary.ui.login;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +17,7 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +29,12 @@ import java.util.Objects;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityLoginBinding;
+import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
+import it.fooddiary.viewmodels.user.UserViewModel;
+import it.fooddiary.viewmodels.user.UserViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -36,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String CURRENT_ERROR = "CurrentError";
 
     private ActivityLoginBinding binding;
+    private UserViewModel userViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +50,10 @@ public class LoginActivity extends AppCompatActivity {
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        userViewModel = new ViewModelProvider(this,
+                new UserViewModelFactory(getApplication(), new UserRepository(getApplication())))
+                .get(UserViewModel.class);
 
         Objects.requireNonNull(getSupportActionBar()).hide();
 
@@ -79,21 +90,77 @@ public class LoginActivity extends AppCompatActivity {
             binding.numberPickerHeight.setValue(Constants.MID_HEIGHT_CM);
         }
 
-        binding.nextPageButton.setOnClickListener(new View.OnClickListener() {
+        binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int genderButtonId, activityButtonId, height, weight, age;
+                String mail = binding.mailEditText.getText().toString();
+                String password = binding.passwordEditText.getText().toString();
+                boolean isMailValid = Constants.isMailValid(mail);
+                boolean isPasswordValid = Constants.isPasswordValid(password);
 
-                genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
-                activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
-                height = binding.numberPickerHeight.getValue();
-                weight = binding.numberPickerWeight.getValue();
-                age = binding.numberPickerAge.getValue();
+                if (isMailValid && isPasswordValid) {
+                    userViewModel.loginWithMailAndPassword(mail, password)
+                            .observe(LoginActivity.this, new Observer<Integer>() {
+                        @Override
+                        public void onChanged(Integer integer) {
+                            switch (integer) {
+                                case Constants.FIREBASE_LOGIN_OK:
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    LoginActivity.this.finish();
+                                    break;
+                                default:
+                                    Snackbar.make(binding.getRoot(),
+                                            R.string.error,
+                                            Snackbar.LENGTH_LONG).show();
+                                    break;
+                            }
+                        }
+                    });
+                } else {
+                    if (!isMailValid)
+                        binding.mailEditText.setError(getResources()
+                                .getString(R.string.mail_not_valid));
+                    if(!isPasswordValid)
+                        binding.passwordEditText.setError(getResources()
+                                .getString(R.string.password_not_valid));
+                }
+            }
+        });
 
-                savePersonalData(age, genderButtonId, activityButtonId, height, weight);
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                LoginActivity.this.finish();
+        binding.singInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String mail = binding.mailEditText.getText().toString();
+                String password = binding.passwordEditText.getText().toString();
+                boolean isMailValid = Constants.isMailValid(mail);
+                boolean isPasswordValid = Constants.isPasswordValid(password);
+
+                if (isMailValid && isPasswordValid) {
+                    userViewModel.registerWithMailAndPassword(mail, password)
+                            .observe(LoginActivity.this, new Observer<Integer>() {
+                                @Override
+                                public void onChanged(Integer integer) {
+                                    switch (integer) {
+                                        case Constants.FIREBASE_REGISTER_OK:
+                                            Snackbar.make(binding.getRoot(),
+                                                    R.string.ok,
+                                                    Snackbar.LENGTH_LONG).show();
+                                            break;
+                                        default:
+                                            Snackbar.make(binding.getRoot(),
+                                                    R.string.error,
+                                                    Snackbar.LENGTH_LONG).show();
+                                            break;
+                                    }
+                                }
+                            });
+                } else {
+                    if (!isMailValid)
+                        binding.mailEditText.setError("Mail not valid!");
+                    if(!isPasswordValid)
+                        binding.passwordEditText.setError("Password not valid!");
+                }
             }
         });
     }

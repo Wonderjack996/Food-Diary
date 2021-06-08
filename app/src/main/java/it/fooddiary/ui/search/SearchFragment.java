@@ -7,18 +7,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -31,13 +28,13 @@ import java.util.List;
 import it.fooddiary.R;
 import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.models.Food;
-import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.ui.search.recents.RecentFragment;
 import it.fooddiary.ui.search.searched.FoodSearchedFragment;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class SearchFragment extends Fragment implements IDatabaseOperation {
 
@@ -47,7 +44,7 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
 
     private FoodInsertItemAlert alert;
 
-    private AppViewModel viewModel;
+    private FoodViewModel viewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,9 +93,9 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
         View root = inflater.inflate(R.layout.fragment_search, container, false);
 
         viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+                new FoodViewModelFactory(requireActivity().getApplication(),
+                        new FoodRepository(requireActivity().getApplication())))
+                .get(FoodViewModel.class);
 
         alert = new FoodInsertItemAlert(this);
 

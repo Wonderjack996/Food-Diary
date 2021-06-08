@@ -1,8 +1,24 @@
 package it.fooddiary.utils;
 
+import java.util.regex.Pattern;
+
 import it.fooddiary.BuildConfig;
 
 public class Constants {
+
+    private static final Pattern PASSWORD_PATTERN =
+            Pattern.compile("^" +
+                    //"(?=.*[0-9])" +         //at least 1 digit
+                    //"(?=.*[a-z])" +         //at least 1 lower case letter
+                    //"(?=.*[A-Z])" +         //at least 1 upper case letter
+                    "(?=.*[a-zA-Z])" +        //any letter
+                    "(?=.*[@#$%^&+=!])" +      //at least 1 special character
+                    "(?=\\S+$)" +             //no white spaces
+                    ".{8,}" +                 //at least 8 characters
+                    "$");
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+");
 
     /**
      * Calories values
@@ -17,7 +33,6 @@ public class Constants {
     /**
      * Login Fields
      */
-    public static final String PERSONAL_DATA_PREFERENCES_FILE = "PersonalDataPreferencesFile";
     public static final String USER_GENDER = "UserGender";
     public static final String USER_AGE = "UserAge";
     public static final String USER_WEIGHT_KG = "UserWeightKg";
@@ -82,8 +97,22 @@ public class Constants {
     public static final int DATABASE_INSERT_RECENT_FOOD_ERROR = 440;
     public static final int DATABASE_REMOVE_RECENT_FOOD_ERROR = 450;
 
-    public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";
+    /**
+     * Firebase codes
+     */
+    public static final int FIREBASE_LOGIN_OK = 0;
+    public static final int FIREBASE_LOGIN_ERROR = 1;
+    public static final int FIREBASE_REGISTER_OK = 2;
+    public static final int FIREBASE_REGISTER_ERROR = 3;
 
+    /**
+     * Preferences files
+     */
+    public static final String CURRENT_DATE_PREFERENCES_FILE = "CurrentDatePreferencesFile";
+    public static final String PERSONAL_DATA_PREFERENCES_FILE = "PersonalDataPreferencesFile";
+    public static final String FIREBASE_USER_PREFERENCES_FILE = "FirebaseUserPreferencesFile";
+
+    public static final String FIREBASE_USER_TOKEN = "FirebaseUserToken";
     public static final String CURRENT_DATE = "CurrentDate";
     public static final String MEAL_TYPE = "MealType";
 
@@ -94,5 +123,17 @@ public class Constants {
 
     public static int calculateBMR_Female(int weight, int height, int age) {
         return 10*weight + 6*height - 5*age - 161;
+    }
+
+    public static boolean isMailValid(String mail) {
+        if (mail == null || mail.isEmpty())
+            return false;
+        return EMAIL_PATTERN.matcher(mail).matches();
+    }
+
+    public static boolean isPasswordValid(String password) {
+        if (password == null || password.isEmpty())
+            return false;
+        return PASSWORD_PATTERN.matcher(password).matches();
     }
 }

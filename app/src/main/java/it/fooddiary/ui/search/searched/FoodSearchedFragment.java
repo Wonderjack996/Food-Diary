@@ -1,6 +1,5 @@
 package it.fooddiary.ui.search.searched;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,27 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import it.fooddiary.R;
-import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.FragmentFoodSearchedBinding;
-import it.fooddiary.databinding.FragmentViewpagerDiaryBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.edamam_models.EdamamResponse;
-import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.ui.FoodRecyclerAdapter;
 import it.fooddiary.ui.search.SearchFragment;
-import it.fooddiary.utils.Constants;
-import it.fooddiary.utils.MealType;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class FoodSearchedFragment extends Fragment {
 
@@ -46,7 +38,7 @@ public class FoodSearchedFragment extends Fragment {
     private FoodRecyclerAdapter recyclerAdapter = null;
     private FragmentFoodSearchedBinding binding;
 
-    private AppViewModel viewModel;
+    private FoodViewModel viewModel;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater,
@@ -54,9 +46,9 @@ public class FoodSearchedFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentFoodSearchedBinding.inflate(inflater);
         viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(requireActivity().getApplication(),
-                        new AppRepository(requireActivity().getApplication())))
-                .get(AppViewModel.class);
+                new FoodViewModelFactory(requireActivity().getApplication(),
+                        new FoodRepository(requireActivity().getApplication())))
+                .get(FoodViewModel.class);
 
         Fragment parent = getParentFragment();
         if (parent instanceof SearchFragment) {

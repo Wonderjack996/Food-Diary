@@ -1,16 +1,13 @@
-package it.fooddiary.viewmodels;
+package it.fooddiary.viewmodels.food;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -19,15 +16,15 @@ import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
 import it.fooddiary.models.UserProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
-import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.utils.MealType;
 
-public class AppViewModel extends AndroidViewModel {
+public class FoodViewModel extends AndroidViewModel {
 
-    private final AppRepository repository;
+    private final FoodRepository repository;
 
-    public AppViewModel(@NonNull @NotNull Application application,
-                        @NonNull @NotNull AppRepository repository) {
+    public FoodViewModel(@NonNull @NotNull Application application,
+                         @NonNull @NotNull FoodRepository repository) {
         super(application);
         this.repository = repository;
     }

@@ -29,13 +29,13 @@ import it.fooddiary.databinding.ActivityMealBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
 import it.fooddiary.models.MealProperties;
-import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.ui.FoodRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MealActivity extends AppCompatActivity implements IDatabaseOperation {
@@ -47,7 +47,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     private Date associatedDate;
     private MealType mealType;
 
-    private AppViewModel viewModel;
+    private FoodViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +58,9 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(getApplication(),
-                        new AppRepository(getApplication())))
-                .get(AppViewModel.class);
+                new FoodViewModelFactory(getApplication(),
+                        new FoodRepository(getApplication())))
+                .get(FoodViewModel.class);
 
         Intent intent = getIntent();
         associatedDate = (Date) intent.getSerializableExtra(Constants.CURRENT_DATE);

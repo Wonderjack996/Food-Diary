@@ -2,7 +2,6 @@ package it.fooddiary.ui.account;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -19,17 +18,17 @@ import java.util.Objects;
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityEditAccountBinding;
 import it.fooddiary.models.UserProperties;
-import it.fooddiary.repositories.AppRepository;
+import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.utils.Constants;
-import it.fooddiary.viewmodels.AppViewModel;
-import it.fooddiary.viewmodels.AppViewModelFactory;
+import it.fooddiary.viewmodels.food.FoodViewModel;
+import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class EditAccountActivity extends AppCompatActivity {
     private static final String TAG = "EditAccountActivity";
 
     private ActivityEditAccountBinding binding;
 
-    private AppViewModel viewModel;
+    private FoodViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +39,9 @@ public class EditAccountActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         viewModel = new ViewModelProvider(this,
-                new AppViewModelFactory(getApplication(),
-                        new AppRepository(getApplication())))
-                .get(AppViewModel.class);
+                new FoodViewModelFactory(getApplication(),
+                        new FoodRepository(getApplication())))
+                .get(FoodViewModel.class);
 
         getSupportActionBar().setTitle(R.string.editAccount);
 

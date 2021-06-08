@@ -63,4 +63,11 @@
     <string name="fats_percent">Grassi (%)</string>
     <string name="name_not_valid">Nome non valido!</string>
     <string name="food_present">Alimento con lo stesso nome già presente</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="sing_in">Registrazione</string>
+    <string name="mail_not_valid">Mail non valida!</string>
+    <string name="password_not_valid">Password non valida!</string>
+    <string name="logout">logout</string>
 </resources>
