@@ -95,6 +95,7 @@
                         android:gravity="center"
                         android:lines="2"
                         android:text='@{String.valueOf(breakfastMeal.totalCalories + lunchMeal.totalCalories + dinnerMeal.totalCalories + snacksMeal.totalCalories) + " KCal\n" + @string/consumed}'
+                        android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/progressBar"
                         app:layout_constraintStart_toStartOf="parent"
@@ -110,6 +111,7 @@
                         android:gravity="center"
                         android:lines="2"
                         android:text='@{String.valueOf(mealProperties.caloriesDailyIntake - breakfastMeal.totalCalories - lunchMeal.totalCalories - dinnerMeal.totalCalories - snacksMeal.totalCalories) + " KCal\n" + @string/remained}'
+                        android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/progressBar"
@@ -155,22 +157,27 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/carbs" />
+                            android:text="@string/carbs"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <ProgressBar
                             android:id="@+id/carbs_progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
-                            android:max="100"
-                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/mealProperties.carbsGrams)*100)}'
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center" />
+                            android:layout_gravity="center"
+                            android:max="100"
+                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/mealProperties.carbsGrams)*100)}'
+                            android:textColor="@color/primaryDarkColor"
+                            android:progressBackgroundTint="@color/secondaryDarkColor"
+                        />
 
                         <TextView
                             android:id="@+id/carbsCounter_textView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text='@{String.valueOf(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams) + " / " + String.valueOf(mealProperties.carbsGrams) + " g"}' />
                     </LinearLayout>
 
@@ -193,7 +200,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/proteins" />
+                            android:text="@string/proteins"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <ProgressBar
                             android:id="@+id/proteins_progressBar"
@@ -201,13 +209,15 @@
                             android:max="100"
                             android:progress='@{(int)(((float)(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams)/mealProperties.proteinsGrams)*100)}'
                             android:layout_width="100dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:progressBackgroundTint="@color/secondaryDarkColor"/>
 
                         <TextView
                             android:id="@+id/proteinsCounter_textView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text='@{String.valueOf(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams) + " / " + String.valueOf(mealProperties.proteinsGrams) + " g"}' />
                     </LinearLayout>
 
@@ -228,7 +238,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/fats" />
+                            android:text="@string/fats"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <ProgressBar
                             android:id="@+id/fats_progressBar"
@@ -236,13 +247,15 @@
                             android:max="100"
                             android:progress='@{(int)(((float)(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams)/mealProperties.fatsGrams)*100)}'
                             android:layout_width="100dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:progressBackgroundTint="@color/secondaryDarkColor"/>
 
                         <TextView
                             android:id="@+id/fatsCounter_textView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text='@{String.valueOf(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams) + " / " + String.valueOf(mealProperties.fatsGrams) + " g"}' />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -300,6 +313,7 @@
                             android:layout_marginRight="16dp"
                             android:gravity="left"
                             android:text="@string/breakfast"
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/caloriesBreakfast_textView"
                             app:layout_constraintStart_toEndOf="@+id/breakfast_imageView"
@@ -312,6 +326,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginLeft="16dp"
                             android:text='@{breakfastMeal.totalCalories + " KCal"}'
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/breakfast_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/breakfast_textView"
@@ -372,6 +387,7 @@
                             android:layout_marginRight="16dp"
                             android:gravity="left"
                             android:text="@string/lunch"
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/caloriesLunch_textView"
                             app:layout_constraintStart_toEndOf="@+id/lunch_imageView"
@@ -384,6 +400,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginLeft="16dp"
                             android:text='@{lunchMeal.totalCalories + " KCal"}'
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/lunch_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/lunch_textView"
@@ -444,6 +461,7 @@
                             android:layout_marginRight="16dp"
                             android:gravity="left"
                             android:text="@string/dinner"
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/caloriesDinner_textView"
                             app:layout_constraintStart_toEndOf="@+id/dinner_imageView"
@@ -456,6 +474,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginLeft="16dp"
                             android:text='@{dinnerMeal.totalCalories + " KCal"}'
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/dinner_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/dinner_textView"
@@ -516,6 +535,7 @@
                             android:layout_marginRight="16dp"
                             android:gravity="left"
                             android:text="@string/snacks"
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/caloriesSnacks_textView"
                             app:layout_constraintStart_toEndOf="@+id/snacks_imageView"
@@ -528,6 +548,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginLeft="16dp"
                             android:text='@{snacksMeal.totalCalories + " KCal"}'
+                            android:textColor="@color/primaryTextColor"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@id/snacks_imageButton"
                             app:layout_constraintStart_toEndOf="@+id/snacks_textView"

@@ -70,7 +70,9 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/email"
                     android:hint="@string/email"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:backgroundTint="@color/primaryTextColor"
+                    android:textColor="@color/primaryTextColor"/>
 
                 <EditText
                     android:id="@+id/passwordEditText"
@@ -78,7 +80,9 @@
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/password"
                     android:hint="@string/password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="@color/primaryTextColor"
+                    android:backgroundTint="@color/primaryTextColor"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -116,14 +120,19 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/age" />
+                        android:text="@string/age"
+                        android:textColor="@color/primaryTextColor"/>
 
                     <NumberPicker
                         android:id="@+id/numberPickerAge"
                         android:layout_width="wrap_content"
                         android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:backgroundTint="@color/secondaryDarkColor"
+                        />
+
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -133,6 +142,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:orientation="vertical"
+                    android:textColor="@color/primaryTextColor"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/linearLayout4"
@@ -146,7 +156,9 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="8dp"
                         android:gravity="center"
-                        android:text="@string/gender" />
+                        android:text="@string/gender"
+                        android:textColor="@color/primaryTextColor"/>
+                    />
 
                     <RadioGroup
                         android:id="@+id/genderRadioGroup"
@@ -160,13 +172,15 @@
                             android:id="@+id/maleRadioButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/male" />
+                            android:text="@string/male"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <RadioButton
                             android:id="@+id/femaleRadioButton"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/female" />
+                            android:text="@string/female"
+                            android:textColor="@color/primaryTextColor"/>
                     </RadioGroup>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -206,7 +220,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/height_cm" />
+                        android:text="@string/height_cm"
+                        android:textColor="@color/primaryTextColor"/>
 
                     <NumberPicker
                         android:id="@+id/numberPickerHeight"
@@ -235,7 +250,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/weight_kg" />
+                        android:text="@string/weight_kg"
+                        android:textColor="@color/primaryTextColor"/>
 
                     <NumberPicker
                         android:id="@+id/numberPickerWeight"
@@ -269,7 +285,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/activity_level" />
+                    android:text="@string/activity_level"
+                    android:textColor="@color/primaryTextColor"/>
+
 
                 <RadioGroup
                     android:id="@+id/activityRadioGroup"
@@ -288,7 +306,8 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
-                        android:text="@string/high" />
+                        android:text="@string/high"
+                        android:textColor="@color/primaryTextColor"/>
 
                     <RadioButton
                         android:id="@+id/midRadioButton"
@@ -297,7 +316,8 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="32dp"
                         android:layout_marginRight="32dp"
-                        android:text="@string/mid" />
+                        android:text="@string/mid"
+                        android:textColor="@color/primaryTextColor"/>
 
                     <RadioButton
                         android:id="@+id/lowRadioButton"
@@ -308,7 +328,8 @@
                         android:layout_marginLeft="16dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
-                        android:text="@string/low" />
+                        android:text="@string/low"
+                        android:textColor="@color/primaryTextColor"/>
                 </RadioGroup>
             </LinearLayout>
 

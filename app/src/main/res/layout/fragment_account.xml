@@ -58,7 +58,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@string/age" />
+                            android:text="@string/age"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <TextView
                             android:id="@+id/ageText"
@@ -67,6 +68,7 @@
                             android:layout_height="128dp"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text="@{String.valueOf(userProperties.age)}" />
                     </LinearLayout>
 
@@ -89,7 +91,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@string/gender" />
+                            android:text="@string/gender"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <TextView
                             android:id="@+id/genderText"
@@ -98,6 +101,7 @@
                             android:layout_height="128dp"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text="@{userProperties.gender == constants.GENDER_FEMALE ? @string/female : @string/male}" />
 
                     </LinearLayout>
@@ -139,7 +143,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@string/height_cm" />
+                            android:text="@string/height_cm"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <TextView
                             android:id="@+id/heightText"
@@ -148,6 +153,7 @@
                             android:layout_height="128dp"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text="@{String.valueOf(userProperties.heightCm)}" />
                     </LinearLayout>
 
@@ -170,7 +176,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@string/weight_kg" />
+                            android:text="@string/weight_kg"
+                            android:textColor="@color/primaryTextColor"/>
 
                         <TextView
                             android:id="@+id/weightText"
@@ -179,6 +186,7 @@
                             android:layout_height="128dp"
                             android:layout_gravity="center"
                             android:gravity="center"
+                            android:textColor="@color/primaryTextColor"
                             android:text="@{String.valueOf(userProperties.weightKg)}" />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -210,7 +218,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@string/activity_level" />
+                        android:text="@string/activity_level"
+                        android:textColor="@color/primaryTextColor"/>
 
                     <TextView
                         android:id="@+id/ActivityLevelText"
@@ -219,6 +228,7 @@
                         android:layout_height="64dp"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        android:textColor="@color/primaryTextColor"
                         android:text="@{userProperties.activityLevel == constants.ACTIVITY_HIGH ? @string/high : (userProperties.activityLevel == constants.ACTIVITY_MID ? @string/mid : @string/low)}" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
