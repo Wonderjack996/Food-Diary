@@ -13,7 +13,6 @@ import java.util.List;
 
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
-import it.fooddiary.models.MealProperties;
 import it.fooddiary.models.UserProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.repositories.FoodRepository;
@@ -51,18 +50,6 @@ public class FoodViewModel extends AndroidViewModel {
 
     public LiveData<Integer> updateFoodInMeal(Food foodToUpdate, MealType mealType, Date date) {
         return repository.updateFoodInMeal(foodToUpdate, mealType, date);
-    }
-
-    public LiveData<MealProperties> getMealProperties() {
-        return repository.getMealProperties();
-    }
-
-    public LiveData<UserProperties> getUserProperties() {
-        return repository.getUserProperties();
-    }
-
-    public void setUserProperties(UserProperties newProperties) {
-        repository.setUserProperties(newProperties);
     }
 
     public LiveData<EdamamResponse> getEdamamResponse(String ingredient) {

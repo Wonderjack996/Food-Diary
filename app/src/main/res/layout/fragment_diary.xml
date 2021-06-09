@@ -7,8 +7,8 @@
     <data>
 
         <variable
-            name="mealProperties"
-            type="it.fooddiary.models.MealProperties" />
+            name="userProperties"
+            type="it.fooddiary.models.UserProperties" />
 
         <variable
             name="breakfastMeal"
@@ -66,7 +66,7 @@
                         android:indeterminate="false"
                         android:max="100"
                         android:padding="8dp"
-                        android:progress='@{(int)(((float)(breakfastMeal.totalCalories+lunchMeal.totalCalories+dinnerMeal.totalCalories+snacksMeal.totalCalories)/mealProperties.caloriesDailyIntake)*100)}'
+                        android:progress='@{(int)(((float)(breakfastMeal.totalCalories+lunchMeal.totalCalories+dinnerMeal.totalCalories+snacksMeal.totalCalories)/userProperties.caloriesDailyIntake)*100)}'
                         android:progressDrawable="@drawable/circular_progress_bar"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +78,7 @@
                         style="@style/TextAppearance.MdcTypographyStyles.Headline5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text='@{String.valueOf(mealProperties.caloriesDailyIntake)+" KCal"}'
+                        android:text='@{String.valueOf(userProperties.caloriesDailyIntake)+" KCal"}'
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="@+id/progressBar"
@@ -110,7 +110,7 @@
                         android:layout_marginLeft="8dp"
                         android:gravity="center"
                         android:lines="2"
-                        android:text='@{String.valueOf(mealProperties.caloriesDailyIntake - breakfastMeal.totalCalories - lunchMeal.totalCalories - dinnerMeal.totalCalories - snacksMeal.totalCalories) + " KCal\n" + @string/remained}'
+                        android:text='@{String.valueOf(userProperties.caloriesDailyIntake - breakfastMeal.totalCalories - lunchMeal.totalCalories - dinnerMeal.totalCalories - snacksMeal.totalCalories) + " KCal\n" + @string/remained}'
                         android:textColor="@color/primaryTextColor"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -167,10 +167,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:max="100"
-                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/mealProperties.carbsGrams)*100)}'
-                            android:textColor="@color/primaryDarkColor"
-                            android:progressBackgroundTint="@color/secondaryDarkColor"
-                        />
+                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/userProperties.carbsGrams)*100)}'
+                            android:textColor="@color/primaryDarkColor" />
 
                         <TextView
                             android:id="@+id/carbsCounter_textView"
@@ -178,7 +176,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/primaryTextColor"
-                            android:text='@{String.valueOf(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams) + " / " + String.valueOf(mealProperties.carbsGrams) + " g"}' />
+                            android:text='@{String.valueOf(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams) + " / " + String.valueOf(userProperties.carbsGrams) + " g"}' />
                     </LinearLayout>
 
                     <LinearLayout
@@ -207,10 +205,9 @@
                             android:id="@+id/proteins_progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:max="100"
-                            android:progress='@{(int)(((float)(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams)/mealProperties.proteinsGrams)*100)}'
+                            android:progress='@{(int)(((float)(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams)/userProperties.proteinsGrams)*100)}'
                             android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:progressBackgroundTint="@color/secondaryDarkColor"/>
+                            android:layout_height="wrap_content" />
 
                         <TextView
                             android:id="@+id/proteinsCounter_textView"
@@ -218,7 +215,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/primaryTextColor"
-                            android:text='@{String.valueOf(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams) + " / " + String.valueOf(mealProperties.proteinsGrams) + " g"}' />
+                            android:text='@{String.valueOf(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams) + " / " + String.valueOf(userProperties.proteinsGrams) + " g"}' />
                     </LinearLayout>
 
                     <LinearLayout
@@ -245,10 +242,9 @@
                             android:id="@+id/fats_progressBar"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:max="100"
-                            android:progress='@{(int)(((float)(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams)/mealProperties.fatsGrams)*100)}'
+                            android:progress='@{(int)(((float)(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams)/userProperties.fatsGrams)*100)}'
                             android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:progressBackgroundTint="@color/secondaryDarkColor"/>
+                            android:layout_height="wrap_content" />
 
                         <TextView
                             android:id="@+id/fatsCounter_textView"
@@ -256,7 +252,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:textColor="@color/primaryTextColor"
-                            android:text='@{String.valueOf(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams) + " / " + String.valueOf(mealProperties.fatsGrams) + " g"}' />
+                            android:text='@{String.valueOf(breakfastMeal.totalFatsGrams+lunchMeal.totalFatsGrams+dinnerMeal.totalFatsGrams+snacksMeal.totalFatsGrams) + " / " + String.valueOf(userProperties.fatsGrams) + " g"}' />
                     </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>

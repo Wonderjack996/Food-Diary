@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityLoginBinding;
+import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.utils.Constants;
@@ -39,7 +40,6 @@ import it.fooddiary.viewmodels.user.UserViewModelFactory;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginPersonalDataFragment";
-    private static final String CURRENT_ERROR = "CurrentError";
 
     private ActivityLoginBinding binding;
     private UserViewModel userViewModel;
@@ -136,16 +136,19 @@ public class LoginActivity extends AppCompatActivity {
                 boolean isMailValid = Constants.isMailValid(mail);
                 boolean isPasswordValid = Constants.isPasswordValid(password);
 
+                UserProperties insertProperties = readDataFromForms();
+
                 if (isMailValid && isPasswordValid) {
-                    userViewModel.registerWithMailAndPassword(mail, password)
+                    userViewModel.registerWithMailAndPassword(mail, password, insertProperties)
                             .observe(LoginActivity.this, new Observer<Integer>() {
                                 @Override
                                 public void onChanged(Integer integer) {
                                     switch (integer) {
                                         case Constants.FIREBASE_REGISTER_OK:
-                                            Snackbar.make(binding.getRoot(),
-                                                    R.string.ok,
-                                                    Snackbar.LENGTH_LONG).show();
+                                            Intent intent = new Intent(LoginActivity.this,
+                                                    MainActivity.class);
+                                            startActivity(intent);
+                                            LoginActivity.this.finish();
                                             break;
                                         default:
                                             Snackbar.make(binding.getRoot(),
@@ -157,9 +160,11 @@ public class LoginActivity extends AppCompatActivity {
                             });
                 } else {
                     if (!isMailValid)
-                        binding.mailEditText.setError("Mail not valid!");
+                        binding.mailEditText.setError(getResources()
+                                .getString(R.string.mail_not_valid));
                     if(!isPasswordValid)
-                        binding.passwordEditText.setError("Password not valid!");
+                        binding.passwordEditText.setError(getResources()
+                                .getString(R.string.password_not_valid));
                 }
             }
         });
@@ -179,48 +184,32 @@ public class LoginActivity extends AppCompatActivity {
         outState.putInt(Constants.USER_HEIGHT_CM, height);
     }
 
-    private void savePersonalData(int age, int genderId, int activityId,
-                                  int height, int weight) {
-        int bmr;
-        SharedPreferences preferences =
-                getSharedPreferences(Constants.PERSONAL_DATA_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+    private UserProperties readDataFromForms() {
+        int age, gender, heightCm, weightKg, activityLevel;
 
-        editor.putInt(Constants.USER_AGE, age);
-        editor.putInt(Constants.USER_HEIGHT_CM, height);
-        editor.putInt(Constants.USER_WEIGHT_KG, weight);
-        switch(genderId) {
+        age = binding.numberPickerAge.getValue();
+        heightCm = binding.numberPickerHeight.getValue();
+        weightKg = binding.numberPickerWeight.getValue();
+        switch (binding.genderRadioGroup.getCheckedRadioButtonId()) {
             case R.id.maleRadioButton:
-                bmr = Constants.calculateBMR_Male(weight, height, age);
-                editor.putInt(Constants.USER_GENDER, Constants.GENDER_MALE);
+                gender = Constants.GENDER_MALE;
                 break;
             default:
-                bmr = Constants.calculateBMR_Female(weight, height, age);
-                editor.putInt(Constants.USER_GENDER, Constants.GENDER_FEMALE);
+                gender = Constants.GENDER_FEMALE;
                 break;
         }
-        switch(activityId) {
-            case R.id.highRadioButton:
-                editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_HIGH);
-                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.725));
+        switch (binding.activityRadioGroup.getCheckedRadioButtonId()) {
+            case Constants.ACTIVITY_HIGH:
+                activityLevel = Constants.ACTIVITY_HIGH;
                 break;
-            case R.id.lowRadioButton:
-                editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_LOW);
-                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.2));
+            case Constants.ACTIVITY_LOW:
+                activityLevel = Constants.ACTIVITY_LOW;
                 break;
             default:
-                editor.putInt(Constants.USER_ACTIVITY_LEVEL, Constants.ACTIVITY_MID);
-                editor.putInt(Constants.USER_DAILY_INTAKE_KCAL, (int)(bmr*1.55));
+                activityLevel = Constants.ACTIVITY_MID;
                 break;
         }
-        editor.putFloat(Constants.USER_DAILY_CARBS_PERCENT,
-                Constants.DEFAULT_CARBS_PERCENT_DAILY);
-        editor.putFloat(Constants.USER_DAILY_PROTEINS_PERCENT,
-                Constants.DEFAULT_PROTEINS_PERCENT_DAILY);
-        editor.putFloat(Constants.USER_DAILY_FATS_PERCENT,
-                Constants.DEFAULT_FATS_PERCENT_DAILY);
 
-        editor.apply();
+        return new UserProperties(age, gender, heightCm, weightKg, activityLevel);
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 
 import org.jetbrains.annotations.NotNull;
 
+import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.UserRepository;
 
 public class UserViewModel extends AndroidViewModel {
@@ -24,11 +25,24 @@ public class UserViewModel extends AndroidViewModel {
         return repository.loginWithMailAndPassword(mail, password);
     }
 
-    public LiveData<Integer> registerWithMailAndPassword(String mail, String password) {
-        return repository.registerWithMailAndPassword(mail, password);
+    public LiveData<Integer> registerWithMailAndPassword(String mail, String password,
+                                                         UserProperties insertData) {
+        return repository.registerWithMailAndPassword(mail, password, insertData);
     }
 
     public void logout() {
         repository.logout();
+    }
+
+    public String getUserAuthId() {
+        return repository.getUserAuthIdFromSharedPreferences();
+    }
+
+    public LiveData<UserProperties> getUserProperties() {
+        return repository.getUserProperties();
+    }
+
+    public void setUserProperties(UserProperties newProperties) {
+        repository.setUserProperties(newProperties);
     }
 }

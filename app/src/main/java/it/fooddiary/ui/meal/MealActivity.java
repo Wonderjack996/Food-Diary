@@ -28,14 +28,17 @@ import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.ActivityMealBinding;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
-import it.fooddiary.models.MealProperties;
+import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.FoodRepository;
+import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.FoodRecyclerAdapter;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.food.FoodViewModel;
 import it.fooddiary.viewmodels.food.FoodViewModelFactory;
+import it.fooddiary.viewmodels.user.UserViewModel;
+import it.fooddiary.viewmodels.user.UserViewModelFactory;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class MealActivity extends AppCompatActivity implements IDatabaseOperation {
@@ -47,7 +50,8 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     private Date associatedDate;
     private MealType mealType;
 
-    private FoodViewModel viewModel;
+    private FoodViewModel foodViewModel;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +61,13 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        viewModel = new ViewModelProvider(this,
+        foodViewModel = new ViewModelProvider(this,
                 new FoodViewModelFactory(getApplication(),
                         new FoodRepository(getApplication())))
                 .get(FoodViewModel.class);
+        userViewModel = new ViewModelProvider(this,
+                new UserViewModelFactory(getApplication(), new UserRepository(getApplication())))
+                .get(UserViewModel.class);
 
         Intent intent = getIntent();
         associatedDate = (Date) intent.getSerializableExtra(Constants.CURRENT_DATE);
@@ -72,10 +79,10 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         recyclerAdapter = new FoodRecyclerAdapter(getSupportFragmentManager(),
                 new FoodPropertiesItemAlert(this));
 
-        viewModel.getMealProperties().observe(this, new Observer<MealProperties>() {
+        userViewModel.getUserProperties().observe(this, new Observer<UserProperties>() {
             @Override
-            public void onChanged(MealProperties mealProperties) {
-                binding.setMealProperties(mealProperties);
+            public void onChanged(UserProperties mealProperties) {
+                binding.setUserProperties(mealProperties);
                 binding.invalidateAll();
             }
         });
@@ -99,7 +106,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                     position = viewHolder.getAdapterPosition();
                     Food foodToRemove = recyclerAdapter.getFoodByPosition(position);
 
-                    viewModel.removeFoodFromMeal(foodToRemove, mealType, associatedDate)
+                    foodViewModel.removeFoodFromMeal(foodToRemove, mealType, associatedDate)
                             .observe(MealActivity.this, new Observer<Integer>() {
                                 @Override
                                 public void onChanged(Integer integer) {
@@ -176,7 +183,8 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     }
 
     private void onDeleteUndo(Food foodToAdd, MealType mealType, Date date, int position) {
-        LiveData<Integer> databaseResponse = viewModel.insertFoodInMeal(foodToAdd, mealType, date);
+        LiveData<Integer> databaseResponse =
+                foodViewModel.insertFoodInMeal(foodToAdd, mealType, date);
 
         databaseResponse.observe(this, new Observer<Integer>() {
             @Override
@@ -205,7 +213,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
 
     private void reloadMeal() {
         binding.searchingTextView.setVisibility(View.INVISIBLE);
-        viewModel.getMealByTypeAndDate(mealType, associatedDate).observe(this, new Observer<Meal>() {
+        foodViewModel.getMealByTypeAndDate(mealType, associatedDate).observe(this, new Observer<Meal>() {
             @Override
             public void onChanged(Meal meal) {
                 binding.setMeal(meal);
@@ -217,7 +225,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
 
     private void completeReload() {
         binding.searchingTextView.setVisibility(View.INVISIBLE);
-        viewModel.getMealByTypeAndDate(mealType, associatedDate)
+        foodViewModel.getMealByTypeAndDate(mealType, associatedDate)
                 .observe(MealActivity.this, new Observer<Meal>() {
                     @Override
                     public void onChanged(Meal meal) {
@@ -250,7 +258,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     public void modifyFood(Food newFood) {
         Food oldFood = recyclerAdapter.getFood(newFood);
         if (oldFood != null) {
-            viewModel.updateFoodInMeal(newFood, mealType, associatedDate).observe(this, new Observer<Integer>() {
+            foodViewModel.updateFoodInMeal(newFood, mealType, associatedDate).observe(this, new Observer<Integer>() {
                 @Override
                 public void onChanged(Integer integer) {
                     switch (integer) {

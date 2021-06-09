@@ -19,8 +19,9 @@ import java.util.Date;
 
 import it.fooddiary.databinding.FragmentDiaryBinding;
 import it.fooddiary.models.Meal;
-import it.fooddiary.models.MealProperties;
+import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.FoodRepository;
+import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.MainActivity;
 import it.fooddiary.ui.meal.MealActivity;
 import it.fooddiary.R;
@@ -29,6 +30,8 @@ import it.fooddiary.utils.DateUtils;
 import it.fooddiary.utils.MealType;
 import it.fooddiary.viewmodels.food.FoodViewModel;
 import it.fooddiary.viewmodels.food.FoodViewModelFactory;
+import it.fooddiary.viewmodels.user.UserViewModel;
+import it.fooddiary.viewmodels.user.UserViewModelFactory;
 
 public class DiaryFragment extends Fragment {
 
@@ -38,7 +41,8 @@ public class DiaryFragment extends Fragment {
 
     private final Date associatedDate;
 
-    private FoodViewModel viewModel;
+    private FoodViewModel foodViewModel;
+    private UserViewModel userViewModel;
 
     public DiaryFragment() {
         this.associatedDate = Calendar.getInstance().getTime();
@@ -58,19 +62,20 @@ public class DiaryFragment extends Fragment {
 
         setupOpenMealImageButton();
 
-        viewModel = new ViewModelProvider(this,
+        foodViewModel = new ViewModelProvider(this,
                 new FoodViewModelFactory(requireActivity().getApplication(),
                         new FoodRepository(requireActivity().getApplication())))
                 .get(FoodViewModel.class);
+        userViewModel = new ViewModelProvider(this,
+                new UserViewModelFactory(requireActivity().getApplication(),
+                        new UserRepository(requireActivity().getApplication())))
+                .get(UserViewModel.class);
 
-        binding.setMealProperties(viewModel.getMealProperties().getValue());
-        binding.invalidateAll();
-
-        viewModel.getMealProperties().observe(getViewLifecycleOwner(), new Observer<MealProperties>() {
+        userViewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
             @Override
-            public void onChanged(MealProperties mealProperties) {
-                if (binding.getMealProperties() == null)
-                    binding.setMealProperties(mealProperties);
+            public void onChanged(UserProperties mealProperties) {
+                binding.setUserProperties(mealProperties);
+                binding.invalidateAll();
             }
         });
 
@@ -105,13 +110,13 @@ public class DiaryFragment extends Fragment {
 
     private void reloadMealsFromDB() {
         LiveData<Meal> breakfastMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.BREAKFAST, associatedDate);
+                foodViewModel.getMealByTypeAndDate(MealType.BREAKFAST, associatedDate);
         LiveData<Meal> lunchMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.LUNCH, associatedDate);
+                foodViewModel.getMealByTypeAndDate(MealType.LUNCH, associatedDate);
         LiveData<Meal> dinnerMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.DINNER, associatedDate);
+                foodViewModel.getMealByTypeAndDate(MealType.DINNER, associatedDate);
         LiveData<Meal> snacksMutableLiveData =
-                viewModel.getMealByTypeAndDate(MealType.SNACKS, associatedDate);
+                foodViewModel.getMealByTypeAndDate(MealType.SNACKS, associatedDate);
 
         breakfastMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
             @Override

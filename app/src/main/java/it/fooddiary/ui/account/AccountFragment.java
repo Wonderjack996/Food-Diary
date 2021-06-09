@@ -65,7 +65,7 @@ public class AccountFragment extends Fragment {
                         new UserRepository(requireActivity().getApplication())))
                 .get(UserViewModel.class);
 
-        foodViewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
+        userViewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
             @Override
             public void onChanged(UserProperties userProperties) {
                 binding.setUserProperties(userProperties);

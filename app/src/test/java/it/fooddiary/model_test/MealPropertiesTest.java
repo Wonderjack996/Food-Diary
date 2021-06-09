@@ -3,10 +3,6 @@ package it.fooddiary.model_test;
 import org.junit.Before;
 import org.junit.Test;
 
-import it.fooddiary.models.MealProperties;
-
-import static org.junit.Assert.*;
-
 public class MealPropertiesTest {
 
     private MealProperties mealProperties;

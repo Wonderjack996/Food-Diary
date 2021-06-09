@@ -19,16 +19,19 @@ import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityEditAccountBinding;
 import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.FoodRepository;
+import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.viewmodels.food.FoodViewModel;
 import it.fooddiary.viewmodels.food.FoodViewModelFactory;
+import it.fooddiary.viewmodels.user.UserViewModel;
+import it.fooddiary.viewmodels.user.UserViewModelFactory;
 
 public class EditAccountActivity extends AppCompatActivity {
     private static final String TAG = "EditAccountActivity";
 
     private ActivityEditAccountBinding binding;
 
-    private FoodViewModel viewModel;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +41,10 @@ public class EditAccountActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        viewModel = new ViewModelProvider(this,
-                new FoodViewModelFactory(getApplication(),
-                        new FoodRepository(getApplication())))
-                .get(FoodViewModel.class);
+        userViewModel = new ViewModelProvider(this,
+                new UserViewModelFactory(getApplication(),
+                        new UserRepository(getApplication())))
+                .get(UserViewModel.class);
 
         getSupportActionBar().setTitle(R.string.editAccount);
 
@@ -136,7 +139,7 @@ public class EditAccountActivity extends AppCompatActivity {
                             activityLevel = Constants.ACTIVITY_LOW;
                             break;
                     }
-                    viewModel.setUserProperties(new UserProperties(age, gender, height,
+                    userViewModel.setUserProperties(new UserProperties(age, gender, height,
                             weight, activityLevel));
                     onBackPressed();
                 }
@@ -175,7 +178,7 @@ public class EditAccountActivity extends AppCompatActivity {
     }
 
     private void readInformation(){
-        viewModel.getUserProperties().observe(this, new Observer<UserProperties>() {
+        userViewModel.getUserProperties().observe(this, new Observer<UserProperties>() {
             @Override
             public void onChanged(UserProperties userProperties) {
                 int age_user = userProperties.getAge();

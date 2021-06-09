@@ -29,6 +29,9 @@ public class Constants {
     public static final float DEFAULT_CARBS_PERCENT_DAILY = 0.5f;
     public static final float DEFAULT_PROTEINS_PERCENT_DAILY = 0.2f;
     public static final float DEFAULT_FATS_PERCENT_DAILY = 0.3f;
+    public static final float HIGH_ACTIVITY_VALUE = 1.725f;
+    public static final float MID_ACTIVITY_VALUE = 1.55f;
+    public static final float LOW_ACTIVITY_VALUE = 1.2f;
 
     /**
      * Login Fields
@@ -98,12 +101,18 @@ public class Constants {
     public static final int DATABASE_REMOVE_RECENT_FOOD_ERROR = 450;
 
     /**
-     * Firebase codes
+     * Firebase authentication
      */
     public static final int FIREBASE_LOGIN_OK = 0;
     public static final int FIREBASE_LOGIN_ERROR = 1;
     public static final int FIREBASE_REGISTER_OK = 2;
     public static final int FIREBASE_REGISTER_ERROR = 3;
+
+    /**
+     * Firebase database
+     */
+    public static final String FIREBASE_DATABASE_NAME = "https://food-diary-6ce0a-default-rtdb.europe-west1.firebasedatabase.app/";
+    public static final String FIREBASE_USERS_TABLE = "users";
 
     /**
      * Preferences files
@@ -112,7 +121,7 @@ public class Constants {
     public static final String PERSONAL_DATA_PREFERENCES_FILE = "PersonalDataPreferencesFile";
     public static final String FIREBASE_USER_PREFERENCES_FILE = "FirebaseUserPreferencesFile";
 
-    public static final String FIREBASE_USER_TOKEN = "FirebaseUserToken";
+    public static final String FIREBASE_USER_ID = "FirebaseUserId";
     public static final String CURRENT_DATE = "CurrentDate";
     public static final String MEAL_TYPE = "MealType";
 

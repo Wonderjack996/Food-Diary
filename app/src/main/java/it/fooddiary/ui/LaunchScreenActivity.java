@@ -1,20 +1,27 @@
 package it.fooddiary.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.login.LoginActivity;
-import it.fooddiary.utils.Constants;
+import it.fooddiary.viewmodels.user.UserViewModel;
+import it.fooddiary.viewmodels.user.UserViewModelFactory;
 
 public class LaunchScreenActivity extends AppCompatActivity {
+
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userViewModel = new ViewModelProvider(this,
+                new UserViewModelFactory(getApplication(), new UserRepository(getApplication())))
+                .get(UserViewModel.class);
 
         Intent intent = chooseActivityToLaunch();
 
@@ -24,11 +31,9 @@ public class LaunchScreenActivity extends AppCompatActivity {
 
     private Intent chooseActivityToLaunch() {
         Intent ret;
-        SharedPreferences preferences =
-                getSharedPreferences(Constants.FIREBASE_USER_PREFERENCES_FILE,
-                        Context.MODE_PRIVATE);
+        String authToken = userViewModel.getUserAuthId();
 
-        if (preferences.getString(Constants.FIREBASE_USER_TOKEN, "").isEmpty())
+        if (authToken == null || authToken.isEmpty())
             ret = new Intent(this, LoginActivity.class);
         else
             ret = new Intent(this, MainActivity.class);
