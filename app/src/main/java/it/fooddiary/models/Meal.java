@@ -36,6 +36,8 @@ public class Meal implements IFoodProperties, Parcelable {
         this.mealFoods = new ArrayList<Food>();
     }
 
+
+
     public boolean addFood(Food food) {
         return mealFoods.add(food);
     }

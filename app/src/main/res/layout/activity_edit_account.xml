@@ -46,6 +46,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:text="@string/age"
+
                         android:textColor="@color/primaryTextColor"/>
 
                     <NumberPicker
@@ -54,6 +55,7 @@
                         android:layout_height="128dp"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        android:theme="@style/AppTheme.Picker"
                         android:textColor="@color/primaryTextColor"/>
                 </LinearLayout>
 
@@ -149,6 +151,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:layout_width="wrap_content"
+                        android:theme="@style/AppTheme.Picker"
                         android:layout_height="128dp" />
                 </LinearLayout>
 
@@ -179,6 +182,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="128dp"
                         android:layout_gravity="center"
+                        android:theme="@style/AppTheme.Picker"
                         android:gravity="center"/>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -210,7 +214,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/activity_level" />
+                    android:text="@string/activity_level"
+                    android:textColor="@color/primaryTextColor"/>
 
                 <RadioGroup
                     android:id="@+id/activityRadioGroup"
@@ -272,6 +277,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:layout_marginTop="32dp"
+                android:textColor="@color/primaryTextColor"
                 android:text="@string/confirm" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,6 @@ public class FoodTest {
         assertEquals(80, food.getTotalCarbsGrams());
         assertEquals(40, food.getTotalProteinsGrams());
         assertEquals(60, food.getTotalFatsGrams());
-        assertEquals(80*4 + 40*4 + 60*9, food.getTotalCalories());
+        assertEquals(80 * 4 + 40 * 4 + 60 * 9, food.getTotalCalories());
     }
 }
