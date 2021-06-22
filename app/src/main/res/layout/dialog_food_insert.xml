@@ -53,7 +53,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/quantity"
-                    android:textColor="@color/primaryColor" />
+                    android:textColor="?attr/colorPrimary" />
 
                 <NumberPicker
                     android:id="@+id/quantityNumberPicker"
@@ -81,7 +81,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/meal"
-                    android:textColor="@color/primaryColor" />
+                    android:textColor="?attr/colorPrimary" />
 
                 <NumberPicker
                     android:id="@+id/mealNumberPicker"
@@ -113,7 +113,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/carbs_percent"
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <NumberPicker
                 android:id="@+id/carbsNumberPicker"
@@ -138,7 +138,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/pro_percent"
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <NumberPicker
                 android:id="@+id/proteinsNumberPicker"
@@ -163,7 +163,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/fats_percent"
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <NumberPicker
                 android:id="@+id/fatsNumberPicker"

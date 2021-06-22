@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/searchingTextView"
-        style="@style/TextAppearance.MaterialComponents.Headline5"
+        style="@style/TextAppearance.MdcTypographyStyles.Headline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"

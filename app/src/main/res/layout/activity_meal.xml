@@ -31,7 +31,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/primaryLightColor"
+                android:background="?attr/colorPrimaryVariant"
                 android:padding="16dp">
 
                 <TextView
@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text='@{String.valueOf(meal.totalCalories) + " KCal"}'
-                    android:textColor="@color/primaryTextColor"
+
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/carbs"
-                        android:textColor="@color/primaryTextColor"/>
+                        />
 
                     <ProgressBar
                         android:id="@+id/carbs_progressBar"
@@ -79,10 +79,10 @@
 
                     <TextView
                         android:id="@+id/carbsCounter_textView"
+                        style="@style/TextAppearance.MdcTypographyStyles.Body1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textColor="@color/primaryTextColor"
                         android:text='@{String.valueOf(meal.totalCarbsGrams) + " / " + String.valueOf(userProperties.carbsGrams) + " g"}' />
                 </LinearLayout>
 
@@ -107,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/proteins"
-                        android:textColor="@color/primaryTextColor"/>
+                        />
 
                     <ProgressBar
                         android:id="@+id/proteins_progressBar"
@@ -119,10 +119,11 @@
 
                     <TextView
                         android:id="@+id/proteinsCounter_textView"
+                        style="@style/TextAppearance.MdcTypographyStyles.Body1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textColor="@color/primaryTextColor"
+
                         android:text='@{String.valueOf(meal.totalProteinsGrams) + " / " + String.valueOf(userProperties.proteinsGrams) + " g"}' />
                 </LinearLayout>
 
@@ -145,7 +146,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:text="@string/fats"
-                        android:textColor="@color/primaryTextColor"/>
+                        />
 
                     <ProgressBar
                         android:id="@+id/fats_progressBar"
@@ -154,14 +155,14 @@
                         android:layout_height="wrap_content"
                         android:progress='@{(int)((float)meal.totalFatsGrams/userProperties.fatsGrams*100)}'
                         android:max="100"
-                        android:textColor="@color/primaryTextColor" />
+                        android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
                         android:id="@+id/fatsCounter_textView"
+                        style="@style/TextAppearance.MdcTypographyStyles.Body1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:textColor="@color/primaryTextColor"
                         android:text='@{String.valueOf(meal.totalFatsGrams) + " / " + String.valueOf(userProperties.fatsGrams) + " g"}' />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>

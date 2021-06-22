@@ -23,7 +23,7 @@
             style="@style/TextAppearance.MdcTypographyStyles.Headline5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryColor"
+            android:textColor="?attr/colorPrimary"
             android:text='@{food.name}'
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +33,7 @@
             style="@style/TextAppearance.MdcTypographyStyles.Headline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/primaryColor"
+            android:textColor="?attr/colorPrimary"
             android:text='@{food.totalCalories + " KCal"}'
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         <TextView
             android:id="@+id/foodQuantity"
             style="@style/TextAppearance.MdcTypographyStyles.Body1"
-            android:textColor="@color/primaryColor"
+            android:textColor="?attr/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text='@{food.quantity + " g"}'
