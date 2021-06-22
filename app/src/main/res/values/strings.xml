@@ -67,7 +67,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="sing_in">Sing In</string>
+    <string name="sing_in">Sing Up</string>
     <string name="mail_not_valid">Mail not valid!</string>
     <string name="password_not_valid">Password not valid!</string>
     <string name="logout">logout</string>
