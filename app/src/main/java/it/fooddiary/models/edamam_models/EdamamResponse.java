@@ -1,10 +1,18 @@
 package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
+
 import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+/**
+ * Classe utilizzata per wrappare una risposta ricevuta da edamam api.
+ */
 public class EdamamResponse implements Parcelable {
 
     private String status;
@@ -13,8 +21,11 @@ public class EdamamResponse implements Parcelable {
     private List<EdamamRecord> hints;
     private List<EdamamRecord> parsed;
 
-    public EdamamResponse(String status, String message, String text,
-                          List<EdamamRecord> hints, List<EdamamRecord> parsed) {
+    public EdamamResponse(String status,
+                          @NonNull @NotNull String message,
+                          String text,
+                          List<EdamamRecord> hints,
+                          List<EdamamRecord> parsed) {
         this.status = status;
         this.message = message;
         this.text = text;

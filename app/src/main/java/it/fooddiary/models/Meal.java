@@ -8,10 +8,11 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 import it.fooddiary.utils.MealType;
 
@@ -30,20 +31,25 @@ public class Meal implements IFoodProperties, Parcelable {
     @ColumnInfo(name = "meal_foods")
     private List<Food> mealFoods;
 
-    public Meal(MealType mealType, Date mealDate) {
+    public Meal(@NonNull @NotNull MealType mealType,
+                @NonNull @NotNull Date mealDate) {
         this.mealType = mealType;
+
         this.mealDate = mealDate;
-        this.mealFoods = new ArrayList<Food>();
+
+        this.mealFoods = new ArrayList<>();
     }
 
-
-
-    public boolean addFood(Food food) {
-        return mealFoods.add(food);
+    public boolean addFood(@NonNull @NotNull Food food) {
+        if (mealFoods != null)
+            return mealFoods.add(food);
+        return false;
     }
 
-    public boolean removeFood(Food food) {
-        return mealFoods.remove(food);
+    public boolean removeFood(@NonNull @NotNull Food food) {
+        if (mealFoods != null)
+            return mealFoods.remove(food);
+        return false;
     }
 
     @Override
@@ -90,7 +96,7 @@ public class Meal implements IFoodProperties, Parcelable {
         return mealFoods;
     }
 
-    public void setMealFoods(List<Food> mealFoods) {
+    public void setMealFoods(@NonNull @NotNull List<Food> mealFoods) {
         this.mealFoods = mealFoods;
     }
 

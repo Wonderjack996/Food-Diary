@@ -1,8 +1,16 @@
 package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
+
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * Classe utilizzata per wrappare i macronutrienti di un alimento edamam.
+ */
 public class EdamamNutrients implements Parcelable {
 
     private double ENERC_KCAL;

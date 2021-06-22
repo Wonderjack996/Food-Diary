@@ -2,6 +2,10 @@ package it.fooddiary.utils;
 
 import android.app.Application;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
 import it.fooddiary.databases.AppRoomDatabase;
 import it.fooddiary.services.IFoodServices;
 import retrofit2.Retrofit;
@@ -29,7 +33,7 @@ public class ServicesLocator {
         return retrofit.create(IFoodServices.class);
     }
 
-    public AppRoomDatabase getAppDatabase(Application application) {
+    public AppRoomDatabase getAppDatabase(@NotNull @NonNull Application application) {
         return AppRoomDatabase.getDatabase(application);
     }
 }

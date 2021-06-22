@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 /**
- * Interface to get foods by Edamam API
+ * Interfaccia per acquisire alimenti da Edamam api tramite retrofit
  */
 public interface IFoodServices {
 

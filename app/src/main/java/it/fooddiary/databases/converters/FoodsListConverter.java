@@ -10,6 +10,11 @@ import java.util.List;
 
 import it.fooddiary.models.Food;
 
+/**
+ * Converter utilizzato per passare da lista di Food a stringa e viceversa.
+ * La lista viene convertita in json tramite Gson, e riconvertita da stringa
+ * sempre tramite Gson. Viene utilizzato per inserire una lista in room db.
+ */
 public class FoodsListConverter {
 
     @TypeConverter
@@ -18,8 +23,7 @@ public class FoodsListConverter {
             return null;
         Gson gson = new Gson();
         Type type = new TypeToken<List<Food>>() {}.getType();
-        String ret = gson.toJson(foodList, type);
-        return ret;
+        return gson.toJson(foodList, type);
     }
 
     @TypeConverter
@@ -28,7 +32,6 @@ public class FoodsListConverter {
             return null;
         Gson gson = new Gson();
         Type type = new TypeToken<List<Food>>() {}.getType();
-        List<Food> ret = gson.fromJson(foodList, type);
-        return ret;
+        return gson.fromJson(foodList, type);
     }
 }

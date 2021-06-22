@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.jetbrains.annotations.NotNull;
+
 import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.login.LoginActivity;
 import it.fooddiary.viewmodels.user.UserViewModel;
@@ -29,6 +31,7 @@ public class LaunchScreenActivity extends AppCompatActivity {
         finish();
     }
 
+    @NotNull
     private Intent chooseActivityToLaunch() {
         Intent ret;
         String authToken = userViewModel.getUserAuthId();

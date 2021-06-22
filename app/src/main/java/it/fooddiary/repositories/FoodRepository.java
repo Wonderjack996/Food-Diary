@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,7 +20,6 @@ import it.fooddiary.databases.MealDao;
 import it.fooddiary.databases.RecentFoodDao;
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
-import it.fooddiary.models.UserProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.services.IFoodServices;
 import it.fooddiary.utils.Constants;
@@ -32,7 +32,6 @@ import retrofit2.Response;
 
 public class FoodRepository {
 
-    private static final String TAG = "FoodRepository";
     private static final int MAX_RECENT_FOOD_DIM = 30;
     private static final int NUM_RECENT_FOOD_TO_REMOVE = 3;
 
@@ -41,7 +40,7 @@ public class FoodRepository {
     private final RecentFoodDao recentFoodDao;
     private final Application application;
 
-    public FoodRepository(Application application) {
+    public FoodRepository(@NotNull @NonNull Application application) {
         this.application = application;
         this.foodServices = ServicesLocator.getInstance().getFoodServicesWithRetrofit();
         this.mealDao = ServicesLocator.getInstance().getAppDatabase(application).mealDao();
@@ -49,154 +48,159 @@ public class FoodRepository {
                 .recentFoodDao();
     }
 
-    public MutableLiveData<EdamamResponse> fetchFoods(String ingredient) {
+    public MutableLiveData<EdamamResponse> fetchFoods(@NonNull @NotNull String ingredient) {
         MutableLiveData<EdamamResponse> edamamResponse = new MutableLiveData<>();
 
-        Call<EdamamResponse> call = foodServices.getFoodsByName(Constants.API_APP_ID,
-                Constants.API_APP_KEY, ingredient, Constants.API_NUTRITION_TYPE_LOGGING,
-                Constants.API_CATEGORY_LABEL_FOOD, Constants.API_CATEGORY_GENERIC_FOOD);
+        ingredient = ingredient.trim();
 
-        call.enqueue(new Callback<EdamamResponse>() {
-            @Override
-            public void onResponse(Call<EdamamResponse> call, Response<EdamamResponse> response) {
-                if (response.body() != null && response.isSuccessful())
-                    edamamResponse.postValue(response.body());
-            }
+        if (ingredient.isEmpty() ||
+                ingredient.length() < Constants.MIN_INSERTED_INGREDIENT_LENGTH)
+            edamamResponse.setValue(new EdamamResponse(null, "error",
+                    null, null, null));
+        else {
+            Call<EdamamResponse> call = foodServices.getFoodsByName(Constants.API_APP_ID,
+                    Constants.API_APP_KEY, ingredient, Constants.API_NUTRITION_TYPE_LOGGING,
+                    Constants.API_CATEGORY_LABEL_FOOD, Constants.API_CATEGORY_GENERIC_FOOD);
 
-            @Override
-            public void onFailure(Call<EdamamResponse> call, Throwable t) {
-                edamamResponse.postValue(new EdamamResponse(null, t.getMessage(),
-                        null, null, null));
-            }
-        });
+            call.enqueue(new Callback<EdamamResponse>() {
+                @Override
+                public void onResponse(@NotNull Call<EdamamResponse> call,
+                                       @NotNull Response<EdamamResponse> response) {
+                    if (response.body() != null && response.isSuccessful())
+                        edamamResponse.postValue(response.body());
+                }
+
+                @Override
+                public void onFailure(@NotNull Call<EdamamResponse> call,
+                                      @NotNull Throwable t) {
+                    if (t.getMessage() != null)
+                        edamamResponse.postValue(new EdamamResponse(null, t.getMessage(),
+                                null, null, null));
+                    else
+                        edamamResponse.postValue(new EdamamResponse(null, "error",
+                                null, null, null));
+                }
+            });
+        }
 
         return edamamResponse;
     }
 
-    public LiveData<Meal> getMealByTypeAndDate(MealType mealType, Date date) {
+    public LiveData<Meal> getMealByTypeAndDate(@NotNull @NonNull MealType mealType,
+                                               @NotNull @NonNull Date date) {
         MutableLiveData<Meal> mealMutableLiveData = new MutableLiveData<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Meal> meals = mealDao.getMeals(mealType, date);
-                if (meals == null || meals.size() != 1)
-                    mealMutableLiveData.postValue(new Meal(mealType, date));
-                else
-                    mealMutableLiveData.postValue(meals.get(0));
-            }
+        new Thread(() -> {
+            List<Meal> meals = mealDao.getMeals(mealType, date);
+            if (meals == null || meals.size() != 1)
+                mealMutableLiveData.postValue(new Meal(mealType, date));
+            else
+                mealMutableLiveData.postValue(meals.get(0));
         }).start();
 
         return mealMutableLiveData;
     }
 
-    public LiveData<Integer> insertFoodInMeal(Food foodToInsert, MealType mealType, Date date) {
+    public LiveData<Integer> insertFoodInMeal(@NonNull @NotNull Food foodToInsert,
+                                              @NonNull @NotNull MealType mealType,
+                                              @NonNull @NotNull Date date) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Meal> mealList = mealDao.getMeals(mealType, date);
-                if (mealList == null || mealList.size() == 0) {
-                    Meal newMeal = new Meal(mealType, date);
-                    newMeal.addFood(foodToInsert);
-                    mealDao.insert(newMeal);
+        new Thread(() -> {
+            List<Meal> mealList = mealDao.getMeals(mealType, date);
+            if (mealList == null || mealList.size() == 0) {
+                Meal newMeal = new Meal(mealType, date);
+                newMeal.addFood(foodToInsert);
+                mealDao.insert(newMeal);
+                databaseOperationResult.postValue(Constants.DATABASE_INSERT_OK);
+            } else if (mealList.size() == 1) {
+                Meal updatedMeal = mealList.get(0);
+                if (!updatedMeal.getMealFoods().contains(foodToInsert)) {
+                    updatedMeal.addFood(foodToInsert);
+                    mealDao.update(updatedMeal);
                     databaseOperationResult.postValue(Constants.DATABASE_INSERT_OK);
-                } else if (mealList.size() == 1) {
-                    Meal updatedMeal = mealList.get(0);
-                    if (!updatedMeal.getMealFoods().contains(foodToInsert)) {
-                        updatedMeal.addFood(foodToInsert);
-                        mealDao.update(updatedMeal);
-                        databaseOperationResult.postValue(Constants.DATABASE_INSERT_OK);
-                    } else {
-                        databaseOperationResult.postValue(Constants.DATABASE_INSERT_ALREADY_PRESENT);
-                    }
-                } else
-                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_ERROR);
-            }
+                } else {
+                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_ALREADY_PRESENT);
+                }
+            } else
+                databaseOperationResult.postValue(Constants.DATABASE_INSERT_ERROR);
         }).start();
 
         return databaseOperationResult;
     }
 
-    public LiveData<Integer> updateFoodInMeal(Food foodToUpdate, MealType mealType, Date date) {
+    public LiveData<Integer> updateFoodInMeal(@NonNull @NotNull Food foodToUpdate,
+                                              @NonNull @NotNull MealType mealType,
+                                              @NonNull @NotNull Date date) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Meal> meals = mealDao.getMeals(mealType, date);
-                if (meals == null || meals.size() != 1)
+        new Thread(() -> {
+            List<Meal> meals = mealDao.getMeals(mealType, date);
+            if (meals == null || meals.size() != 1)
+                databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+            else {
+                Meal newMeal = meals.get(0);
+                if (newMeal.getMealFoods().contains(foodToUpdate)) {
+                    Food oldFood = newMeal.getMealFoods()
+                            .get(newMeal.getMealFoods().indexOf(foodToUpdate));
+                    if (oldFood.getQuantity() != foodToUpdate.getQuantity()) {
+                        boolean isRemoved = newMeal.removeFood(foodToUpdate);
+                        if (isRemoved) {
+                            newMeal.addFood(foodToUpdate);
+                            mealDao.update(newMeal);
+                            databaseOperationResult.postValue(Constants.DATABASE_UPDATE_OK);
+                        } else
+                            databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
+                    }
+                } else
                     databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
-                else {
-                    Meal newMeal = meals.get(0);
-                    if (newMeal.getMealFoods().contains(foodToUpdate)) {
-                        Food oldFood = newMeal.getMealFoods()
-                                .get(newMeal.getMealFoods().indexOf(foodToUpdate));
-                        if (oldFood.getQuantity() != foodToUpdate.getQuantity()) {
-                            boolean isRemoved = newMeal.removeFood(foodToUpdate);
-                            if (isRemoved) {
-                                newMeal.addFood(foodToUpdate);
-                                mealDao.update(newMeal);
-                                databaseOperationResult.postValue(Constants.DATABASE_UPDATE_OK);
-                            } else
-                                databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
-                        }
-                    } else
-                        databaseOperationResult.postValue(Constants.DATABASE_UPDATE_ERROR);
-                }
             }
         }).start();
 
         return databaseOperationResult;
     }
 
-    public LiveData<Integer> removeFoodFromMeal(Food foodToRemove, MealType mealType, Date date) {
+    public LiveData<Integer> removeFoodFromMeal(@NonNull @NotNull Food foodToRemove,
+                                                @NonNull @NotNull MealType mealType,
+                                                @NonNull @NotNull Date date) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Meal> mealList = mealDao.getMeals(mealType, date);
-                if (mealList == null || mealList.size() == 0) {
-                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_ERROR);
-                } else if (mealList.size() == 1) {
-                    Meal updatedMeal = mealList.get(0);
-                    boolean isRemoved = updatedMeal.removeFood(foodToRemove);
-                    if (isRemoved && updatedMeal.getMealFoods().size() == 0) {
-                        mealDao.delete(updatedMeal);
-                        databaseOperationResult.postValue(Constants.DATABASE_REMOVE_OK);
-                    } else if (isRemoved) {
-                        mealDao.update(updatedMeal);
-                        databaseOperationResult.postValue(Constants.DATABASE_REMOVE_OK);
-                    } else
-                        databaseOperationResult.postValue(Constants.DATABASE_REMOVE_NOT_PRESENT);
+        new Thread(() -> {
+            List<Meal> mealList = mealDao.getMeals(mealType, date);
+            if (mealList == null || mealList.size() == 0) {
+                databaseOperationResult.postValue(Constants.DATABASE_REMOVE_ERROR);
+            } else if (mealList.size() == 1) {
+                Meal updatedMeal = mealList.get(0);
+                boolean isRemoved = updatedMeal.removeFood(foodToRemove);
+                if (isRemoved && updatedMeal.getMealFoods().size() == 0) {
+                    mealDao.delete(updatedMeal);
+                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_OK);
+                } else if (isRemoved) {
+                    mealDao.update(updatedMeal);
+                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_OK);
                 } else
-                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_ERROR);
-            }
+                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_NOT_PRESENT);
+            } else
+                databaseOperationResult.postValue(Constants.DATABASE_REMOVE_ERROR);
         }).start();
 
         return databaseOperationResult;
     }
 
-    public LiveData<Integer> addFoodToRecent(Food foodToAdd){
+    public LiveData<Integer> addFoodToRecent(@NonNull @NotNull Food foodToAdd) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Food> recentList = recentFoodDao.getAll();
-                if(recentList != null && !recentList.contains(foodToAdd)) {
-                    if (recentList.size() >= MAX_RECENT_FOOD_DIM) {
-                        for (int i = 0; i < NUM_RECENT_FOOD_TO_REMOVE; ++i)
-                            recentFoodDao.deleteOlder();
-                    }
-                    recentFoodDao.insert(foodToAdd);
-                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_OK);
+        new Thread(() -> {
+            List<Food> recentList = recentFoodDao.getAll();
+            if (recentList != null && !recentList.contains(foodToAdd)) {
+                if (recentList.size() >= MAX_RECENT_FOOD_DIM) {
+                    for (int i = 0; i < NUM_RECENT_FOOD_TO_REMOVE; ++i)
+                        recentFoodDao.deleteOlder();
                 }
-                else {
-                    databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_ERROR);
-                }
+                recentFoodDao.insert(foodToAdd);
+                databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_OK);
+            } else {
+                databaseOperationResult.postValue(Constants.DATABASE_INSERT_RECENT_FOOD_ERROR);
             }
         }).start();
 
@@ -205,33 +209,28 @@ public class FoodRepository {
 
     public LiveData<List<Food>> getRecentFoods() {
         MutableLiveData<List<Food>> listFoodLiveData = new MutableLiveData<>();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Food> recentList = recentFoodDao.getAll();
-                if(recentList != null)
-                    listFoodLiveData.postValue(recentList);
-                else
-                    listFoodLiveData.postValue(new ArrayList<>());
-            }
+
+        new Thread(() -> {
+            List<Food> recentList = recentFoodDao.getAll();
+            if (recentList != null)
+                listFoodLiveData.postValue(recentList);
+            else
+                listFoodLiveData.postValue(new ArrayList<>());
         }).start();
+
         return listFoodLiveData;
     }
 
-    public LiveData<Integer> removeFoodFormRecent(Food foodToRemove) {
+    public LiveData<Integer> removeFoodFormRecent(@NonNull @NotNull Food foodToRemove) {
         MutableLiveData<Integer> databaseOperationResult = new MutableLiveData<>();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<Food> recentList = recentFoodDao.getAll();
-                if(recentList != null && recentList.contains(foodToRemove)) {
-                    recentFoodDao.deleteFood(foodToRemove.getName());
-                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_OK);
-                }
-                else {
-                    databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_ERROR);
-                }
+        new Thread(() -> {
+            List<Food> recentList = recentFoodDao.getAll();
+            if (recentList != null && recentList.contains(foodToRemove)) {
+                recentFoodDao.deleteFood(foodToRemove.getName());
+                databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_OK);
+            } else {
+                databaseOperationResult.postValue(Constants.DATABASE_REMOVE_RECENT_FOOD_ERROR);
             }
         }).start();
 
@@ -251,30 +250,28 @@ public class FoodRepository {
             try {
                 ret = DateUtils.dateFormat.parse(date);
             } catch (ParseException e) {
-                ret = Calendar.getInstance().getTime();
+                ret = new Date();
             }
         }
 
         return ret;
     }
 
-    public void saveCurrentDate(Date date) {
-        if (date != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (this) {
-                        SharedPreferences preferences = application
-                                .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
-                                        Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
+    public void saveCurrentDate(@NonNull @NotNull Date date) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    SharedPreferences preferences = application
+                            .getSharedPreferences(Constants.CURRENT_DATE_PREFERENCES_FILE,
+                                    Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
 
-                        editor.putString(Constants.CURRENT_DATE, DateUtils.dateFormat.format(date));
+                    editor.putString(Constants.CURRENT_DATE, DateUtils.dateFormat.format(date));
 
-                        editor.apply();
-                    }
+                    editor.apply();
                 }
-            }).start();
-        }
+            }
+        }).start();
     }
 }

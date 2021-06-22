@@ -1,5 +1,9 @@
 package it.fooddiary.utils;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.regex.Pattern;
 
 import it.fooddiary.BuildConfig;
@@ -41,10 +45,6 @@ public class Constants {
     public static final String USER_WEIGHT_KG = "UserWeightKg";
     public static final String USER_HEIGHT_CM = "UserHeightCm";
     public static final String USER_ACTIVITY_LEVEL = "UserActivityLevel";
-    public static final String USER_DAILY_INTAKE_KCAL = "UserDailyIntakeKcal";
-    public static final String USER_DAILY_CARBS_PERCENT = "UserDailyCarbsPercent";
-    public static final String USER_DAILY_PROTEINS_PERCENT = "UserDailyProteinsPercent";
-    public static final String USER_DAILY_FATS_PERCENT = "UserDailyFatsPercent";
     public static final int GENDER_MALE = 0;
     public static final int GENDER_FEMALE = 1;
     public static final int ACTIVITY_HIGH = 2;
@@ -103,10 +103,12 @@ public class Constants {
     /**
      * Firebase authentication
      */
-    public static final int FIREBASE_LOGIN_OK = 0;
-    public static final int FIREBASE_LOGIN_ERROR = 1;
-    public static final int FIREBASE_REGISTER_OK = 2;
-    public static final int FIREBASE_REGISTER_ERROR = 3;
+    public static final int FIREBASE_LOGIN_OK = 100;
+    public static final int FIREBASE_LOGIN_ERROR = 101;
+    public static final int FIREBASE_REGISTER_OK = 102;
+    public static final int FIREBASE_REGISTER_ERROR = 103;
+    public static final int FIREBASE_UPDATE_OK = 104;
+    public static final int FIREBASE_UPDATE_ERROR = 105;
 
     /**
      * Firebase database
@@ -124,24 +126,38 @@ public class Constants {
     public static final String FIREBASE_USER_ID = "FirebaseUserId";
     public static final String CURRENT_DATE = "CurrentDate";
     public static final String MEAL_TYPE = "MealType";
+    public static final int MIN_INSERTED_INGREDIENT_LENGTH = 2;
+    public static final int NUM_PRELOADED_FRAGMENT = 31;
 
 
     public static int calculateBMR_Male(int weight, int height, int age) {
+        if (weight < Constants.MIN_WEIGHT_KG || weight > Constants.MAX_WEIGHT_KG)
+            return -1;
+        if (height < Constants.MIN_HEIGHT_CM || height > Constants.MAX_HEIGHT_CM)
+            return -1;
+        if (age < Constants.MIN_AGE || age > Constants.MAX_AGE)
+            return -1;
         return 10*weight + 6*height - 5*age + 5;
     }
 
     public static int calculateBMR_Female(int weight, int height, int age) {
+        if (weight < Constants.MIN_WEIGHT_KG || weight > Constants.MAX_WEIGHT_KG)
+            return -1;
+        if (height < Constants.MIN_HEIGHT_CM || height > Constants.MAX_HEIGHT_CM)
+            return -1;
+        if (age < Constants.MIN_AGE || age > Constants.MAX_AGE)
+            return -1;
         return 10*weight + 6*height - 5*age - 161;
     }
 
-    public static boolean isMailValid(String mail) {
-        if (mail == null || mail.isEmpty())
+    public static boolean isMailValid(@NonNull @NotNull String mail) {
+        if (mail.isEmpty())
             return false;
         return EMAIL_PATTERN.matcher(mail).matches();
     }
 
-    public static boolean isPasswordValid(String password) {
-        if (password == null || password.isEmpty())
+    public static boolean isPasswordValid(@NonNull @NotNull String password) {
+        if (password.isEmpty())
             return false;
         return PASSWORD_PATTERN.matcher(password).matches();
     }

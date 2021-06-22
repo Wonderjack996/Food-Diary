@@ -13,11 +13,32 @@ public class UserProperties {
     public UserProperties() { }
 
     public UserProperties(int age, int gender, int heightCm, int weightKg, int activityLevel) {
-        this.age = age;
-        this.gender = gender;
-        this.heightCm = heightCm;
-        this.weightKg = weightKg;
-        this.activityLevel = activityLevel;
+        if (age > 0)
+            this.age = age;
+        else
+            this.age = Constants.MID_AGE;
+
+        if (gender == Constants.GENDER_MALE|| gender == Constants.GENDER_FEMALE )
+            this.gender = gender;
+        else
+            this.gender = Constants.GENDER_MALE;
+
+        if (heightCm < Constants.MIN_HEIGHT_CM)
+            this.heightCm = Constants.MID_HEIGHT_CM;
+        else
+            this.heightCm = Math.min(heightCm, Constants.MAX_HEIGHT_CM);
+
+        if (weightKg < Constants.MIN_WEIGHT_KG)
+            this.weightKg = Constants.MIN_WEIGHT_KG;
+        else
+            this.weightKg = Math.min(weightKg, Constants.MAX_WEIGHT_KG);
+
+        if (activityLevel == Constants.ACTIVITY_LOW ||
+                activityLevel == Constants.ACTIVITY_MID ||
+                activityLevel == Constants.ACTIVITY_HIGH)
+            this.activityLevel = activityLevel;
+        else
+            this.activityLevel = Constants.ACTIVITY_LOW;
     }
 
     public int getCaloriesDailyIntake() {

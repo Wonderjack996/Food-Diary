@@ -6,12 +6,9 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
-import java.util.Date;
 import java.util.List;
 
 import it.fooddiary.models.Food;
-import it.fooddiary.models.Meal;
-import it.fooddiary.utils.MealType;
 
 @Dao
 public interface RecentFoodDao {

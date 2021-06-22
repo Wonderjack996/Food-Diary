@@ -3,11 +3,12 @@ package it.fooddiary.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 import it.fooddiary.utils.Constants;
 
@@ -32,14 +33,12 @@ public class Food implements IFoodProperties, Parcelable {
     @ColumnInfo(name = "food_quantity")
     private int quantity = 0;
 
-    public Food(String name, int quantity,
+    public Food(@NonNull @NotNull String name,
+                int quantity,
                 double carbsPercent,
                 double proteinsPercent,
                 double fatsPercent) {
-        if (name != null)
-            this.name = name;
-        else
-            this.name = "";
+        this.name = name;
 
         if (quantity < Constants.MIN_FOOD_GRAMS)
             this.quantity = Constants.MIN_FOOD_GRAMS;
@@ -52,6 +51,7 @@ public class Food implements IFoodProperties, Parcelable {
             this.fatsPercent = fatsPercent;
             return;
         }
+
         this.carbsPercent = 0;
         this.proteinsPercent = 0;
         this.fatsPercent = 0;

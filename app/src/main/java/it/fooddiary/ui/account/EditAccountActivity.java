@@ -139,8 +139,10 @@ public class EditAccountActivity extends AppCompatActivity {
                             activityLevel = Constants.ACTIVITY_LOW;
                             break;
                     }
+
                     userViewModel.setUserProperties(new UserProperties(age, gender, height,
                             weight, activityLevel));
+
                     onBackPressed();
                 }
             }

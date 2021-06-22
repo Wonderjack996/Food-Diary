@@ -1,14 +1,19 @@
 package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
+
 import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
 
 public class EdamamRecord implements Parcelable {
 
     private EdamamFood food;
     private double quantity;
 
-    public EdamamRecord(EdamamFood food, double quantity) {
+    public EdamamRecord(@NonNull @NotNull EdamamFood food, double quantity) {
         this.food = food;
         this.quantity = quantity;
     }

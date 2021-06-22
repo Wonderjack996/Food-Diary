@@ -17,7 +17,7 @@ public enum MealType {
 
     @NonNull
     @NotNull
-    public String toString(Resources res) {
+    public String toString(@NonNull @NotNull Resources res) {
         switch(this) {
             case BREAKFAST:
                 return res.getString(R.string.breakfast);

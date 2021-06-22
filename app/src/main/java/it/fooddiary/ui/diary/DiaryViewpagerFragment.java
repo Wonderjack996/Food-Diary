@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,21 +19,20 @@ import android.view.ViewGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Date;
 
 import it.fooddiary.R;
 import it.fooddiary.databinding.FragmentViewpagerDiaryBinding;
 import it.fooddiary.repositories.FoodRepository;
+import it.fooddiary.utils.Constants;
 import it.fooddiary.viewmodels.food.FoodViewModel;
 import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class DiaryViewpagerFragment extends Fragment {
 
     private static final String TAG = "DiaryViewpagerFragment";
-
-    private static final String DISPLAYED_PAGE_INDEX = "DisplayedPageIndex";
-
-    private static final int NUM_PRELOADED_FRAGMENT = 31;
 
     private FragmentViewpagerDiaryBinding binding;
     private DiaryPagerAdapter diaryPagerAdapter;
@@ -45,29 +45,30 @@ public class DiaryViewpagerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
         inflater.inflate(R.menu.toolbar_menu_diary, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.item_calendar:
-                onItemCalendarClicked();
-                break;
-            default:
-                return false;
+        if (item.getItemId() == R.id.item_calendar) {
+            onItemCalendarClicked();
+        } else {
+            return false;
         }
+
         return true;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NotNull @NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentViewpagerDiaryBinding.inflate(inflater);
@@ -81,13 +82,13 @@ public class DiaryViewpagerFragment extends Fragment {
         datePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(Object selection) {
-                onDateChanged(new Date((long) selection));
+                if (selection != null)
+                    onDateChanged(new Date((long) selection));
             }
         });
 
         displayedDate = viewModel.getCurrentDate();
-        diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
-                displayedDate, NUM_PRELOADED_FRAGMENT);
+        diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(), displayedDate);
 
         return binding.getRoot();
     }
@@ -99,7 +100,8 @@ public class DiaryViewpagerFragment extends Fragment {
 
         binding.diaryViewPager.setSaveEnabled(false);
         binding.diaryViewPager.setAdapter(diaryPagerAdapter);
-        binding.diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
+
+        binding.diaryViewPager.setCurrentItem(Constants.NUM_PRELOADED_FRAGMENT /2);
 
         binding.diaryViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -109,9 +111,11 @@ public class DiaryViewpagerFragment extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                DiaryFragment x = (DiaryFragment) diaryPagerAdapter.getItem(position);
-                displayedDate = x.getAssociatedDate();
-                viewModel.setCurrentDate(displayedDate);
+                Fragment tmp = diaryPagerAdapter.getItem(position);
+                if (tmp instanceof DiaryFragment) {
+                    displayedDate = ((DiaryFragment) tmp).getAssociatedDate();
+                    viewModel.setCurrentDate(displayedDate);
+                }
             }
 
             @Override
@@ -121,14 +125,15 @@ public class DiaryViewpagerFragment extends Fragment {
         });
     }
 
-    private void onDateChanged(Date date) {
+    private void onDateChanged(@NonNull @NotNull Date date) {
         displayedDate = date;
         viewModel.setCurrentDate(displayedDate);
 
-        diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(),
-                date, NUM_PRELOADED_FRAGMENT);
+        diaryPagerAdapter = new DiaryPagerAdapter(getChildFragmentManager(), date);
+
         binding.diaryViewPager.setAdapter(diaryPagerAdapter);
-        binding.diaryViewPager.setCurrentItem(NUM_PRELOADED_FRAGMENT/2);
+
+        binding.diaryViewPager.setCurrentItem(Constants.NUM_PRELOADED_FRAGMENT/2);
     }
 
     private void onItemCalendarClicked() {

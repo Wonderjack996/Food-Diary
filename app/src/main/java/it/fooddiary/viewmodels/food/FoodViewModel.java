@@ -13,7 +13,6 @@ import java.util.List;
 
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
-import it.fooddiary.models.UserProperties;
 import it.fooddiary.models.edamam_models.EdamamResponse;
 import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.utils.MealType;
@@ -32,31 +31,38 @@ public class FoodViewModel extends AndroidViewModel {
         return repository.loadCurrentDate();
     }
 
-    public void setCurrentDate(Date date) {
+    public void setCurrentDate(@NonNull @NotNull Date date) {
         repository.saveCurrentDate(date);
     }
 
-    public LiveData<Meal> getMealByTypeAndDate(MealType mealType, Date date) {
+    public LiveData<Meal> getMealByTypeAndDate(@NonNull @NotNull MealType mealType,
+                                               @NonNull @NotNull Date date) {
         return repository.getMealByTypeAndDate(mealType, date);
     }
 
-    public LiveData<Integer> insertFoodInMeal(Food foodToInsert, MealType mealType, Date date) {
+    public LiveData<Integer> insertFoodInMeal(@NonNull @NotNull Food foodToInsert,
+                                              @NonNull @NotNull MealType mealType,
+                                              @NonNull @NotNull Date date) {
         return repository.insertFoodInMeal(foodToInsert, mealType, date);
     }
 
-    public LiveData<Integer> removeFoodFromMeal(Food foodToRemove, MealType mealType, Date date) {
+    public LiveData<Integer> removeFoodFromMeal(@NonNull @NotNull Food foodToRemove,
+                                                @NonNull @NotNull MealType mealType,
+                                                @NonNull @NotNull Date date) {
         return repository.removeFoodFromMeal(foodToRemove, mealType, date);
     }
 
-    public LiveData<Integer> updateFoodInMeal(Food foodToUpdate, MealType mealType, Date date) {
+    public LiveData<Integer> updateFoodInMeal(@NonNull @NotNull Food foodToUpdate,
+                                              @NonNull @NotNull MealType mealType,
+                                              @NonNull @NotNull Date date) {
         return repository.updateFoodInMeal(foodToUpdate, mealType, date);
     }
 
-    public LiveData<EdamamResponse> getEdamamResponse(String ingredient) {
+    public LiveData<EdamamResponse> getEdamamResponse(@NonNull @NotNull String ingredient) {
         return repository.fetchFoods(ingredient);
     }
 
-    public LiveData<Integer> addFoodToRecent(Food foodToAdd) {
+    public LiveData<Integer> addFoodToRecent(@NonNull @NotNull Food foodToAdd) {
         return repository.addFoodToRecent(foodToAdd);
     }
 
@@ -64,7 +70,7 @@ public class FoodViewModel extends AndroidViewModel {
         return repository.getRecentFoods();
     }
 
-    public LiveData<Integer> removeFoodFromRecent(Food foodToRemove) {
+    public LiveData<Integer> removeFoodFromRecent(@NonNull @NotNull Food foodToRemove) {
         return repository.removeFoodFormRecent(foodToRemove);
     }
 }

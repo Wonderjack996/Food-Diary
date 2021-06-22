@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class MealPropertiesTest {
 
     @Test
-    public void getCMacroAndCaloriesGramsTest() {
+    public void getMacroAndCaloriesTest() {
         int i;
         int size = 3;
         Date date =  new Date();
@@ -32,9 +32,5 @@ public class MealPropertiesTest {
         assertEquals(60, meal.getTotalProteinsGrams()); //protein
         assertEquals(90, meal.getTotalFatsGrams()); // fat
         assertEquals((40 * 4 + 20 * 4 + 30 * 9) * size, meal.getTotalCalories()); //calories
-    }
-
-    @Test
-    public void writeToParcelTest() {
     }
 }

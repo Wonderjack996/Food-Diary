@@ -21,12 +21,14 @@ public class UserViewModel extends AndroidViewModel {
         this.repository = repository;
     }
 
-    public LiveData<Integer> loginWithMailAndPassword(String mail, String password) {
+    public LiveData<Integer> loginWithMailAndPassword(@NonNull @NotNull String mail,
+                                                      @NonNull @NotNull String password) {
         return repository.loginWithMailAndPassword(mail, password);
     }
 
-    public LiveData<Integer> registerWithMailAndPassword(String mail, String password,
-                                                         UserProperties insertData) {
+    public LiveData<Integer> registerWithMailAndPassword(@NonNull @NotNull String mail,
+                                                         @NonNull @NotNull String password,
+                                                         @NonNull @NotNull UserProperties insertData) {
         return repository.registerWithMailAndPassword(mail, password, insertData);
     }
 
@@ -42,7 +44,7 @@ public class UserViewModel extends AndroidViewModel {
         return repository.getUserProperties();
     }
 
-    public void setUserProperties(UserProperties newProperties) {
-        repository.setUserProperties(newProperties);
+    public LiveData<Integer> setUserProperties(@NonNull @NotNull UserProperties newProperties) {
+        return repository.setUserProperties(newProperties);
     }
 }

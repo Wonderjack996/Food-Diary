@@ -1,7 +1,6 @@
 package it.fooddiary.repositories;
 
 import android.app.Application;
-import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -9,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,8 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import it.fooddiary.models.UserProperties;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.ServicesLocator;
-import it.fooddiary.viewmodels.food.FoodViewModel;
-import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 
 public class UserRepository {
 
@@ -36,7 +32,7 @@ public class UserRepository {
 
     private static MutableLiveData<UserProperties> userPropertiesMutableLiveData;
 
-    public UserRepository(Application application) {
+    public UserRepository(@NonNull @NotNull Application application) {
         this.application = application;
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_NAME).getReference();
@@ -47,61 +43,76 @@ public class UserRepository {
         }
     }
 
-    public LiveData<Integer> loginWithMailAndPassword(String mail, String password) {
+    public LiveData<Integer> loginWithMailAndPassword(@NonNull @NotNull String mail,
+                                                      @NonNull @NotNull String password) {
         MutableLiveData<Integer> result = new MutableLiveData<>();
 
-        if (mail != null && password != null)
+        mail = mail.trim();
+        password = password.trim();
+
+        if (!mail.isEmpty() && !password.isEmpty()) {
             auth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(ContextCompat.getMainExecutor(application), new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         FirebaseUser user = auth.getCurrentUser();
-
-                        saveUserTokenInSharedPreferences(user.getUid());
-                        database.child(Constants.FIREBASE_USERS_TABLE).child(user.getUid())
-                                .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                if (task.isSuccessful() && task.getResult() != null) {
-                                    UserProperties userProperties = task.getResult()
-                                            .getValue(UserProperties.class);
-                                    if (userProperties != null) {
-                                        saveUserPropertiesInSharedPreferences(userProperties);
-                                        userPropertiesMutableLiveData.postValue(userProperties);
-                                    }
-                                }
-                            }
-                        });
-
-                        result.postValue(Constants.FIREBASE_LOGIN_OK);
+                        if (user != null) {
+                            saveUserTokenInSharedPreferences(user.getUid());
+                            database.child(Constants.FIREBASE_USERS_TABLE).child(user.getUid())
+                                    .get().addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful() && task1.getResult() != null) {
+                                            UserProperties userProperties = task1.getResult()
+                                                    .getValue(UserProperties.class);
+                                            if (userProperties != null) {
+                                                saveUserPropertiesInSharedPreferences(userProperties);
+                                                userPropertiesMutableLiveData.postValue(userProperties);
+                                                result.postValue(Constants.FIREBASE_LOGIN_OK);
+                                            } else
+                                                result.postValue(Constants.FIREBASE_LOGIN_ERROR);
+                                        } else
+                                            result.postValue(Constants.FIREBASE_LOGIN_ERROR);
+                                    });
+                        } else
+                            result.postValue(Constants.FIREBASE_LOGIN_ERROR);
                     } else
                         result.postValue(Constants.FIREBASE_LOGIN_ERROR);
                 }
             });
-        else
-            result.setValue(Constants.FIREBASE_LOGIN_ERROR);
+        } else
+            result.postValue(Constants.FIREBASE_LOGIN_ERROR);
 
         return result;
     }
 
-    public LiveData<Integer> registerWithMailAndPassword(String mail, String password,
-                                                         UserProperties insertData) {
+    public LiveData<Integer> registerWithMailAndPassword(@NotNull @NonNull String mail,
+                                                         @NotNull @NonNull String password,
+                                                         @NotNull @NonNull UserProperties insertData) {
         MutableLiveData<Integer> result = new MutableLiveData<>();
 
-        if (mail != null && password != null)
+        mail = mail.trim();
+        password = password.trim();
+
+        if (!mail.isEmpty() && !password.isEmpty())
             auth.createUserWithEmailAndPassword(mail, password).addOnCompleteListener(ContextCompat.getMainExecutor(application), new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         FirebaseUser user = auth.getCurrentUser();
+                        if (user != null) {
+                            saveUserTokenInSharedPreferences(user.getUid());
+                            saveUserPropertiesInSharedPreferences(insertData);
+                            userPropertiesMutableLiveData.postValue(insertData);
 
-                        saveUserTokenInSharedPreferences(user.getUid());
-                        saveUserPropertiesInSharedPreferences(insertData);
-                        database.child(Constants.FIREBASE_USERS_TABLE)
-                                .child(user.getUid()).setValue(insertData);
-                        userPropertiesMutableLiveData.postValue(insertData);
-
-                        result.postValue(Constants.FIREBASE_REGISTER_OK);
+                            database.child(Constants.FIREBASE_USERS_TABLE)
+                                    .child(user.getUid()).setValue(insertData)
+                                    .addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful())
+                                            result.setValue(Constants.FIREBASE_REGISTER_OK);
+                                        else
+                                            result.setValue(Constants.FIREBASE_REGISTER_ERROR);
+                                    });
+                        } else
+                            result.setValue(Constants.FIREBASE_REGISTER_ERROR);
                     } else
                         result.postValue(Constants.FIREBASE_REGISTER_ERROR);
                 }
@@ -117,30 +128,34 @@ public class UserRepository {
         deleteUserPropertiesFromSharedPreferences();
         deleteCurrentDateFromSharedPreferences();
         userPropertiesMutableLiveData = null;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ServicesLocator.getInstance().getAppDatabase(application).clearAllTables();
-            }
-        }).start();
+        new Thread(() -> ServicesLocator.getInstance().getAppDatabase(application).clearAllTables())
+                .start();
     }
 
     public LiveData<UserProperties> getUserProperties() {
         return userPropertiesMutableLiveData;
     }
 
-    public void setUserProperties(UserProperties newProperties) {
+    public LiveData<Integer> setUserProperties(@NotNull @NonNull UserProperties newProperties) {
+        MutableLiveData<Integer> response = new MutableLiveData<>();
+
         saveUserPropertiesInSharedPreferences(newProperties);
         userPropertiesMutableLiveData.setValue(newProperties);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String id = getUserAuthIdFromSharedPreferences();
+        new Thread(() -> {
+            String id = getUserAuthIdFromSharedPreferences();
+            if (id != null) {
                 database.child(Constants.FIREBASE_USERS_TABLE).child(id)
-                        .setValue(newProperties);
+                        .setValue(newProperties).addOnCompleteListener(task -> {
+                            if (task.isSuccessful())
+                                response.postValue(Constants.FIREBASE_UPDATE_OK);
+                            else
+                                response.postValue(Constants.FIREBASE_UPDATE_ERROR);
+                        });
             }
         }).start();
+
+        return response;
     }
 
     public String getUserAuthIdFromSharedPreferences() {
@@ -174,7 +189,7 @@ public class UserRepository {
         editor.apply();
     }
 
-    private void saveUserPropertiesInSharedPreferences(@NotNull UserProperties userProperties) {
+    private void saveUserPropertiesInSharedPreferences(@NotNull @NonNull UserProperties userProperties) {
         SharedPreferences sharedPref = application.getSharedPreferences(
                 Constants.PERSONAL_DATA_PREFERENCES_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -211,8 +226,8 @@ public class UserRepository {
         editor.apply();
     }
 
-    private void saveUserTokenInSharedPreferences(String userToken) {
-        if (userToken != null && !userToken.isEmpty()) {
+    private void saveUserTokenInSharedPreferences(@NonNull @NotNull String userToken) {
+        if (!userToken.isEmpty()) {
             SharedPreferences sharedPref = application.getSharedPreferences(
                     Constants.FIREBASE_USER_PREFERENCES_FILE, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();

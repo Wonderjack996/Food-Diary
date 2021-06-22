@@ -1,16 +1,21 @@
 package it.fooddiary.utils;
 
+import androidx.annotation.NonNull;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DateFormat;
+
 import java.util.Calendar;
+
 import java.util.Date;
 
 public class DateUtils {
 
     public static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
 
-    public static boolean dateEquals(Date d1, Date d2) {
-        if (d1 == null || d2 == null)
-            return false;
+    public static boolean dateEquals(@NotNull @NonNull Date d1,
+                                     @NotNull @NonNull Date d2) {
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(d1);

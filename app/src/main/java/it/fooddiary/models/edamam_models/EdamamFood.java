@@ -1,10 +1,14 @@
 package it.fooddiary.models.edamam_models;
 
 import android.os.Parcel;
+
 import android.os.Parcelable;
 
 import it.fooddiary.models.Food;
 
+/**
+ * Classe utilizzata per wrappare un food ritornato da edamam api.
+ */
 public class EdamamFood implements Parcelable {
 
     private String foodId;

@@ -10,6 +10,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,7 @@ import it.fooddiary.R;
 import it.fooddiary.databinding.HolderFoodItemBinding;
 import it.fooddiary.models.Food;
 
-public class FoodRecyclerAdapter extends
-        RecyclerView.Adapter<FoodRecyclerAdapter.FoodSearchedViewHolder> {
+public class FoodRecyclerAdapter extends RecyclerView.Adapter<FoodRecyclerAdapter.FoodSearchedViewHolder> {
 
     private static final String TAG = "FoodSearchRecAdapter";
 
@@ -26,55 +27,55 @@ public class FoodRecyclerAdapter extends
     private final FragmentManager fragmentManager;
     private final IFoodAlert foodAlert;
 
-    public FoodRecyclerAdapter(FragmentManager fragmentManager, IFoodAlert foodAlert) {
+    public FoodRecyclerAdapter(@NonNull @NotNull FragmentManager fragmentManager,
+                               @NonNull @NotNull IFoodAlert foodAlert) {
         this.foodDataset = new ArrayList<>();
         this.fragmentManager = fragmentManager;
         this.foodAlert = foodAlert;
     }
 
-
-
-    public void setFoodDataset(List<Food> foods) {
+    public void setFoodDataset(@NonNull @NotNull List<Food> foods) {
         foodDataset.clear();
         foodDataset.addAll(foods);
         notifyDataSetChanged();
     }
 
-    public Food getFood(Food tmp) {
+    public Food getFood(@NonNull @NotNull Food tmp) {
         if (foodDataset.contains(tmp))
             return foodDataset.get(foodDataset.indexOf(tmp));
         return null;
     }
 
     public Food getFoodByPosition(int position) {
-        if (position >= 0 && position < foodDataset.size())
+        if (position >= 0 && position < getItemCount())
             return foodDataset.get(position);
         return null;
     }
 
     public Food removeItem(int position) {
-        if (position >= 0 && position < foodDataset.size())
+        if (position >= 0 && position < getItemCount())
             return foodDataset.remove(position);
         return null;
     }
 
-    public void addItem(Food food, int position) {
-        if (position >= 0 && position <= foodDataset.size())
+    public void addItem(@NonNull @NotNull Food food, int position) {
+        if (position >= 0 && position <= getItemCount())
             foodDataset.add(position, food);
     }
 
     @NonNull
     @Override
-    public FoodSearchedViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                                         int viewType) {
+    public FoodSearchedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.holder_food_item, parent, false);
         HolderFoodItemBinding bind = DataBindingUtil.bind(view);
+        assert bind != null;
         return new FoodSearchedViewHolder(view, bind);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FoodSearchedViewHolder holder, int position) {
+        if (position >= 0 && position < getItemCount())
         holder.bind(foodDataset.get(position));
     }
 
@@ -87,22 +88,19 @@ public class FoodRecyclerAdapter extends
 
         private final HolderFoodItemBinding holderFoodItemBinding;
 
-        public FoodSearchedViewHolder(View view,
-                                      HolderFoodItemBinding binding) {
+        public FoodSearchedViewHolder(@NotNull @NonNull View view,
+                                      @NotNull @NonNull HolderFoodItemBinding binding) {
             super(view);
             this.holderFoodItemBinding = binding;
         }
 
-        public void bind(Food foodClicked) {
+        public void bind(@NotNull @NonNull Food foodClicked) {
             holderFoodItemBinding.setFood(foodClicked);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    foodAlert.setFood(foodClicked);
-                    if (foodAlert instanceof DialogFragment)
-                        ((DialogFragment)foodAlert).show(fragmentManager, TAG);
-                }
+            itemView.setOnClickListener(v -> {
+                foodAlert.setFood(foodClicked);
+                if (foodAlert instanceof DialogFragment)
+                    ((DialogFragment)foodAlert).show(fragmentManager, TAG);
             });
 
             holderFoodItemBinding.executePendingBindings();

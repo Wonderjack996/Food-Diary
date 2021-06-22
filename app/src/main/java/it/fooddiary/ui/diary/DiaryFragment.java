@@ -14,12 +14,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Calendar;
 import java.util.Date;
 
 import it.fooddiary.databinding.FragmentDiaryBinding;
 import it.fooddiary.models.Meal;
-import it.fooddiary.models.UserProperties;
 import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.ui.MainActivity;
@@ -42,13 +43,12 @@ public class DiaryFragment extends Fragment {
     private final Date associatedDate;
 
     private FoodViewModel foodViewModel;
-    private UserViewModel userViewModel;
 
     public DiaryFragment() {
         this.associatedDate = Calendar.getInstance().getTime();
     }
 
-    public DiaryFragment(Date date) {
+    public DiaryFragment(@NotNull @NonNull Date date) {
         this.associatedDate = date;
     }
 
@@ -66,14 +66,14 @@ public class DiaryFragment extends Fragment {
                 new FoodViewModelFactory(requireActivity().getApplication(),
                         new FoodRepository(requireActivity().getApplication())))
                 .get(FoodViewModel.class);
-        userViewModel = new ViewModelProvider(this,
+
+        UserViewModel userViewModel = new ViewModelProvider(this,
                 new UserViewModelFactory(requireActivity().getApplication(),
                         new UserRepository(requireActivity().getApplication())))
                 .get(UserViewModel.class);
 
-        userViewModel.getUserProperties().observe(getViewLifecycleOwner(), new Observer<UserProperties>() {
-            @Override
-            public void onChanged(UserProperties mealProperties) {
+        userViewModel.getUserProperties().observe(getViewLifecycleOwner(), mealProperties -> {
+            if (mealProperties != null) {
                 binding.setUserProperties(mealProperties);
                 binding.invalidateAll();
             }
@@ -90,22 +90,26 @@ public class DiaryFragment extends Fragment {
 
         reloadMealsFromDB();
 
-        Calendar calendar = Calendar.getInstance();
-        Date today = calendar.getTime();
-        calendar.setTime(today);
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
-        Date yesterday = calendar.getTime();
-        calendar.add(Calendar.DAY_OF_YEAR, 2);
-        Date tomorrow = calendar.getTime();
+        if (getActivity() instanceof MainActivity) {
+            MainActivity main = (MainActivity) getActivity();
 
-        if(DateUtils.dateEquals(associatedDate, today))
-            ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.today));
-        else if(DateUtils.dateEquals(associatedDate, yesterday))
-            ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.yesterday));
-        else if(DateUtils.dateEquals(associatedDate, tomorrow))
-            ((MainActivity)getActivity()).changeToolbarTitle(getResources().getString(R.string.tomorrow));
-        else
-            ((MainActivity)getActivity()).changeToolbarTitle(DateUtils.dateFormat.format(associatedDate));
+            Calendar calendar = Calendar.getInstance();
+            Date today = calendar.getTime();
+            calendar.setTime(today);
+            calendar.add(Calendar.DAY_OF_YEAR, -1);
+            Date yesterday = calendar.getTime();
+            calendar.add(Calendar.DAY_OF_YEAR, 2);
+            Date tomorrow = calendar.getTime();
+
+            if (DateUtils.dateEquals(associatedDate, today))
+                main.changeToolbarTitle(getResources().getString(R.string.today));
+            else if (DateUtils.dateEquals(associatedDate, yesterday))
+                main.changeToolbarTitle(getResources().getString(R.string.yesterday));
+            else if (DateUtils.dateEquals(associatedDate, tomorrow))
+                main.changeToolbarTitle(getResources().getString(R.string.tomorrow));
+            else
+                main.changeToolbarTitle(DateUtils.dateFormat.format(associatedDate));
+        }
     }
 
     private void reloadMealsFromDB() {
@@ -118,27 +122,22 @@ public class DiaryFragment extends Fragment {
         LiveData<Meal> snacksMutableLiveData =
                 foodViewModel.getMealByTypeAndDate(MealType.SNACKS, associatedDate);
 
-        breakfastMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
-            @Override
-            public void onChanged(Meal meal) {
-                binding.setBreakfastMeal(meal);
-            }
-        });
+        breakfastMutableLiveData.observe(getViewLifecycleOwner(), meal -> binding.setBreakfastMeal(meal));
         lunchMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
             @Override
-            public void onChanged(Meal meal) {
+            public void onChanged(@NonNull @NotNull Meal meal) {
                 binding.setLunchMeal(meal);
             }
         });
         dinnerMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
             @Override
-            public void onChanged(Meal meal) {
+            public void onChanged(@NonNull @NotNull Meal meal) {
                 binding.setDinnerMeal(meal);
             }
         });
         snacksMutableLiveData.observe(getViewLifecycleOwner(), new Observer<Meal>() {
             @Override
-            public void onChanged(Meal meal) {
+            public void onChanged(@NonNull @NotNull Meal meal) {
                 binding.setSnacksMeal(meal);
             }
         });
@@ -148,64 +147,40 @@ public class DiaryFragment extends Fragment {
         Intent intent = new Intent(getActivity(), MealActivity.class);
         intent.putExtra(Constants.CURRENT_DATE, associatedDate);
 
-        binding.breakfastCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.BREAKFAST);
-                startActivity(intent);
-            }
+        binding.breakfastCardView.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.BREAKFAST);
+            startActivity(intent);
         });
-        binding.breakfastImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.BREAKFAST);
-                startActivity(intent);
-            }
+        binding.breakfastImageButton.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.BREAKFAST);
+            startActivity(intent);
         });
 
-        binding.lunchCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.LUNCH);
-                startActivity(intent);
-            }
+        binding.lunchCardView.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.LUNCH);
+            startActivity(intent);
         });
-        binding.lunchImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.LUNCH);
-                startActivity(intent);
-            }
+        binding.lunchImageButton.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.LUNCH);
+            startActivity(intent);
         });
 
-        binding.dinnerCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.DINNER);
-                startActivity(intent);
-            }
+        binding.dinnerCardView.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.DINNER);
+            startActivity(intent);
         });
-        binding.dinnerImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.DINNER);
-                startActivity(intent);
-            }
+        binding.dinnerImageButton.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.DINNER);
+            startActivity(intent);
         });
 
-        binding.snacksCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.SNACKS);
-                startActivity(intent);
-            }
+        binding.snacksCardView.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.SNACKS);
+            startActivity(intent);
         });
-        binding.snacksImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra(Constants.MEAL_TYPE, MealType.SNACKS);
-                startActivity(intent);
-            }
+        binding.snacksImageButton.setOnClickListener(v -> {
+            intent.putExtra(Constants.MEAL_TYPE, MealType.SNACKS);
+            startActivity(intent);
         });
     }
 
