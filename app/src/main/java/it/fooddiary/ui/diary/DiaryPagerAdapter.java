@@ -44,6 +44,11 @@ public class DiaryPagerAdapter extends FragmentStatePagerAdapter {
         return dataSet.size();
     }
 
+    /**
+     * Metodo utilizzato per costruire le istanze di Diary Fragment che vogliamo visualizzare in
+     * modo tale che la pagina centrale sia associata alla data centralDate passata.
+     * @param centralDate data da associare alla pagina centrale
+     */
     private void loadFragment(@NotNull @NonNull Date centralDate) {
         for(Fragment frag : fragmentManager.getFragments())
             fragmentManager.beginTransaction().remove(frag).commit();

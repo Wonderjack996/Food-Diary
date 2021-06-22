@@ -1,7 +1,9 @@
 package it.fooddiary.ui.search.searched;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -44,7 +46,9 @@ public class FoodSearchedFragment extends Fragment {
     public View onCreateView(@NotNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
+
         binding = FragmentFoodSearchedBinding.inflate(inflater);
+
         viewModel = new ViewModelProvider(this,
                 new FoodViewModelFactory(requireActivity().getApplication(),
                         new FoodRepository(requireActivity().getApplication())))
@@ -80,8 +84,9 @@ public class FoodSearchedFragment extends Fragment {
 
         LiveData<EdamamResponse> edamamResponseLiveData = viewModel.getEdamamResponse(ingredient);
         edamamResponseLiveData.observe(getViewLifecycleOwner(), new Observer<EdamamResponse>() {
+                @SuppressLint("SetTextI18n")
                 @Override
-                public void onChanged(EdamamResponse edamamResponse) {
+                public void onChanged(@NonNull @NotNull EdamamResponse edamamResponse) {
                     if (edamamResponse.getMessage() == null &&
                             edamamResponse.getStatus() == null) {
                         if (edamamResponse.getHints().size() > 0 ||
@@ -105,8 +110,8 @@ public class FoodSearchedFragment extends Fragment {
                             recyclerAdapter.setFoodDataset(lastSearchedFoodList);
                         } else {
                             recyclerAdapter.setFoodDataset(new ArrayList<>());
-                            binding.searchingTextView.setText(edamamResponse.getText()
-                                    + " "
+                            binding.searchingTextView
+                                    .setText(edamamResponse.getText() + " "
                                     + getResources().getString(R.string.not_found) + "!");
                             binding.searchingTextView.setVisibility(View.VISIBLE);
                         }

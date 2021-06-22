@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,6 +71,7 @@ public class DiaryViewpagerFragment extends Fragment {
                              ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentViewpagerDiaryBinding.inflate(inflater);
+
         viewModel = new ViewModelProvider(this,
                 new FoodViewModelFactory(requireActivity().getApplication(),
                         new FoodRepository(requireActivity().getApplication())))

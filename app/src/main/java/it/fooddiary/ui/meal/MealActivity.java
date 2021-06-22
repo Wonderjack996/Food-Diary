@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
@@ -21,7 +22,6 @@ import com.google.android.material.snackbar.Snackbar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Date;
-import java.util.Objects;
 
 import it.fooddiary.R;
 import it.fooddiary.databases.IDatabaseOperation;
@@ -51,7 +51,6 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
     private MealType mealType;
 
     private FoodViewModel foodViewModel;
-    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,29 +58,38 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
 
         binding = ActivityMealBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         foodViewModel = new ViewModelProvider(this,
                 new FoodViewModelFactory(getApplication(),
                         new FoodRepository(getApplication())))
                 .get(FoodViewModel.class);
-        userViewModel = new ViewModelProvider(this,
+
+        UserViewModel userViewModel = new ViewModelProvider(this,
                 new UserViewModelFactory(getApplication(), new UserRepository(getApplication())))
                 .get(UserViewModel.class);
 
         Intent intent = getIntent();
-        associatedDate = (Date) intent.getSerializableExtra(Constants.CURRENT_DATE);
-        mealType = (MealType) intent.getSerializableExtra(Constants.MEAL_TYPE);
+        if (intent.getSerializableExtra(Constants.CURRENT_DATE) instanceof Date)
+            associatedDate = (Date) intent.getSerializableExtra(Constants.CURRENT_DATE);
+        else
+            associatedDate = new Date();
+        if (intent.getSerializableExtra(Constants.MEAL_TYPE) instanceof  MealType)
+            mealType = (MealType) intent.getSerializableExtra(Constants.MEAL_TYPE);
+        else
+            mealType = MealType.BREAKFAST;
 
-        getSupportActionBar().setTitle(mealType.toString(getResources())
-                + " - " + DateUtils.dateFormat.format(associatedDate));
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(mealType.toString(getResources())
+                    + " - " + DateUtils.dateFormat.format(associatedDate));
 
         recyclerAdapter = new FoodRecyclerAdapter(getSupportFragmentManager(),
                 new FoodPropertiesItemAlert(this));
 
         userViewModel.getUserProperties().observe(this, new Observer<UserProperties>() {
             @Override
-            public void onChanged(UserProperties mealProperties) {
+            public void onChanged(@NonNull @NotNull UserProperties mealProperties) {
                 binding.setUserProperties(mealProperties);
                 binding.invalidateAll();
             }
@@ -99,6 +107,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                 return false;
             }
 
+            @SuppressLint("ShowToast")
             @Override
             public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int position;
@@ -107,41 +116,33 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
                     Food foodToRemove = recyclerAdapter.getFoodByPosition(position);
 
                     foodViewModel.removeFoodFromMeal(foodToRemove, mealType, associatedDate)
-                            .observe(MealActivity.this, new Observer<Integer>() {
-                                @Override
-                                public void onChanged(Integer integer) {
-                                    switch (integer) {
-                                        case Constants.DATABASE_REMOVE_OK:
-                                            Food removed = recyclerAdapter.removeItem(position);
-                                            recyclerAdapter.notifyItemRemoved(position);
-                                            Snackbar.make(binding.getRoot(),
-                                                    removed.getName() + " " + getResources().getString(R.string.deleted),
-                                                    Snackbar.LENGTH_LONG)
-                                                    .setAction("Undo", new View.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(View view) {
-                                                            onDeleteUndo(removed,
-                                                                    mealType, associatedDate,
-                                                                    position);
-                                                        }
-                                                    })
-                                                    .setAnchorView(binding.floatingActionButton)
-                                                    .show();
-                                            reloadMeal();
-                                            break;
-                                        case Constants.DATABASE_REMOVE_NOT_PRESENT:
-                                            Snackbar.make(binding.getRoot(),
-                                                    R.string.not_found, Snackbar.LENGTH_LONG)
-                                                    .setAnchorView(binding.floatingActionButton)
-                                                    .show();
-                                            break;
-                                        case Constants.DATABASE_REMOVE_ERROR:
-                                            Snackbar.make(binding.getRoot(),
-                                                    R.string.error, Snackbar.LENGTH_LONG)
-                                                    .setAnchorView(binding.floatingActionButton)
-                                                    .show();
-                                            break;
-                                    }
+                            .observe(MealActivity.this, integer -> {
+                                switch (integer) {
+                                    case Constants.DATABASE_REMOVE_OK:
+                                        Food removed = recyclerAdapter.removeItem(position);
+                                        recyclerAdapter.notifyItemRemoved(position);
+                                        Snackbar.make(binding.getRoot(),
+                                                removed.getName() + " " + getResources().getString(R.string.deleted),
+                                                Snackbar.LENGTH_LONG)
+                                                .setAction("Undo", view -> onDeleteUndo(removed,
+                                                        mealType, associatedDate,
+                                                        position))
+                                                .setAnchorView(binding.floatingActionButton)
+                                                .show();
+                                        reloadMeal();
+                                        break;
+                                    case Constants.DATABASE_REMOVE_NOT_PRESENT:
+                                        Snackbar.make(binding.getRoot(),
+                                                R.string.not_found, Snackbar.LENGTH_LONG)
+                                                .setAnchorView(binding.floatingActionButton)
+                                                .show();
+                                        break;
+                                    case Constants.DATABASE_REMOVE_ERROR:
+                                        Snackbar.make(binding.getRoot(),
+                                                R.string.error, Snackbar.LENGTH_LONG)
+                                                .setAnchorView(binding.floatingActionButton)
+                                                .show();
+                                        break;
                                 }
                             });
                 }
@@ -166,13 +167,10 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(binding.foodRecyclerView);
 
-        binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MealActivity.this,
-                        SearchHostActivity.class);
-                startActivity(intent);
-            }
+        binding.floatingActionButton.setOnClickListener(v -> {
+            Intent intent1 = new Intent(MealActivity.this,
+                    SearchHostActivity.class);
+            startActivity(intent1);
         });
     }
 
@@ -182,31 +180,31 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         completeReload();
     }
 
-    private void onDeleteUndo(Food foodToAdd, MealType mealType, Date date, int position) {
+    @SuppressLint("ShowToast")
+    private void onDeleteUndo(@NotNull @NonNull Food foodToAdd,
+                              @NotNull @NonNull MealType mealType,
+                              @NotNull @NonNull Date date, int position) {
         LiveData<Integer> databaseResponse =
                 foodViewModel.insertFoodInMeal(foodToAdd, mealType, date);
 
-        databaseResponse.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_INSERT_OK:
-                    case Constants.DATABASE_UPDATE_OK:
-                        recyclerAdapter.addItem(foodToAdd, position);
-                        recyclerAdapter.notifyItemInserted(position);
-                        reloadMeal();
-                        Snackbar.make(binding.getRoot(), R.string.added, Snackbar.LENGTH_LONG)
-                                    .setAnchorView(binding.floatingActionButton)
-                                    .show();
-                        break;
-                    case Constants.DATABASE_INSERT_ERROR:
-                    case Constants.DATABASE_UPDATE_ERROR:
-                        Snackbar.make(binding.getRoot(),
-                                R.string.error, Snackbar.LENGTH_LONG)
+        databaseResponse.observe(this, integer -> {
+            switch (integer) {
+                case Constants.DATABASE_INSERT_OK:
+                case Constants.DATABASE_UPDATE_OK:
+                    recyclerAdapter.addItem(foodToAdd, position);
+                    recyclerAdapter.notifyItemInserted(position);
+                    reloadMeal();
+                    Snackbar.make(binding.getRoot(), R.string.added, Snackbar.LENGTH_LONG)
                                 .setAnchorView(binding.floatingActionButton)
                                 .show();
-                        break;
-                }
+                    break;
+                case Constants.DATABASE_INSERT_ERROR:
+                case Constants.DATABASE_UPDATE_ERROR:
+                    Snackbar.make(binding.getRoot(),
+                            R.string.error, Snackbar.LENGTH_LONG)
+                            .setAnchorView(binding.floatingActionButton)
+                            .show();
+                    break;
             }
         });
     }
@@ -215,7 +213,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         binding.searchingTextView.setVisibility(View.INVISIBLE);
         foodViewModel.getMealByTypeAndDate(mealType, associatedDate).observe(this, new Observer<Meal>() {
             @Override
-            public void onChanged(Meal meal) {
+            public void onChanged(@NonNull @NotNull Meal meal) {
                 binding.setMeal(meal);
                 if (meal.getMealFoods().size() == 0)
                     binding.searchingTextView.setVisibility(View.VISIBLE);
@@ -228,7 +226,7 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
         foodViewModel.getMealByTypeAndDate(mealType, associatedDate)
                 .observe(MealActivity.this, new Observer<Meal>() {
                     @Override
-                    public void onChanged(Meal meal) {
+                    public void onChanged(@NonNull @NotNull Meal meal) {
                         recyclerAdapter.setFoodDataset(meal.getMealFoods());
                         binding.setMeal(meal);
                         if (meal.getMealFoods().size() == 0)
@@ -239,12 +237,10 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            default:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        } else {
+            return false;
         }
         return true;
     }
@@ -254,25 +250,23 @@ public class MealActivity extends AppCompatActivity implements IDatabaseOperatio
 
     }
 
+    @SuppressLint("ShowToast")
     @Override
-    public void modifyFood(Food newFood) {
+    public void modifyFood(@NotNull @NonNull Food newFood) {
         Food oldFood = recyclerAdapter.getFood(newFood);
         if (oldFood != null) {
-            foodViewModel.updateFoodInMeal(newFood, mealType, associatedDate).observe(this, new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer integer) {
-                    switch (integer) {
-                        case Constants.DATABASE_UPDATE_OK:
-                            completeReload();
-                            break;
-                        case Constants.DATABASE_UPDATE_ERROR:
-                            Snackbar.make(binding.getRoot(),
-                                    R.string.error,
-                                    Snackbar.LENGTH_LONG)
-                                    .setAnchorView(binding.floatingActionButton)
-                                    .show();
-                            break;
-                    }
+            foodViewModel.updateFoodInMeal(newFood, mealType, associatedDate).observe(this, integer -> {
+                switch (integer) {
+                    case Constants.DATABASE_UPDATE_OK:
+                        completeReload();
+                        break;
+                    case Constants.DATABASE_UPDATE_ERROR:
+                        Snackbar.make(binding.getRoot(),
+                                R.string.error,
+                                Snackbar.LENGTH_LONG)
+                                .setAnchorView(binding.floatingActionButton)
+                                .show();
+                        break;
                 }
             });
         }

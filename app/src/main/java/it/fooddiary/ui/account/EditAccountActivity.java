@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -18,15 +17,13 @@ import java.util.Objects;
 import it.fooddiary.R;
 import it.fooddiary.databinding.ActivityEditAccountBinding;
 import it.fooddiary.models.UserProperties;
-import it.fooddiary.repositories.FoodRepository;
 import it.fooddiary.repositories.UserRepository;
 import it.fooddiary.utils.Constants;
-import it.fooddiary.viewmodels.food.FoodViewModel;
-import it.fooddiary.viewmodels.food.FoodViewModelFactory;
 import it.fooddiary.viewmodels.user.UserViewModel;
 import it.fooddiary.viewmodels.user.UserViewModelFactory;
 
 public class EditAccountActivity extends AppCompatActivity {
+
     private static final String TAG = "EditAccountActivity";
 
     private ActivityEditAccountBinding binding;
@@ -95,56 +92,46 @@ public class EditAccountActivity extends AppCompatActivity {
             readInformation();
         }
 
-        binding.confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String error = "";
-                int genderButtonId, activityButtonId, height, weight, age;
+        binding.confirmButton.setOnClickListener(v -> {
+            String error = "";
+            int genderButtonId, activityButtonId, height, weight, age;
 
-                genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
-                activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
-                height = binding.numberPickerHeight.getValue();
-                weight = binding.numberPickerWeight.getValue();
-                age = binding.numberPickerAge.getValue();
+            genderButtonId = binding.genderRadioGroup.getCheckedRadioButtonId();
+            activityButtonId = binding.activityRadioGroup.getCheckedRadioButtonId();
+            height = binding.numberPickerHeight.getValue();
+            weight = binding.numberPickerWeight.getValue();
+            age = binding.numberPickerAge.getValue();
 
-                if (genderButtonId < 0)
-                    error += "- " + getResources().getString(R.string.gender_error) + "\n";
-                if (activityButtonId < 0)
-                    error += "- " + getResources().getString(R.string.activity_error);
+            if (genderButtonId < 0)
+                error += "- " + getResources().getString(R.string.gender_error) + "\n";
+            if (activityButtonId < 0)
+                error += "- " + getResources().getString(R.string.activity_error);
 
-                if (!error.equals("")) {
-                    new MaterialAlertDialogBuilder(EditAccountActivity.this)
-                            .setTitle(R.string.error)
-                            .setMessage(error)
-                            .setPositiveButton(R.string.ok, null)
-                            .show();
+            if (!error.equals("")) {
+                new MaterialAlertDialogBuilder(EditAccountActivity.this)
+                        .setTitle(R.string.error)
+                        .setMessage(error)
+                        .setPositiveButton(R.string.ok, null)
+                        .show();
+            } else {
+                int gender, activityLevel;
+                if (genderButtonId == R.id.maleRadioButton) {
+                    gender = Constants.GENDER_MALE;
                 } else {
-                    int gender, activityLevel;
-                    switch (genderButtonId) {
-                        case R.id.maleRadioButton:
-                            gender = Constants.GENDER_MALE;
-                            break;
-                        default:
-                            gender = Constants.GENDER_FEMALE;
-                            break;
-                    }
-                    switch (activityButtonId) {
-                        case R.id.highRadioButton:
-                            activityLevel = Constants.ACTIVITY_HIGH;
-                            break;
-                        case R.id.midRadioButton:
-                            activityLevel = Constants.ACTIVITY_MID;
-                            break;
-                        default:
-                            activityLevel = Constants.ACTIVITY_LOW;
-                            break;
-                    }
-
-                    userViewModel.setUserProperties(new UserProperties(age, gender, height,
-                            weight, activityLevel));
-
-                    onBackPressed();
+                    gender = Constants.GENDER_FEMALE;
                 }
+
+                if (activityButtonId == R.id.highRadioButton) {
+                    activityLevel = Constants.ACTIVITY_HIGH;
+                } else if (activityButtonId == R.id.midRadioButton) {
+                    activityLevel = Constants.ACTIVITY_MID;
+                } else
+                    activityLevel = Constants.ACTIVITY_LOW;
+
+                userViewModel.setUserProperties(new UserProperties(age, gender, height,
+                        weight, activityLevel));
+
+                onBackPressed();
             }
         });
     }
@@ -169,12 +156,10 @@ public class EditAccountActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
-            default:
-                return false;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        } else {
+            return false;
         }
         return true;
     }
@@ -182,7 +167,7 @@ public class EditAccountActivity extends AppCompatActivity {
     private void readInformation(){
         userViewModel.getUserProperties().observe(this, new Observer<UserProperties>() {
             @Override
-            public void onChanged(UserProperties userProperties) {
+            public void onChanged(@NotNull @NonNull UserProperties userProperties) {
                 int age_user = userProperties.getAge();
                 int gender_user = userProperties.getGender();
                 int height_user = userProperties.getHeightCm();

@@ -1,11 +1,9 @@
 package it.fooddiary.ui.search.searched;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -76,25 +74,19 @@ public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert 
                 .setMaxValue(Constants.MAX_FOOD_GRAMS);
 
         binding.setFood(foodClicked);
-        binding.quantityNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                foodClicked.setQuantity(newVal);
-                binding.invalidateAll();
-            }
+        binding.quantityNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            foodClicked.setQuantity(newVal);
+            binding.invalidateAll();
         });
         binding.quantityNumberPicker.setValue(foodClicked.getQuantity());
         dialogBuilder.setTitle(foodClicked.getName());
-        dialogBuilder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int quantity = binding.quantityNumberPicker.getValue();
-                int mealTypeNum = binding.mealNumberPicker.getValue();
-                MealType mealType = MealType.values()[mealTypeNum];
-                foodClicked.setQuantity(quantity);
-                if (databaseOperation != null)
-                    databaseOperation.addFoodToMeal(foodClicked, mealType);
-            }
+        dialogBuilder.setPositiveButton(R.string.add, (dialog, which) -> {
+            int quantity = binding.quantityNumberPicker.getValue();
+            int mealTypeNum = binding.mealNumberPicker.getValue();
+            MealType mealType = MealType.values()[mealTypeNum];
+            foodClicked.setQuantity(quantity);
+            if (databaseOperation != null)
+                databaseOperation.addFoodToMeal(foodClicked, mealType);
         });
         return dialogBuilder.create();
     }
@@ -107,7 +99,7 @@ public class FoodSearchedItemAlert extends DialogFragment implements IFoodAlert 
     }
 
     @Override
-    public void setFood(Food food) {
+    public void setFood(@NotNull @NonNull Food food) {
         this.foodClicked = food;
     }
 }

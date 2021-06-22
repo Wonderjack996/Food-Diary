@@ -3,9 +3,9 @@ package it.fooddiary.ui.login;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
     private UserViewModel userViewModel;
 
+    @SuppressLint("ShowToast")
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,25 +87,19 @@ public class LoginActivity extends AppCompatActivity {
 
             if (isMailValid && isPasswordValid) {
                 userViewModel.loginWithMailAndPassword(mail, password)
-                        .observe(LoginActivity.this, new Observer<Integer>() {
-                    @Override
-                    public void onChanged(Integer integer) {
-                        switch (integer) {
-                            case Constants.FIREBASE_LOGIN_OK:
+                        .observe(LoginActivity.this, integer -> {
+                            if (integer == Constants.FIREBASE_LOGIN_OK) {
                                 Intent intent = new Intent(LoginActivity.this,
                                         MainActivity.class);
                                 startActivity(intent);
                                 LoginActivity.this.finish();
-                                break;
-                            default:
+                            } else {
                                 Snackbar.make(binding.getRoot(), R.string.error,
                                         Snackbar.LENGTH_LONG)
                                         .setAnchorView(binding.buttonLinearLayout)
                                         .show();
-                                break;
-                        }
-                    }
-                });
+                            }
+                        });
             } else {
                 if (!isMailValid)
                     binding.mailEditText.setError(getResources()
@@ -127,20 +122,17 @@ public class LoginActivity extends AppCompatActivity {
             if (isMailValid && isPasswordValid) {
                 userViewModel.registerWithMailAndPassword(mail, password, insertProperties)
                         .observe(LoginActivity.this, integer -> {
-                            switch (integer) {
-                                case Constants.FIREBASE_REGISTER_OK:
-                                    Intent intent = new Intent(LoginActivity.this,
-                                            MainActivity.class);
-                                    startActivity(intent);
-                                    LoginActivity.this.finish();
-                                    break;
-                                default:
-                                    Snackbar.make(binding.getRoot(),
-                                            R.string.error,
-                                            Snackbar.LENGTH_LONG)
-                                            .setAnchorView(binding.buttonLinearLayout)
-                                            .show();
-                                    break;
+                            if (integer == Constants.FIREBASE_REGISTER_OK) {
+                                Intent intent = new Intent(LoginActivity.this,
+                                        MainActivity.class);
+                                startActivity(intent);
+                                LoginActivity.this.finish();
+                            } else {
+                                Snackbar.make(binding.getRoot(),
+                                        R.string.error,
+                                        Snackbar.LENGTH_LONG)
+                                        .setAnchorView(binding.buttonLinearLayout)
+                                        .show();
                             }
                         });
             } else {

@@ -1,11 +1,9 @@
 package it.fooddiary.ui.search;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +18,6 @@ import it.fooddiary.R;
 import it.fooddiary.databases.IDatabaseOperation;
 import it.fooddiary.databinding.DialogFoodInsertBinding;
 import it.fooddiary.models.Food;
-import it.fooddiary.ui.IFoodAlert;
 import it.fooddiary.utils.Constants;
 import it.fooddiary.utils.MealType;
 
@@ -38,7 +35,7 @@ public class FoodInsertItemAlert extends DialogFragment {
 
     public FoodInsertItemAlert() { }
 
-    public FoodInsertItemAlert(IDatabaseOperation dbOperation) {
+    public FoodInsertItemAlert(@NotNull @NonNull IDatabaseOperation dbOperation) {
         databaseOperation = dbOperation;
     }
 
@@ -75,32 +72,25 @@ public class FoodInsertItemAlert extends DialogFragment {
         binding.fatsNumberPicker.setMaxValue(100);
         binding.fatsNumberPicker.setMinValue(0);
 
-        binding.carbsNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                int currPro = binding.proteinsNumberPicker.getValue();
-                int currFat = binding.fatsNumberPicker.getValue();
-                binding.proteinsNumberPicker.setMaxValue(100-newVal-currFat);
-                binding.fatsNumberPicker.setMaxValue(100-newVal-currPro);
-            }
+        binding.carbsNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            int currPro = binding.proteinsNumberPicker.getValue();
+            int currFat = binding.fatsNumberPicker.getValue();
+            binding.proteinsNumberPicker.setMaxValue(100-newVal-currFat);
+            binding.fatsNumberPicker.setMaxValue(100-newVal-currPro);
         });
-        binding.proteinsNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                int currCarb = binding.carbsNumberPicker.getValue();
-                int currFat = binding.fatsNumberPicker.getValue();
-                binding.carbsNumberPicker.setMaxValue(100-newVal-currFat);
-                binding.fatsNumberPicker.setMaxValue(100-newVal-currCarb);
-            }
+
+        binding.proteinsNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            int currCarb = binding.carbsNumberPicker.getValue();
+            int currFat = binding.fatsNumberPicker.getValue();
+            binding.carbsNumberPicker.setMaxValue(100-newVal-currFat);
+            binding.fatsNumberPicker.setMaxValue(100-newVal-currCarb);
         });
-        binding.fatsNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                int currPro = binding.proteinsNumberPicker.getValue();
-                int currCarb = binding.carbsNumberPicker.getValue();
-                binding.proteinsNumberPicker.setMaxValue(100-newVal-currCarb);
-                binding.carbsNumberPicker.setMaxValue(100-newVal-currPro);
-            }
+
+        binding.fatsNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            int currPro = binding.proteinsNumberPicker.getValue();
+            int currCarb = binding.carbsNumberPicker.getValue();
+            binding.proteinsNumberPicker.setMaxValue(100-newVal-currCarb);
+            binding.carbsNumberPicker.setMaxValue(100-newVal-currPro);
         });
 
         if (savedInstanceState != null) {
@@ -126,25 +116,23 @@ public class FoodInsertItemAlert extends DialogFragment {
 
         dialogBuilder.setTitle(R.string.add_personal);
 
-        dialogBuilder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String name = binding.editTextTextPersonName.getText().toString().trim();
-                int quantity = binding.quantityNumberPicker.getValue();
-                int mealTypeNum = binding.mealNumberPicker.getValue();
-                MealType mealType = MealType.values()[mealTypeNum];
-                double carbs = binding.carbsNumberPicker.getValue()/100d;
-                double pro = binding.proteinsNumberPicker.getValue()/100d;
-                double fats = binding.fatsNumberPicker.getValue()/100d;
+        dialogBuilder.setPositiveButton(R.string.add, (dialog, which) -> {
+            String name = binding.editTextTextPersonName.getText().toString().trim();
+            int quantity = binding.quantityNumberPicker.getValue();
+            int mealTypeNum = binding.mealNumberPicker.getValue();
+            MealType mealType = MealType.values()[mealTypeNum];
+            double carbs = binding.carbsNumberPicker.getValue()/100d;
+            double pro = binding.proteinsNumberPicker.getValue()/100d;
+            double fats = binding.fatsNumberPicker.getValue()/100d;
 
-                Food myFood = new Food(name, quantity, carbs, pro, fats);
+            Food myFood = new Food(name, quantity, carbs, pro, fats);
 
-                if (databaseOperation != null)
-                    databaseOperation.addFoodToMeal(myFood, mealType);
-                else
-                    Snackbar.make(binding.getRoot(), R.string.error, Snackbar.LENGTH_LONG).show();
-            }
+            if (databaseOperation != null)
+                databaseOperation.addFoodToMeal(myFood, mealType);
+            else
+                Snackbar.make(binding.getRoot(), R.string.error, Snackbar.LENGTH_LONG).show();
         });
+
         return dialogBuilder.create();
     }
 

@@ -1,5 +1,6 @@
 package it.fooddiary.ui.search;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,7 +13,6 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -20,6 +20,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +51,7 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
@@ -100,12 +103,7 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
         alert = new FoodInsertItemAlert(this);
 
         FloatingActionButton fab = root.findViewById(R.id.addCalories_floatingButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alert.show(getChildFragmentManager(), TAG);
-            }
-        });
+        fab.setOnClickListener(v -> alert.show(getChildFragmentManager(), TAG));
 
         return root;
     }
@@ -145,63 +143,46 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
         }).attach();
     }
 
+    @SuppressLint("ShowToast")
     @Override
-    public void addFoodToMeal(Food foodToAdd, MealType mealType) {
-        if (foodToAdd == null || mealType == null) {
-            Snackbar.make(requireView(), R.string.error, Snackbar.LENGTH_SHORT)
-                    .setAnchorView(R.id.addCalories_floatingButton)
-                    .show();
-        } else if (foodToAdd.getName() == null || foodToAdd.getName().length() <= 2) {
+    public void addFoodToMeal(@NonNull @NotNull Food foodToAdd,
+                              @NonNull @NotNull MealType mealType) {
+        if (foodToAdd.getName() == null || foodToAdd.getName().length() <= 2) {
             Snackbar.make(requireView(), R.string.name_not_valid, Snackbar.LENGTH_SHORT)
                     .setAnchorView(R.id.addCalories_floatingButton)
                     .show();
         } else {
             Date currDate = viewModel.getCurrentDate();
             viewModel.insertFoodInMeal(foodToAdd, mealType, currDate)
-                    .observe(this, new Observer<Integer>() {
-                        @Override
-                        public void onChanged(Integer integer) {
-                            switch (integer) {
-                                case Constants.DATABASE_INSERT_OK:
-                                    Snackbar.make(requireView(), R.string.added,
-                                            Snackbar.LENGTH_SHORT)
-                                            .setAction("Undo", new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    removeFoodFromMeal(foodToAdd, mealType);
-                                                }
-                                            })
-                                            .setAnchorView(R.id.addCalories_floatingButton)
-                                            .show();
-                                    break;
-                                case Constants.DATABASE_INSERT_ALREADY_PRESENT:
-                                    Snackbar.make(requireView(), R.string.food_present,
-                                            Snackbar.LENGTH_SHORT)
-                                            .setAnchorView(R.id.addCalories_floatingButton)
-                                            .show();
-                                    break;
-                                case Constants.DATABASE_INSERT_ERROR:
-                                    Snackbar.make(requireView(), R.string.error,
-                                            Snackbar.LENGTH_SHORT)
-                                            .setAnchorView(R.id.addCalories_floatingButton)
-                                            .show();
-                                    break;
-                            }
+                    .observe(this, integer -> {
+                        switch (integer) {
+                            case Constants.DATABASE_INSERT_OK:
+                                Snackbar.make(requireView(), R.string.added,
+                                        Snackbar.LENGTH_SHORT)
+                                        .setAction("Undo", v -> removeFoodFromMeal(foodToAdd, mealType))
+                                        .setAnchorView(R.id.addCalories_floatingButton)
+                                        .show();
+                                break;
+                            case Constants.DATABASE_INSERT_ALREADY_PRESENT:
+                                Snackbar.make(requireView(), R.string.food_present,
+                                        Snackbar.LENGTH_SHORT)
+                                        .setAnchorView(R.id.addCalories_floatingButton)
+                                        .show();
+                                break;
+                            case Constants.DATABASE_INSERT_ERROR:
+                                Snackbar.make(requireView(), R.string.error,
+                                        Snackbar.LENGTH_SHORT)
+                                        .setAnchorView(R.id.addCalories_floatingButton)
+                                        .show();
+                                break;
                         }
                     });
-            viewModel.addFoodToRecent(foodToAdd).observe(this, new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer integer) {
-                    switch (integer){
-                        case Constants.DATABASE_INSERT_RECENT_FOOD_OK:
-                            break;
-                        default:
-                            Snackbar.make(requireView(), R.string.error,
-                                    Snackbar.LENGTH_SHORT)
-                                    .setAnchorView(R.id.addCalories_floatingButton)
-                                    .show();
-                            break;
-                    }
+            viewModel.addFoodToRecent(foodToAdd).observe(this, integer -> {
+                if (integer != Constants.DATABASE_INSERT_RECENT_FOOD_OK) {
+                    Snackbar.make(requireView(), R.string.error,
+                            Snackbar.LENGTH_SHORT)
+                            .setAnchorView(R.id.addCalories_floatingButton)
+                            .show();
                 }
             });
         }
@@ -212,49 +193,40 @@ public class SearchFragment extends Fragment implements IDatabaseOperation {
 
     }
 
-    private void removeFoodFromMeal(Food foodToRemove, MealType mealToModify) {
+    @SuppressLint("ShowToast")
+    private void removeFoodFromMeal(@NotNull @NonNull Food foodToRemove,
+                                    @NotNull @NonNull MealType mealToModify) {
         Date currentDate = viewModel.getCurrentDate();
 
         viewModel.removeFoodFromMeal(foodToRemove, mealToModify, currentDate)
-                .observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_REMOVE_OK:
-                        Snackbar.make(requireView(), R.string.removed,
-                                Snackbar.LENGTH_SHORT)
-                                .setAnchorView(R.id.addCalories_floatingButton)
-                                .show();
-                        break;
-                    case Constants.DATABASE_REMOVE_NOT_PRESENT:
-                        Snackbar.make(requireView(), R.string.not_found,
-                                Snackbar.LENGTH_SHORT)
-                                .setAnchorView(R.id.addCalories_floatingButton)
-                                .show();
-                        break;
-                    case Constants.DATABASE_REMOVE_ERROR:
-                        Snackbar.make(requireView(), R.string.error,
-                                Snackbar.LENGTH_SHORT)
-                                .setAnchorView(R.id.addCalories_floatingButton)
-                                .show();
-                        break;
-                }
-            }
-        });
-        viewModel.removeFoodFromRecent(foodToRemove).observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_REMOVE_RECENT_FOOD_OK:
-                        break;
-                    default:
-                        Snackbar.make(requireView(), R.string.error,
-                                Snackbar.LENGTH_SHORT)
-                                .setAnchorView(R.id.addCalories_floatingButton)
-                                .show();
-                        break;
-                }
-
+                .observe(getViewLifecycleOwner(), integer -> {
+                    switch (integer) {
+                        case Constants.DATABASE_REMOVE_OK:
+                            Snackbar.make(requireView(), R.string.removed,
+                                    Snackbar.LENGTH_SHORT)
+                                    .setAnchorView(R.id.addCalories_floatingButton)
+                                    .show();
+                            break;
+                        case Constants.DATABASE_REMOVE_NOT_PRESENT:
+                            Snackbar.make(requireView(), R.string.not_found,
+                                    Snackbar.LENGTH_SHORT)
+                                    .setAnchorView(R.id.addCalories_floatingButton)
+                                    .show();
+                            break;
+                        case Constants.DATABASE_REMOVE_ERROR:
+                            Snackbar.make(requireView(), R.string.error,
+                                    Snackbar.LENGTH_SHORT)
+                                    .setAnchorView(R.id.addCalories_floatingButton)
+                                    .show();
+                            break;
+                    }
+                });
+        viewModel.removeFoodFromRecent(foodToRemove).observe(this, integer -> {
+            if (integer != Constants.DATABASE_REMOVE_RECENT_FOOD_OK) {
+                Snackbar.make(requireView(), R.string.error,
+                        Snackbar.LENGTH_SHORT)
+                        .setAnchorView(R.id.addCalories_floatingButton)
+                        .show();
             }
         });
     }

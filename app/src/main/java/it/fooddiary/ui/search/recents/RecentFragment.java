@@ -1,5 +1,6 @@
 package it.fooddiary.ui.search.recents;
 
+import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.os.Bundle;
 
@@ -44,9 +45,11 @@ public class RecentFragment extends Fragment {
     private FoodViewModel viewModel;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater,
+                             ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentRecentBinding.inflate(inflater);
+
         viewModel = new ViewModelProvider(this,
                 new FoodViewModelFactory(requireActivity().getApplication(),
                         new FoodRepository(requireActivity().getApplication())))
@@ -75,6 +78,7 @@ public class RecentFragment extends Fragment {
                         return false;
                     }
 
+                    @SuppressLint("ShowToast")
                     @Override
                     public void onSwiped(@NotNull RecyclerView.ViewHolder viewHolder, int swipeDir) {
                         int position;
@@ -82,32 +86,21 @@ public class RecentFragment extends Fragment {
                             position = viewHolder.getAdapterPosition();
                             Food foodToRemove = foodRecyclerAdapter.getFoodByPosition(position);
                             viewModel.removeFoodFromRecent(foodToRemove)
-                                    .observe(RecentFragment.this.requireActivity(), new Observer<Integer>() {
-                                        @Override
-                                        public void onChanged(Integer integer) {
-                                            switch (integer) {
-                                                case Constants.DATABASE_REMOVE_RECENT_FOOD_OK:
-                                                    Food removed = foodRecyclerAdapter.removeItem(position);
-                                                    foodRecyclerAdapter.notifyItemRemoved(position);
-                                                    Snackbar.make(binding.getRoot(),
-                                                            removed.getName() + " " + getResources().getString(R.string.deleted),
-                                                            Snackbar.LENGTH_LONG)
-                                                            .setAction("Undo", new View.OnClickListener() {
-                                                                @Override
-                                                                public void onClick(View view) {
-                                                                    onDeleteUndo(foodToRemove, position);
-                                                                }
-                                                            })
-                                                            .setAnchorView(R.id.addCalories_floatingButton)
-                                                            .show();
-                                                    break;
-                                                default:
-                                                    Snackbar.make(binding.getRoot(),
-                                                            R.string.error, Snackbar.LENGTH_LONG)
-                                                            .setAnchorView(R.id.addCalories_floatingButton)
-                                                            .show();
-                                                    break;
-                                            }
+                                    .observe(RecentFragment.this.requireActivity(), integer -> {
+                                        if (integer == Constants.DATABASE_REMOVE_RECENT_FOOD_OK) {
+                                            Food removed = foodRecyclerAdapter.removeItem(position);
+                                            foodRecyclerAdapter.notifyItemRemoved(position);
+                                            Snackbar.make(binding.getRoot(),
+                                                    removed.getName() + " " + getResources().getString(R.string.deleted),
+                                                    Snackbar.LENGTH_LONG)
+                                                    .setAction("Undo", view -> onDeleteUndo(foodToRemove, position))
+                                                    .setAnchorView(R.id.addCalories_floatingButton)
+                                                    .show();
+                                        } else {
+                                            Snackbar.make(binding.getRoot(),
+                                                    R.string.error, Snackbar.LENGTH_LONG)
+                                                    .setAnchorView(R.id.addCalories_floatingButton)
+                                                    .show();
                                         }
                                     });
                         }
@@ -140,39 +133,32 @@ public class RecentFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        binding.searchingTextView.setVisibility(View.INVISIBLE);
+        binding.searchingTextView.setVisibility(View.VISIBLE);
         viewModel.getRecentFoods().observe(getViewLifecycleOwner(), new Observer<List<Food>>() {
             @Override
-            public void onChanged(List<Food> foods) {
-                if(foods != null ) {
-                    Collections.reverse(foods);
-                    foodRecyclerAdapter.setFoodDataset(foods);
-                    if(foods.size() == 0)
-                        binding.searchingTextView.setVisibility(View.VISIBLE);
-                }
+            public void onChanged(@NonNull @NotNull List<Food> foods) {
+                Collections.reverse(foods);
+                foodRecyclerAdapter.setFoodDataset(foods);
+                if(foods.size() > 0)
+                    binding.searchingTextView.setVisibility(View.INVISIBLE);
             }
         });
     }
 
-    public void onDeleteUndo(Food foodToAdd, int position) {
-        viewModel.addFoodToRecent(foodToAdd).observe(this.requireActivity(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                switch (integer) {
-                    case Constants.DATABASE_INSERT_RECENT_FOOD_OK:
-                        foodRecyclerAdapter.addItem(foodToAdd, position);
-                        foodRecyclerAdapter.notifyItemInserted(position);
-                        Snackbar.make(binding.getRoot(), R.string.added, Snackbar.LENGTH_LONG)
-                                .setAnchorView(R.id.addCalories_floatingButton)
-                                .show();
-                        break;
-                    default:
-                        Snackbar.make(binding.getRoot(),
-                                R.string.error, Snackbar.LENGTH_LONG)
-                                .setAnchorView(R.id.addCalories_floatingButton)
-                                .show();
-                        break;
-                }
+    @SuppressLint("ShowToast")
+    public void onDeleteUndo(@NotNull @NonNull Food foodToAdd, int position) {
+        viewModel.addFoodToRecent(foodToAdd).observe(this.requireActivity(), integer -> {
+            if (integer == Constants.DATABASE_INSERT_RECENT_FOOD_OK) {
+                foodRecyclerAdapter.addItem(foodToAdd, position);
+                foodRecyclerAdapter.notifyItemInserted(position);
+                Snackbar.make(binding.getRoot(), R.string.added, Snackbar.LENGTH_LONG)
+                        .setAnchorView(R.id.addCalories_floatingButton)
+                        .show();
+            } else {
+                Snackbar.make(binding.getRoot(),
+                        R.string.error, Snackbar.LENGTH_LONG)
+                        .setAnchorView(R.id.addCalories_floatingButton)
+                        .show();
             }
         });
     }

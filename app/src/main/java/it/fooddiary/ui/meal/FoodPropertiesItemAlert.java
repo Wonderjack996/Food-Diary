@@ -1,11 +1,9 @@
 package it.fooddiary.ui.meal;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +33,7 @@ public class FoodPropertiesItemAlert extends DialogFragment implements IFoodAler
 
     public FoodPropertiesItemAlert() { }
 
-    public FoodPropertiesItemAlert(IDatabaseOperation dbOperation) {
+    public FoodPropertiesItemAlert(@NonNull @NotNull IDatabaseOperation dbOperation) {
         databaseOperation = dbOperation;
     }
 
@@ -65,24 +63,21 @@ public class FoodPropertiesItemAlert extends DialogFragment implements IFoodAler
                 .setMaxValue(Constants.MAX_FOOD_GRAMS);
 
         binding.setFood(foodClicked);
-        binding.quantityNumberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                foodClicked.setQuantity(newVal);
-                binding.invalidateAll();
-            }
+        binding.quantityNumberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
+            foodClicked.setQuantity(newVal);
+            binding.invalidateAll();
         });
         binding.quantityNumberPicker.setValue(foodClicked.getQuantity());
+
         dialogBuilder.setTitle(foodClicked.getName());
-        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                int quantity = binding.quantityNumberPicker.getValue();
-                if (databaseOperation != null)
-                    databaseOperation.modifyFood(foodClicked);
-                foodClicked.setQuantity(quantity);
-            }
+
+        dialogBuilder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            int quantity = binding.quantityNumberPicker.getValue();
+            if (databaseOperation != null)
+                databaseOperation.modifyFood(foodClicked);
+            foodClicked.setQuantity(quantity);
         });
+
         return dialogBuilder.create();
     }
 
@@ -93,7 +88,7 @@ public class FoodPropertiesItemAlert extends DialogFragment implements IFoodAler
     }
 
     @Override
-    public void setFood(Food food) {
+    public void setFood(@NotNull @NonNull Food food) {
         this.foodClicked = food;
     }
 }
