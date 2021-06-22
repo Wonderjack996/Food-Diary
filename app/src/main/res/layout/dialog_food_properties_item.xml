@@ -37,7 +37,7 @@
                 android:layout_marginRight="8dp"
                 android:gravity="center"
                 android:text='@{@string/calories + ": " + food.totalCalories + " KCal"}'
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/carbs"
@@ -52,7 +52,7 @@
                 android:layout_marginRight="8dp"
                 android:gravity="center"
                 android:text='@{@string/carbs + ": " + food.totalCarbsGrams + " g"}'
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/proteins"
@@ -67,7 +67,7 @@
                 android:layout_marginRight="8dp"
                 android:gravity="center"
                 android:text='@{@string/proteins + ": " + food.totalProteinsGrams + " g"}'
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <TextView
                 android:id="@+id/fats"
@@ -82,7 +82,7 @@
                 android:layout_marginRight="8dp"
                 android:gravity="center"
                 android:text='@{@string/fats + ": " + food.totalFatsGrams + " g"}'
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
         </LinearLayout>
 
         <LinearLayout
@@ -107,7 +107,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="@string/modifyQuantity"
-                android:textColor="@color/primaryColor" />
+                android:textColor="?attr/colorPrimary" />
 
             <NumberPicker
                 android:id="@+id/quantityNumberPicker"
