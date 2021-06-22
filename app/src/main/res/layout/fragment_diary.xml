@@ -2,7 +2,8 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.diary.DiaryFragment">
 
     <data>
 
@@ -33,8 +34,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context=".ui.diary.DiaryFragment">
+            android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/calorieCounter_cardView"
@@ -163,8 +163,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:max="100"
-                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/userProperties.carbsGrams)*100)}'
-                             />
+                            android:progress='@{(int)(((float)(breakfastMeal.totalCarbsGrams+lunchMeal.totalCarbsGrams+dinnerMeal.totalCarbsGrams+snacksMeal.totalCarbsGrams)/userProperties.carbsGrams)*100)}' />
 
                         <TextView
                             android:id="@+id/carbsCounter_textView"
@@ -194,8 +193,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/proteins"
-                            />
+                            android:text="@string/proteins" />
 
                         <ProgressBar
                             android:id="@+id/proteins_progressBar"
@@ -211,7 +209,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-
                             android:text='@{String.valueOf(breakfastMeal.totalProteinsGrams+lunchMeal.totalProteinsGrams+dinnerMeal.totalProteinsGrams+snacksMeal.totalProteinsGrams) + " / " + String.valueOf(userProperties.proteinsGrams) + " g"}' />
                     </LinearLayout>
 
@@ -232,8 +229,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="@string/fats"
-                            />
+                            android:text="@string/fats" />
 
                         <ProgressBar
                             android:id="@+id/fats_progressBar"
@@ -293,7 +289,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/breakfast_textView"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/breakfast_24" />
+                            app:srcCompat="@drawable/ic_baseline_breakfast_24" />
 
                         <TextView
                             android:id="@+id/breakfast_textView"
@@ -366,7 +362,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/lunch_textView"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/lunch_24" />
+                            app:srcCompat="@drawable/ic_baseline_lunch_24" />
 
                         <TextView
                             android:id="@+id/lunch_textView"
@@ -439,7 +435,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/dinner_textView"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/dinner_24" />
+                            app:srcCompat="@drawable/ic_baseline_dinner_24" />
 
                         <TextView
                             android:id="@+id/dinner_textView"
@@ -512,7 +508,7 @@
                             app:layout_constraintEnd_toStartOf="@+id/snacks_textView"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/snacks_24" />
+                            app:srcCompat="@drawable/ic_baseline_snacks_24" />
 
                         <TextView
                             android:id="@+id/snacks_textView"

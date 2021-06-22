@@ -1,14 +1,8 @@
 package it.fooddiary.model_test;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import it.fooddiary.models.Food;
 import it.fooddiary.models.Meal;
@@ -16,7 +10,7 @@ import it.fooddiary.utils.MealType;
 
 import static org.junit.Assert.assertEquals;
 
-public class MealPropertiesTest {
+public class MealTest {
 
     @Test
     public void getMacroAndCaloriesTest() {

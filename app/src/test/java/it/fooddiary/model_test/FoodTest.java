@@ -1,9 +1,5 @@
 package it.fooddiary.model_test;
 
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import org.junit.Test;
 
 import it.fooddiary.models.Food;
@@ -15,8 +11,8 @@ public class FoodTest {
 
     @Test
     public void constructorTest() {
-        Food food = new Food(null, -1, -1, -1, -1);
-        assertEquals(food.getName(), "");
+        Food food = new Food("prova", -1, -1, -1, -1);
+        assertEquals(food.getName(), "prova");
         assertEquals(food.getQuantity(), Constants.MIN_FOOD_GRAMS);
 
         food = new Food("prova", 10001, 0, 0, 0);

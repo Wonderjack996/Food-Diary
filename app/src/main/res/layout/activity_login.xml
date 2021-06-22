@@ -80,6 +80,7 @@
                     android:textColorHint="?attr/colorSecondary"
                     android:autofillHints="@string/password"
                     android:hint="@string/password"
+                    android:imeOptions="actionDone"
                     android:inputType="textPassword"
                     android:textColor="?attr/colorSecondary" />
             </LinearLayout>
@@ -322,7 +323,6 @@
                         android:textColor="?attr/colorSecondary"/>
                 </RadioGroup>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <LinearLayout

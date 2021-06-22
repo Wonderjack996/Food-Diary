@@ -111,6 +111,7 @@
 
             <NumberPicker
                 android:id="@+id/quantityNumberPicker"
+                style="@style/AppTheme.Picker"
                 android:layout_width="match_parent"
                 android:layout_height="128dp" />
         </LinearLayout>

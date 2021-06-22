@@ -53,8 +53,7 @@
                         android:layout_height="128dp"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:theme="@style/AppTheme.Picker"
-                        />
+                        android:theme="@style/AppTheme.Picker" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -140,8 +139,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/height_cm"
-                        />
+                        android:text="@string/height_cm" />
 
                     <NumberPicker
                         android:id="@+id/numberPickerHeight"
@@ -171,8 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/weight_kg"
-                        />
+                        android:text="@string/weight_kg" />
 
                     <NumberPicker
                         android:id="@+id/numberPickerWeight"
@@ -211,8 +208,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="@string/activity_level"
-                    />
+                    android:text="@string/activity_level" />
 
                 <RadioGroup
                     android:id="@+id/activityRadioGroup"

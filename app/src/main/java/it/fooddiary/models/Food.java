@@ -45,16 +45,20 @@ public class Food implements IFoodProperties, Parcelable {
         else
             this.quantity = Math.min(quantity, Constants.MAX_FOOD_GRAMS);
 
-        if (carbsPercent >= 0 && proteinsPercent >= 0 && fatsPercent >= 0) {
+        if (carbsPercent >= 0 && carbsPercent <= 100)
             this.carbsPercent = carbsPercent;
-            this.proteinsPercent = proteinsPercent;
-            this.fatsPercent = fatsPercent;
-            return;
-        }
+        else
+            this.carbsPercent = 0;
 
-        this.carbsPercent = 0;
-        this.proteinsPercent = 0;
-        this.fatsPercent = 0;
+        if (proteinsPercent >= 0 && proteinsPercent <= 100)
+            this.proteinsPercent = proteinsPercent;
+        else
+            this.proteinsPercent = 0;
+
+        if (fatsPercent >= 0 && fatsPercent <= 100)
+            this.fatsPercent = fatsPercent;
+        else
+            this.fatsPercent = 0;
     }
 
     public String getName() {

@@ -24,9 +24,6 @@ public class DateTest {
     @Test
     public void toTimestampTest() {
         assertNull(DateConverter.dateToTimestamp(null));
-        assertFalse(DateUtils.dateEquals(Calendar.getInstance().getTime(), null));
-        assertFalse(DateUtils.dateEquals(Calendar.getInstance().getTime(), null));
-        assertFalse(DateUtils.dateEquals(null, null));
 
         Date currentDate = Calendar.getInstance().getTime();
         Long longCurrentDate = currentDate.getTime();
